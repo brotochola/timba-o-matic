@@ -2165,6 +2165,11 @@ const SF2=(()=>{
   const DEF=Object.assign(new Array(61).fill(0),{8:13500,21:-12000,23:-12000,25:-12000,26:-12000,27:-12000,28:-12000,30:-12000,33:-12000,34:-12000,35:-12000,36:-12000,38:-12000,43:0x7F00,44:0x7F00,46:-1,47:-1,56:100,58:-1});
   // generadores que el preset no suma al instrumento (rangos, direcciones de la muestra, modos…)
   const ABS=new Set([0,1,2,3,4,12,41,43,44,45,46,47,50,53,54,57,58]);
+  // moduladores por defecto del SF2 2.04 [fuente, destino, cantidad, fuente de cantidad, transformación]:
+  // velocidad → atenuación, velocidad → filtro (forma 2.04, la que GeneralUser anula en sus zonas), CC7 volumen y CC11 expresión → atenuación, CC10 → paneo
+  const DEFMOD=[[0x0502,48,960,0,0],[0x0102,8,-2400,0x0D02,0],[0x0587,48,960,0,0],[0x058B,48,960,0,0],[0x028A,17,1000,0,0]];
+  // un modulador idéntico (misma fuente, destino y fuente de cantidad) reemplaza al anterior
+  const modMerge=(base,add)=>{const out=base.slice();for(const m of add){const i=out.findIndex(x=>x[0]===m[0]&&x[1]===m[1]&&x[3]===m[3]);if(i>=0)out[i]=m;else out.push(m)}return out};
   function parse(ab){
     const dv=new DataView(ab),u8=new Uint8Array(ab),id=o=>String.fromCharCode(u8[o],u8[o+1],u8[o+2],u8[o+3]);
     if(ab.byteLength<12||id(0)!=='RIFF'||id(8)!=='sfbk')throw new Error('no es un SoundFont 2');
@@ -2178,34 +2183,54 @@ const SF2=(()=>{
     const inst=recs('inst',22,o=>({name:name(o),bag:dv.getUint16(o+20,true)}));
     const shdr=recs('shdr',46,o=>({start:dv.getUint32(o+20,true),end:dv.getUint32(o+24,true),ls:dv.getUint32(o+28,true),le:dv.getUint32(o+32,true),
       rate:dv.getUint32(o+36,true),root:u8[o+40],corr:dv.getInt8(o+41)}));
-    const bags=k=>recs(k,4,o=>dv.getUint16(o,true)), gens=k=>recs(k,4,o=>[dv.getUint16(o,true),dv.getInt16(o+2,true)]);
+    const bags=k=>recs(k,4,o=>[dv.getUint16(o,true),dv.getUint16(o+2,true)]), gens=k=>recs(k,4,o=>[dv.getUint16(o,true),dv.getInt16(o+2,true)]);
+    const mods=k=>ck[k]?recs(k,10,o=>[dv.getUint16(o,true),dv.getUint16(o+2,true),dv.getInt16(o+4,true),dv.getUint16(o+6,true),dv.getUint16(o+8,true)]):[];
     // zonas de cada cabecera; la primera que no apunta a nada (instrumento o muestra) es la global
-    function zones(hdr,bag,gen,term){
+    function zones(hdr,bag,gen,mod,term){
       return hdr.slice(0,-1).map((h,i)=>{
-        let glob={};const zs=[];
+        let glob={g:{},m:[]};const zs=[];
         for(let b=h.bag;b<hdr[i+1].bag&&b+1<bag.length;b++){
           const g={};let ref=-1;
-          for(let j=bag[b];j<bag[b+1]&&j<gen.length;j++){const [op,v]=gen[j];if(op===term){ref=v&0xffff;break}g[op]=v}
-          if(ref>=0)zs.push({g,ref});else if(b===h.bag)glob=g;
+          for(let j=bag[b][0];j<bag[b+1][0]&&j<gen.length;j++){const [op,v]=gen[j];if(op===term){ref=v&0xffff;break}g[op]=v}
+          const m=mod.slice(bag[b][1],bag[b+1][1]).filter(x=>x[0]&&!(x[1]&0x8000)&&!ABS.has(x[1]));
+          if(ref>=0)zs.push({g,m,ref});else if(b===h.bag)glob={g,m};
         }
         return {name:h.name,bank:h.bank,prog:h.prog,glob,zs};
       });
     }
     const c=ck.smpl, sm=c.o&1?new Int16Array(ab.slice(c.o,c.o+(c.len&~1))):new Int16Array(ab,c.o,c.len>>1);
     const range=v=>[v&255,(v>>8)&255];
-    const insts=zones(inst,bags('ibag'),gens('igen'),53).map(I=>({name:I.name,zs:I.zs.filter(z=>shdr[z.ref]).map(z=>{
-      const g=Object.assign(DEF.slice(),I.glob,z.g),[kl,kh]=range(g[43]),[vl,vh]=range(g[44]);return {g,kl,kh,vl,vh,s:shdr[z.ref]}})}));
+    const insts=zones(inst,bags('ibag'),gens('igen'),mods('imod'),53).map(I=>({name:I.name,zs:I.zs.filter(z=>shdr[z.ref]).map(z=>{
+      const g=Object.assign(DEF.slice(),I.glob.g,z.g),[kl,kh]=range(g[43]),[vl,vh]=range(g[44]);
+      return {g,m:modMerge(modMerge(DEFMOD,I.glob.m),z.m),kl,kh,vl,vh,s:shdr[z.ref]}})}));
     const presets=new Map();
-    for(const p of zones(phdr,bags('pbag'),gens('pgen'),41)){
-      const zs=p.zs.filter(z=>insts[z.ref]).map(z=>{const g=Object.assign({},p.glob,z.g),[kl,kh]=range(g[43]??0x7F00),[vl,vh]=range(g[44]??0x7F00);
-        return {g,kl,kh,vl,vh,inst:insts[z.ref]}});
+    for(const p of zones(phdr,bags('pbag'),gens('pgen'),mods('pmod'),41)){
+      const zs=p.zs.filter(z=>insts[z.ref]).map(z=>{const g=Object.assign({},p.glob.g,z.g),[kl,kh]=range(g[43]??0x7F00),[vl,vh]=range(g[44]??0x7F00);
+        return {g,m:modMerge(p.glob.m,z.m),kl,kh,vl,vh,inst:insts[z.ref]}});
       const k=p.bank*128+p.prog; if(!presets.has(k))presets.set(k,{name:p.name,zs});
     }
     return {presets,sm};
   }
   // ---------- voces
   const tc=v=>Math.pow(2,v/1200);                                     // timecents / cents → factor
-  const velAtt=v=>Math.min(960,-400*Math.log10(v/127));               // modulador por defecto: velocidad → atenuación (cóncavo, cB)
+  // fuente de un modulador al tocar la nota: velocidad, tecla o controladores en su valor de arranque
+  const CC0={7:100,10:64,11:127,91:40};
+  const concave=x=>x>=1?1:Math.max(0,Math.min(1,-(5/12)*Math.log10(1-x)));
+  function srcVal(s,key,vel){
+    const ix=s&127,ty=s>>10; let x;
+    if(s&128)x=(CC0[ix]||0)/127;
+    else if(ix===0)return null;                                       // «sin controlador»
+    else x=ix===2?vel/127:ix===3?key/127:ix===14?0.5:ix===16?2/127:0;
+    if(s&256)x=1-x;
+    const f=ty===1?concave:ty===2?(v=>1-concave(1-v)):ty===3?(v=>v>=.5?1:0):(v=>v);
+    if(!(s&512))return f(x);
+    return ty===3?(x>=.5?1:-1):ty===0?2*x-1:x>=.5?f(2*x-1):-f(1-2*x);  // bipolar
+  }
+  function modOut(m,key,vel){
+    const a=srcVal(m[0],key,vel); if(a===null)return 0;
+    const b=m[3]?srcVal(m[3],key,vel):1, v=m[2]*a*(b===null?1:b);
+    return m[4]===2?Math.abs(v):v;
+  }
   function bufOf(s,g){
     const sm=S.font.sm,n=sm.length,st=s.start+g[0]+32768*g[4],en=Math.min(n,s.end+g[1]+32768*g[12]); if(st<0||en-st<2)return null;
     const k=st+':'+en+':'+s.rate; let b=S.buf.get(k); if(b)return b;
@@ -2215,6 +2240,9 @@ const SF2=(()=>{
   }
   function voice(pz,iz,pitch,key,vel,at,dur,o){
     const g=iz.g.slice();for(const op in pz.g)if(!ABS.has(+op))g[op]=(g[op]||0)+pz.g[op];
+    // moduladores del instrumento (con los de por defecto) y del preset, evaluados con la velocidad y la tecla
+    const att0=g[48];for(const L of [iz.m,pz.m])for(const m of L)g[m[1]]=(g[m[1]]||0)+modOut(m,key,vel);
+    const atten=Math.max(0,Math.min(1440,att0*0.4+g[48]-att0));
     const s=iz.s,c=Synth.ctx,b=bufOf(s,g); if(!b)return null;
     const root=g[58]>=0?g[58]:s.root<128?s.root:60, p=g[46]>=0?g[46]:pitch;
     const rate=tc((p-root)*g[56]+g[51]*100+g[52]+s.corr)*(s.rate/b.sampleRate)*(o.rate||1);
@@ -2226,7 +2254,7 @@ const SF2=(()=>{
     if(o.bend!=null)src.playbackRate.exponentialRampToValueAtTime(rate*tc((o.bend-pitch)*g[56]),tRel);
     // volumen: retardo, ataque lineal, sostén, caída lineal en dB hasta el sustain; al soltar, relajación desde donde esté
     const kd=60-key,dl=tc(g[33]),aa=tc(g[34]),hd=tc(g[35]+g[39]*kd),dc=tc(g[36]+g[40]*kd),rl=Math.max(.012,Math.min(5,tc(g[38])));
-    const sc=Math.max(0,g[37]),peak=Math.pow(10,-(Math.max(0,g[48])*0.4+velAtt(vel))/200)*(o.gain||1);
+    const sc=Math.max(0,g[37]),peak=Math.pow(10,-atten/200)*(o.gain||1);
     const sl=sc>=960?peak*1e-4:peak*Math.pow(10,-sc/200),t0=at+dl,t1=t0+aa,t2=t1+hd,t3=t2+dc*Math.min(1,sc/1000);
     const env=c.createGain(),A=env.gain;
     A.setValueAtTime(0,at);
@@ -2237,7 +2265,7 @@ const SF2=(()=>{
     A.setTargetAtTime(0,tRel,rl/11);
     let end=tRel+rl; if(sc>=960)end=Math.min(end,t3+0.02);
     // pasabajos (con la envolvente de modulación, lineal en cents)
-    let head=env; const fc=g[8],fa=g[11];
+    let head=env; const fc=Math.max(1500,Math.min(13500,g[8])),fa=g[11];
     if(fc<13500||fa){
       const f=c.createBiquadFilter(),F=f.frequency,ny=c.sampleRate*0.45,hz=x=>Math.max(20,Math.min(ny,8.176*tc(x)));
       f.type='lowpass';f.Q.value=Math.max(0,g[9])/10-3.01;F.setValueAtTime(hz(fc),at);
@@ -2406,7 +2434,8 @@ const SND=(()=>{
   const SF2G={piano:1,bass:1.15,trumpet:.8,trombone:.85,altosax:.8,tenorsax:.8,voice:.9,choir:.8};
   function sf2Note(n,at){
     const inst=instNote(n),prog=inst==='bass'&&window.PACK&&PACK.S.bass==='bass'?33:PROG[inst];
-    return SF2.note(n.midi,at,lenOf(n,inst),prog,n.part==='melody'?84*(n.vel||1):n.part==='bass'?84:70,n.bend,SF2G[inst]);
+    // GeneralUser abre el filtro del piano con la velocidad (84 ≈ 2 kHz, apagado; 104 ≈ 4 kHz): mf → 104, f → 123
+    return SF2.note(n.midi,at,lenOf(n,inst),prog,n.part==='melody'?104*(n.vel||1):n.part==='bass'?100:90,n.bend,SF2G[inst]);
   }
   // ---------- Web MIDI
   const chOf=n=>n.drum?9:n.staff>=0?Math.min(15,n.staff<9?n.staff:n.staff+1):(n.part==='bass'?13:14);
