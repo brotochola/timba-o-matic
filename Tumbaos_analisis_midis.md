@@ -429,3 +429,58 @@ Los archivos de la herramienta:
 | `motor/05_salida.js` | LilyPond (con la ortografía de cada acorde) y MIDI |
 | `construir.js` | Arma `base_tumbaos.json` y mete motor y base en `index.html` |
 | `informe.js`, `ver.js`, `probar_motor.js` | Informe, visor y crítico |
+
+---
+
+## 11. Segundo corpus: 109 MIDIs de mididb.com
+
+Para contrastar se bajaron los MIDI del género «latino-salsa» de [mididb.com](https://www.mididb.com/genres/latino-salsa-midi/).
+
+**Qué se bajó**
+- El listado tiene 118 temas. Se bajaron 109; los otros 9 dan error en el servidor.
+- 96 traen piano.
+- Por artista hay 97 de salsa, 4 cubanos (Buena Vista, Compay Segundo, Polo Montañez), 1 de timba (Los Van Van, «Disco Azúcar») y 8 de otros géneros (Gloria Estefan, Simón Díaz…).
+- Son versiones cortas, de 2 a 12 kB: en total dan **1036 compases de montuno**, contra 2710 del corpus original.
+
+**Dónde quedó**
+- Los MIDI están en `midis/mididb/`, que el `.gitignore` deja afuera del repositorio.
+- El informe completo está en `analisis_tumbaos/mididb/informe.txt`.
+
+
+
+### 11.1 Qué confirma
+
+| Medida | Corpus original | mididb |
+|---|---|---|
+| Contratiempos atacados | 83–99% | 83–99% (salvo el 4& del lado 3: 67%) |
+| 1 del lado 3 atacado | 19% | 24% |
+| 3 atacado (lado 3 / lado 2) | 22% / 27% | 33% / 39% |
+| Ataques por compás (lado 3 / lado 2) | 5,5 / 5,9 | 5,3 / 5,7 |
+| Anticipo en los cambios de acorde | 56%, en el 4& el 99% | 50%, en el 4& el 95% |
+| Sin volver a atacar el 1 después del anticipo | 79% | 74% |
+| Línea por 3as / 4as | 42% / 21% | 42% / 19% |
+| Cambia de dirección | 67% | 63% |
+| Nota de arriba del acorde | 81% | 86% |
+| Bajo en el 2& y en el 4 | 89–97% y 88–94% | 84–87% y 77–86% |
+
+Las reglas de §0 se sostienen con otro corpus, de otros secuenciadores.
+
+### 11.2 Qué cambia
+
+- **Texturas más simples.**
+  - Menos octavas (43% contra 49%) y más notas sueltas (34%) y acordes llenos (7%).
+  - La izquierda casi nunca toca aparte (65% «nada»).
+  - Más notas repetidas (17% contra 11%).
+  - Son secuencias más esquemáticas.
+- **Registro más grave.** La mediana de la nota de arriba es D5, contra F5.
+- **La clave no siempre está alineada.** De los 31 archivos con clave en la percusión, 18 coinciden con el perfil del piano del corpus original y 13 van al revés (61% de los compases). En el corpus original eran 8 de 10. En secuencias amateur, la clave o el piano «cruzados» son frecuentes; por eso, para saber de qué lado de la clave está cada compás, estos datos valen menos.
+
+### 11.3 Un ejemplo de timba: Los Van Van, «Disco Azúcar»
+
+- Es el único tema de timba (en rigor, songo) de la tanda.
+- **Piano «picado»:** ataca las 8 corcheas, con octavas en el 1, el 2& y el 3, y notas sueltas o séptimas en el resto.
+- **Gancho:** repite el ritmo exacto cada 4 compases.
+- **Izquierda:** toca su propia línea grave, dos octavas abajo.
+- **Anticipos:** anticipa el 68% de los cambios, mitad en el 4 y mitad en el 4&.
+
+Es el tipo de material que falta en la base (ver §9.4).

@@ -93,7 +93,7 @@ ejemplo real del ciclo más común:
    lado 3 [F7] 1&:C4-C5-F5 2:F4-A4 2&:G3-G4-G5 3&:Bb3-Eb4-Bb4-Eb5 4:F3-F4-F5 4&:F3-F4-F5
    lado 2 [Bbsus4] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3:Bb3-Eb4 3&:Bb3-Bb4-Bb5 4:Eb4 4&:A3-A4-A5
 
-=== SALSA (Nueva York, Puerto Rico, Colombia, Venezuela, Perú, Japón)
+=== SALSA
 compases de montuno usados: 2473 (con lado de clave confiable: lado 3 1077, lado 2 1043) · ataques: 14061
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 21  1 95  2| 73  1 99  1| 18  1 88  5| 55  2 84  2|
@@ -154,7 +154,7 @@ ejemplo real del ciclo más común:
    lado 3 [F7] 1&:C4-C5-F5 2:F4-A4 2&:G3-G4-G5 3&:Bb3-Eb4-Bb4-Eb5 4:F3-F4-F5 4&:F3-F4-F5
    lado 2 [Bbsus4] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3:Bb3-Eb4 3&:Bb3-Bb4-Bb5 4:Eb4 4&:A3-A4-A5
 
-=== CUBANO (timba de los 90, Benny Moré)
+=== CUBANO Y TIMBA
 compases de montuno usados: 237 (con lado de clave confiable: lado 3 117, lado 2 120) · ataques: 1385
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  5  1 96  3| 68  2 98  6| 54  1 58  9| 79  2 83  2|

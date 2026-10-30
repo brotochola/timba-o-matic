@@ -13,14 +13,17 @@ const dir = process.argv[2] || path.join(__dirname, '..');
 const outDir = process.argv[3] || __dirname;
 const META = Object.assign(JSON.parse(fs.readFileSync(path.join(__dirname, 'fuentes.json'), 'utf8')), fs.existsSync(path.join(dir, 'fuentes.json')) ? JSON.parse(fs.readFileSync(path.join(dir, 'fuentes.json'), 'utf8')) : {});
 // el informe agrupa en salsa y cubano (la timba cuenta como cubana)
-const TITULOS = Object.fromEntries(Object.entries(META).filter(([k]) => !k.startsWith('_')).map(([k, m]) => [k, [m.titulo || k, m.estilo === 'salsa' ? 'salsa' : 'cubano']]));
+const TITULOS = Object.fromEntries(Object.entries(META).filter(([k]) => !k.startsWith('_')).map(([k, m]) => [k, [m.titulo || k, m.estilo === 'salsa' ? 'salsa' : m.estilo === 'cubano' || m.estilo === 'timba' ? 'cubano' : 'otro']]));
 function analizarArchivo(ruta) {
   const det = TM.analizarDetalle(TM.leerMidi(fs.readFileSync(ruta)), META[path.basename(ruta)] || {});
   return { archivo: path.basename(ruta), ...det, ladoSeguro: det.ladoFuente === 'clave' || det.ladoFuente === 'declarado' };
 }
 const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)) : [];
 const archivos = [...listar(dir), ...listar(path.join(dir, 'midis'))].sort();
-const R = archivos.map(f => { try { return analizarArchivo(f); } catch (e) { console.error(path.basename(f), e.message); return null; } }).filter(Boolean);
+const TODOS = archivos.map(f => { try { return analizarArchivo(f); } catch (e) { console.error(path.basename(f), e.message); return null; } }).filter(Boolean);
+// el informe es del piano: los archivos sin canal de piano se listan aparte
+const SIN_PIANO = TODOS.filter(r => !r.partes.length).map(r => r.archivo);
+const R = TODOS.filter(r => r.partes.length);
 
 const usable = (r, pt, i) => pt.compases[i].tipo === 'montuno' && r.compases[i].grillaOK && r.compases[i].acordes.length > 0;
 const vec = c => { const v = new Array(16).fill(0); for (const a of c.as) v[a.pos] = 1; return v; };
@@ -200,7 +203,7 @@ function acumular(S, r, pt, esPrincipal) {
   }
 }
 
-const porArchivo = {}, global = { salsa: nuevo(), cubano: nuevo(), todo: nuevo() };
+const porArchivo = {}, global = { salsa: nuevo(), cubano: nuevo(), otro: nuevo(), todo: nuevo() };
 for (const r of R) {
   const [titulo, grupo] = TITULOS[r.archivo] || [r.archivo, 'salsa'];
   const S = nuevo();
@@ -283,12 +286,14 @@ P('\nValidación: lado de la clave deducido solo con el ritmo del piano, en los 
 for (const v of validacion) P(`   ${v.archivo.padEnd(34)} acierto ${pct(v.acierto, 1)} en ${v.compases} compases (LLR medio ${v.llrPorCompas.toFixed(2)})`);
 const conf = R.filter(r => r.compases.some(b => b.conflicto)).map(r => `${r.archivo} (${r.compases.filter(b => b.conflicto).length} compases)`);
 P(`Secciones donde el piano va en contra de la clave de la percusión (quedan fuera de las grillas por lado): ${conf.join(', ') || 'ninguna'}`);
+if (SIN_PIANO.length) P('Sin canal de piano (quedan afuera): ' + SIN_PIANO.join(', '));
 P('Lado deducido en los archivos sin clave en la percusión:');
 for (const r of R) if (r.deduccion) P(`   ${r.archivo.padEnd(34)} ${r.deduccion.compases} compases, LLR medio por compás ${r.deduccion.llrPorCompas.toFixed(2)}`);
 
 bloque('TODO EL CORPUS', global.todo, 12);
-bloque('SALSA (Nueva York, Puerto Rico, Colombia, Venezuela, Perú, Japón)', global.salsa, 8);
-bloque('CUBANO (timba de los 90, Benny Moré)', global.cubano, 8);
+bloque('SALSA', global.salsa, 8);
+bloque('CUBANO Y TIMBA', global.cubano, 8);
+if (global.otro.montuno) bloque('OTROS (pop latino, folclore)', global.otro, 4);
 for (const f of Object.keys(porArchivo)) {
   const { titulo, grupo, S, r } = porArchivo[f];
   const clave = r.clave ? `clave de ${r.clave.tipo} en la percusión (nota ${r.clave.instrumento})` : 'sin clave en la percusión: lado deducido del piano';
@@ -301,7 +306,7 @@ fs.writeFileSync(path.join(outDir, 'corpus_tumbaos.json'), JSON.stringify({
   generado: new Date().toISOString().slice(0, 10),
   perfilLado: PF, validacion,
   archivos: Object.fromEntries(Object.entries(porArchivo).map(([f, x]) => [f, { titulo: x.titulo, grupo: x.grupo, tonalidad: x.r.tonalidad, clave: x.r.clave, deduccion: x.r.deduccion || null, montuno: x.S.montuno }])),
-  global: { todo: limpio(global.todo), salsa: limpio(global.salsa), cubano: limpio(global.cubano) }
+  global: { todo: limpio(global.todo), salsa: limpio(global.salsa), cubano: limpio(global.cubano), otro: limpio(global.otro) }
 }));
 console.log(lineas.join('\n'));
 console.error(`\n${R.length} archivos analizados`);
