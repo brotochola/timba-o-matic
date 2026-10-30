@@ -237,6 +237,25 @@ Las frases suelen tener un solo tiempo fuerte y anticiparse en el 4& del lado 3.
 4. **Escribe todo en LilyPond** y lo dibuja.
 5. **Toca la percusión de la marcha.** Usa golpes sueltos de la banda de samples, con capas de dinámica, alternancia de muestras, microtiempos (las congas un poquito atrás, la campana adelante) y paneo de escenario.
 
+### 6.1 El algoritmo nuevo: aprender de una base de MIDIs
+
+En el panel «2 Arreglo» se elige el algoritmo. El clásico es el de arriba: reglas fijas por onda y marcha. El nuevo aprende de la base de MIDIs del panel «3». Los números y el análisis de esa base están en *Qué hace el piano de verdad* (`Tumbaos_analisis_midis.md`).
+
+1. **Elige un tema de la base** y toma de ahí sus células reales de piano: el ritmo y la textura de cada ataque, lado 3 | lado 2. Si la progresión dura 4 compases, el gancho también. Lo repite en cada vuelta, con alguna variación.
+2. **Pone la armonía en cada ataque.** Cuando el acorde cambia, lo anticipa en el 4& con la probabilidad medida: más hacia el lado 3 que hacia el lado 2. Liga el anticipo al 1.
+3. **Busca la línea de arriba.** Cada ataque sortea su función armónica (fundamental, 3a, 5a, 7a, tensión o cromatismo de paso) con las proporciones de la base. Después, una búsqueda en haz elige la nota y premia:
+   - el zigzag por 3as y 4as;
+   - el paso al acorde siguiente;
+   - repetir las mismas notas cuando vuelven los mismos acordes.
+4. **Arma el voicing:** octava, octava con la 3a pegada debajo, díada o acorde. La mano izquierda dobla, va en décimas, en movimiento contrario o ancla, según la fuente o la perilla.
+5. **Bajo y percusión** salen de lo aprendido (ciclos de bajo por rol, juegos completos de percusión por marcha) o de los patrones de esta guía. En presión, muela y despelote, la percusión es la clásica de la marcha.
+6. **Perillas:** densidad, octavas, bloques, semicorcheas, tensiones, cromatismo, saltos, registro, mano izquierda, anticipos, gancho, variación, estilo y anticipo del bajo, intensidad y mezcla de la percusión. La onda elegida las ajusta de una.
+7. **La base crece.** Los MIDIs que se suman en el panel 3 se analizan ahí mismo y se usan al toque. Con «Exportar los míos» y `node analisis_tumbaos/construir.js --importar` pasan a la base del repositorio.
+
+**Lo que los datos corrigen de esta guía.** En §2.2 y §2.3 (marcados **[app]**) la guía decía dos cosas que los datos no confirman:
+- **Octavas en los golpes de clave.** En los MIDI, el 1 del lado 3 y el 3 casi no se atacan: llegan ligados.
+- **El anticipo fuerte en el 4& del lado 3.** El anticipo fuerte es el del final del lado 2. El algoritmo nuevo sigue los datos.
+
 ---
 
 ## 7. La timba en su contexto: identidad, calle y Período Especial

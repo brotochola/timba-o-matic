@@ -1,0 +1,22 @@
+{
+  "_ayuda": "Datos de cada MIDI de la base. Clave: el nombre del archivo. Campos: titulo, estilo (salsa, cubano, timba…), autor, clave ('son 3-2', 'rumba 2-3'…: el compás 1 del MIDI empieza ahí), inicio (compases a saltear antes del 1 de la clave), rol ('auto', 'piano', 'bajo', 'percusion'), acordes ('Am7 D7 | Gmaj7 C+B7…', uno por compás desde el 1), excluir (true para dejarlo afuera).",
+  "1025.mid": { "titulo": "Celia Cruz · Cuba qué lindos son tus paisajes", "estilo": "salsa" },
+  "1026.mid": { "titulo": "Gilberto Santa Rosa · Mix", "estilo": "salsa" },
+  "1117.mid": { "titulo": "Antonio Cartagena · Necesito un amor", "estilo": "salsa" },
+  "1126.mid": { "titulo": "Grupo Niche · Mecánico", "estilo": "salsa" },
+  "1148.mid": { "titulo": "Oscar D'León · Mix", "estilo": "salsa" },
+  "1161.mid": { "titulo": "Orquesta de la Luz · Piano", "estilo": "salsa" },
+  "1165.mid": { "titulo": "Despacito (versión salsa)", "estilo": "salsa" },
+  "1176.mid": { "titulo": "Benny Moré · Cachita", "estilo": "cubano" },
+  "1178.mid": { "titulo": "Héctor Lavoe · Todo tiene su final", "estilo": "salsa", "excluir": true, "nota": "tocado sin click: no se puede alinear" },
+  "1206.mid": { "titulo": "Anaís · Lo que son las cosas", "estilo": "salsa" },
+  "1210.mid": { "titulo": "Grupo Niche · Anamilé", "estilo": "salsa" },
+  "715.mid": { "titulo": "Timba (midistimberos 2017)", "estilo": "timba" },
+  "Joe Arroyo - La Rebeli n.mid": { "titulo": "Joe Arroyo · La Rebelión", "estilo": "salsa" },
+  "Lloraras.mid": { "titulo": "Oscar D'León · Llorarás", "estilo": "salsa" },
+  "Marc Anthony - Vivir mi vida.mid": { "titulo": "Marc Anthony · Vivir mi vida", "estilo": "salsa" },
+  "la bola.mid": { "titulo": "La bola (Int. MIDI Hits 1998)", "estilo": "timba" },
+  "la mtiad de la havana.mid": { "titulo": "La mitad de La Habana (Int. MIDI Hits 1998)", "estilo": "timba" },
+  "Soy normal natural.mid": { "titulo": "Soy normal, natural (Int. MIDI Hits 1998)", "estilo": "timba" },
+  "ya empezo la fiesta.mid": { "titulo": "Ya empezó la fiesta (Int. MIDI Hits 1998)", "estilo": "timba" }
+}

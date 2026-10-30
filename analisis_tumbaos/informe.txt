@@ -25,44 +25,44 @@ Lado deducido en los archivos sin clave en la percusión:
    ya empezo la fiesta.mid            23 compases, LLR medio por compás 0.02
 
 === TODO EL CORPUS
-compases de montuno usados: 2660 (con lado de clave confiable: lado 3 1168, lado 2 1139) · ataques: 15186
+compases de montuno usados: 2710 (con lado de clave confiable: lado 3 1194, lado 2 1163) · ataques: 15446
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
-ataques lado 3  | 18  1 95  2| 72  1 99  1| 22  1 85  5| 58  2 83  2|
-ataques lado 2  | 61  1 66  2| 90  1 94  1| 27  1 93  2| 53  1 96  1|
-octavas lado 3  | 71 43 54 20| 38  0 76 36| 63 27 58  0| 52  0 64 32|   (% de los ataques de esa posición que son octava)
-octavas lado 2  | 77 20 57  4| 52  0 76 11| 52 31 59 14| 34  0 79  0|
-una sola nota 3 | 73100 51 96| 66 89 71 93| 80 87 41 79| 65 96 69 88|   (% de ataques con una sola clase de nota: nota suelta u octava)
-una sola nota 2 | 74100 65 65| 63100 75 89| 54 92 47 95| 74100 72100|
-bloque 2+ lado 3| 27  0 49  4| 34 11 29  7| 20 13 59 21| 35  4 31 12|   (% de ataques con 2 o más notas distintas del acorde)
-bloque 2+ lado 2| 26  0 35 35| 37  0 25 11| 46  8 53  5| 26  0 28  0|
-velocidad lado 3|105 85 97 70| 97 88104 93|106 80 98 81|103 76102 90|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
-velocidad lado 2|108 80 97 81| 96 84104 81| 98 78101 68| 93 79104 83|
+ataques lado 3  | 19  1 95  2| 72  1 99  1| 22  1 85  5| 57  2 84  2|
+ataques lado 2  | 60  1 67  2| 90  1 95  1| 27  1 93  2| 52  1 96  1|
+octavas lado 3  | 73 43 54 20| 39  0 76 36| 63 27 59  0| 52  0 65 32|   (% de los ataques de esa posición que son octava)
+octavas lado 2  | 77 20 58  4| 52  0 77 11| 52 31 60 14| 34  0 79  0|
+una sola nota 3 | 71100 51 96| 66 89 71 93| 80 87 41 79| 65 96 69 88|   (% de ataques con una sola clase de nota: nota suelta u octava)
+una sola nota 2 | 74100 66 65| 63100 75 89| 54 92 47 95| 74100 72100|
+bloque 2+ lado 3| 29  0 49  4| 34 11 29  7| 20 13 59 21| 35  4 31 12|   (% de ataques con 2 o más notas distintas del acorde)
+bloque 2+ lado 2| 26  0 34 35| 37  0 25 11| 46  8 53  5| 26  0 28  0|
+velocidad lado 3|106 85 97 70| 97 88104 92|105 80 98 80|103 76102 90|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
+velocidad lado 2|107 80 97 80| 96 83104 81| 98 78101 68| 93 79104 83|
 bajo lado 3     | 20  0 11  0|  9  1 97  0| 25  0  8  1| 88  0 11  0|
 bajo lado 2     | 38  0  3  0| 10  1 89  0| 27  0  3  1| 94  0  7  0|
 ataques por compás: lado 3 5.5, lado 2 5.9 · semicorcheas: 2% de los ataques (en corrida: 2%)
 mano derecha: octava 49% · sola 28% · octava+1 7% · díada 3a 5% · octava+2 3% · acorde 3% · díada 4a 3% · díada 6a 2%
-nota interna de la octava+1, en semitonos debajo de la nota de arriba: 3→30% 4→22% 2→14% 5→13% 1→6% 8→4% 9→4% 10→4%
-mano izquierda: nada 45% · dobla 8va 20% · dobla 2 8vas 12% · nota suelta 8% · décima 8% · acorde/octava propia 6% · dobla lejos 0%
+nota interna de la octava+1, en semitonos debajo de la nota de arriba: 3→30% 4→22% 2→13% 5→12% 1→6% 8→4% 9→4% 10→4%
+mano izquierda: nada 45% · dobla 8va 20% · dobla 2 8vas 12% · nota suelta 9% · décima 8% · acorde/octava propia 6% · dobla lejos 0%
 notas por ataque: 1:13% 2:44% 3:30% 4:9% 5:3% 6:1% 7:0% 8:0%
 registro de la voz de arriba: F4–C#6 (mediana F5) · ámbito por compás (mediana): 10 semitonos
-grado de la nota de arriba · en el tiempo: 5 24% · 1 21% · 3 19% · b3 10% · b7 7% · 11 6% · 9 3%
-                           · a contratiempo: 1 24% · 3 19% · 5 19% · b7 10% · b3 8% · 11 5% · 13 5%
+grado de la nota de arriba · en el tiempo: 5 24% · 1 21% · 3 19% · b3 10% · b7 7% · 11 6% · 9 4%
+                           · a contratiempo: 1 24% · 3 19% · 5 18% · b7 10% · b3 8% · 11 5% · 13 5%
                            · semicorcheas: 1 26% · 5 17% · 3 14% · b3 9% · b7 9% · 9 6% · 11 5%
-                           · en las octavas: 1 25% · 5 20% · 3 17% · b7 9% · b3 8% · 11 4% · 13 4%
-                           · en notas sueltas/díadas: 5 22% · 3 21% · 1 21% · b3 10% · b7 8% · 11 6% · 13 4%
+                           · en las octavas: 1 25% · 5 20% · 3 17% · b7 10% · b3 8% · 11 4% · 13 4%
+                           · en notas sueltas/díadas: 5 22% · 1 21% · 3 21% · b3 10% · b7 8% · 11 6% · 13 4%
 nota de arriba: del acorde 81% · tensión (9, 11, 13) 9% · cromática/alterada 10%
-notas fuera del acorde: escapada (sale saltando) 59% · apoyatura (llega saltando, resuelve por paso) 18% · de paso 12% · bordadura 6% · se repite 5%
-línea (intervalos a la octava): repite 11% · semitono 9% · tono 11% · 3a 43% · 4a 21% · trítono 6% · sube 49% / baja 41% · cambia de dirección en 67%
-intervalos reales más usados (semitonos, + sube): 3:11% 4:8% 0:8% 5:6% -7:6% -12:5% 12:5% -4:5% 2:5% 1:4%
+notas fuera del acorde: escapada (sale saltando) 60% · apoyatura (llega saltando, resuelve por paso) 17% · de paso 12% · bordadura 6% · se repite 4%
+línea (intervalos a la octava): repite 11% · semitono 9% · tono 11% · 3a 42% · 4a 21% · trítono 6% · sube 49% / baja 41% · cambia de dirección en 67%
+intervalos reales más usados (semitonos, + sube): 3:11% 4:8% 0:8% 5:6% -7:6% -12:5% 12:5% -4:5% 2:5% -3:4%
 después de un salto (3a o más, a la octava): vuelve con otro salto 63% · sigue para el mismo lado 30% · vuelve por paso 7%
 de un acorde al siguiente, la voz de arriba: paso (1-2 st) 43% · cuarta o más 26% · tercera 24% · nota común 7%
-cambios de acorde: 2027 · el piano anticipa en 56% (posición: 4& 98%, 4a 1%, 4 1%) · sin volver a atacar el 1: 79%
-   anticipa hacia el lado 3: 72% de 854 · hacia el lado 2: 44% de 894
-compases con dos acordes: 396 · el segundo se anticipa (en el 2&) en 63%
+cambios de acorde: 2069 · el piano anticipa en 56% (posición: 4& 99%, 4a 1%, 4 1%) · sin volver a atacar el 1: 79%
+   anticipa hacia el lado 3: 72% de 874 · hacia el lado 2: 44% de 910
+compases con dos acordes: 392 · el segundo se anticipa (en el 2&) en 63%
 parecido rítmico entre compases (ataques en común): al siguiente 66% · a 2 compases 78% · a 4 compases 80%
    a 2 compases, en la misma posición: misma nota 26% · misma forma transportada al acorde nuevo 14%
-   a 4 compases, en la misma posición: misma nota 45% · misma forma transportada al acorde nuevo 13%
-el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 57% · 2 compases → 18% · 4 compases → 17% · 8 compases → 7% · 1 compás → 1%
+   a 4 compases, en la misma posición: misma nota 44% · misma forma transportada al acorde nuevo 13%
+el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 56% · 2 compases → 20% · 4 compases → 17% · 8 compases → 6% · 1 compás → 1%
 ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = acorde; cada carácter = semicorchea):
    ..d. d.o. ..o. o.o. | ..o. o.o. d.o. x.o.   ×37
    ..d. d.o. ..o. o.o. | o... o.o. ..d. x.o.   ×33
@@ -77,7 +77,7 @@ ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = 
    ..d. d.o. ..dx o.o. | ..o. o.o. ..d. x.o.   ×8
    ..o. o.o. ..o. o.o. | o... o.o. ..o. o.o.   ×8
 los mismos, solo ritmo (x = ataque):
-   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×51
+   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×56
    ..x. x.x. ..x. x.x. | x... x.x. ..x. x.x.   ×48
    ..x. x.x. ..x. ..x. | x.x. x.x. ..x. ..x.   ×44
    ..x. x.x. x... x.x. | x... x.x. ..x. x.x.   ×39
@@ -85,53 +85,53 @@ los mismos, solo ritmo (x = ataque):
    ..x. x.x. ..x. x.x. | x.x. x.x. ..x. x.x.   ×25
    ..x. ..x. ..x. ..x. | x... x.x. ..x. ..x.   ×25
    ..x. ..x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×25
+   x.x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×23
    ..x. x.x. ..x. x.x. | x... x... x.x. x.x.   ×22
    ..x. ..x. ..x. ..x. | ..x. x.x. x.x. x.x.   ×19
    ..x. x.x. x... x... | x... x.x. ..x. ..x.   ×17
-   ..x. x.x. ..x. ..x. | x.x. x.x. ..x. x.x.   ×17
 ejemplo real del ciclo más común:
    lado 3 [F7] 1&:C4-C5-F5 2:F4-A4 2&:G3-G4-G5 3&:Bb3-Eb4-Bb4-Eb5 4:F3-F4-F5 4&:F3-F4-F5
    lado 2 [Bbsus4] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3:Bb3-Eb4 3&:Bb3-Bb4-Bb5 4:Eb4 4&:A3-A4-A5
 
 === SALSA (Nueva York, Puerto Rico, Colombia, Venezuela, Perú, Japón)
-compases de montuno usados: 2423 (con lado de clave confiable: lado 3 1051, lado 2 1019) · ataques: 13801
+compases de montuno usados: 2473 (con lado de clave confiable: lado 3 1077, lado 2 1043) · ataques: 14061
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
-ataques lado 3  | 19  1 95  2| 72  1 99  1| 19  1 88  5| 56  2 84  2|
-ataques lado 2  | 59  1 69  2| 91  1 94  1| 29  1 93  2| 49  1 95  1|
-octavas lado 3  | 72 50 51 23| 34  0 79 71| 59 29 59  0| 56  0 70 35|   (% de los ataques de esa posición que son octava)
-octavas lado 2  | 76 20 57  4| 50  0 76 11| 50 31 57 17| 35  0 79  0|
-una sola nota 3 | 74100 49 95| 63 86 72 86| 83 93 40 86| 68 96 73 87|   (% de ataques con una sola clase de nota: nota suelta u octava)
-una sola nota 2 | 75100 67 63| 61100 74 89| 52 92 48 94| 71100 72100|
-bloque 2+ lado 3| 26  0 51  5| 37 14 28 14| 17  7 60 14| 32  4 27 13|   (% de ataques con 2 o más notas distintas del acorde)
-bloque 2+ lado 2| 25  0 33 38| 39  0 26 11| 48  8 52  6| 29  0 28  0|
-velocidad lado 3|105 81 97 66| 97 81104105|109 79 98 79|103 75102 91|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
-velocidad lado 2|109 80 96 84| 95 84104 81| 98 78101 66| 92 79104 83|
+ataques lado 3  | 21  1 95  2| 73  1 99  1| 18  1 88  5| 55  2 84  2|
+ataques lado 2  | 58  1 70  2| 90  1 94  1| 29  1 93  2| 48  1 96  1|
+octavas lado 3  | 74 50 51 23| 35  0 79 71| 59 29 60  0| 56  0 71 35|   (% de los ataques de esa posición que son octava)
+octavas lado 2  | 76 20 57  4| 50  0 77 11| 50 31 57 17| 35  0 79  0|
+una sola nota 3 | 73100 50 95| 64 86 72 86| 83 93 40 86| 68 96 73 87|   (% de ataques con una sola clase de nota: nota suelta u octava)
+una sola nota 2 | 75100 67 63| 62100 74 89| 52 92 47 94| 71100 72100|
+bloque 2+ lado 3| 27  0 50  5| 36 14 28 14| 17  7 60 14| 32  4 27 13|   (% de ataques con 2 o más notas distintas del acorde)
+bloque 2+ lado 2| 25  0 33 38| 38  0 26 11| 48  8 53  6| 29  0 28  0|
+velocidad lado 3|106 81 97 66| 97 81104104|109 78 98 79|103 74102 90|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
+velocidad lado 2|109 80 97 84| 95 83104 80| 97 78101 66| 92 78104 83|
 bajo lado 3     | 22  0 12  0| 10  0 98  0| 26  0  9  1| 93  0  9  0|
 bajo lado 2     | 34  0  3  0| 10  1 90  0| 29  0  2  1| 94  0  5  0|
 ataques por compás: lado 3 5.5, lado 2 5.9 · semicorcheas: 2% de los ataques (en corrida: 2%)
 mano derecha: octava 48% · sola 28% · octava+1 8% · díada 3a 4% · acorde 3% · octava+2 3% · díada 4a 3% · díada 6a 2%
-nota interna de la octava+1, en semitonos debajo de la nota de arriba: 3→31% 4→22% 2→14% 5→12% 1→5% 8→5% 9→4% 10→4%
-mano izquierda: nada 44% · dobla 8va 19% · dobla 2 8vas 14% · nota suelta 8% · décima 8% · acorde/octava propia 6% · dobla lejos 0%
-notas por ataque: 1:12% 2:44% 3:30% 4:10% 5:3% 6:1% 7:0% 8:0%
+nota interna de la octava+1, en semitonos debajo de la nota de arriba: 3→31% 4→22% 2→13% 5→12% 1→5% 8→4% 9→4% 10→4%
+mano izquierda: nada 44% · dobla 8va 19% · dobla 2 8vas 13% · nota suelta 9% · décima 8% · acorde/octava propia 6% · dobla lejos 0%
+notas por ataque: 1:12% 2:43% 3:30% 4:10% 5:3% 6:1% 7:0% 8:0%
 registro de la voz de arriba: F4–D6 (mediana F5) · ámbito por compás (mediana): 9 semitonos
-grado de la nota de arriba · en el tiempo: 5 26% · 1 21% · 3 19% · b3 10% · b7 7% · 11 6% · 13 3%
-                           · a contratiempo: 1 25% · 5 18% · 3 18% · b7 9% · b3 9% · 11 5% · 13 5%
-                           · semicorcheas: 1 23% · 5 18% · 3 14% · b7 10% · b3 10% · 9 6% · 11 5%
-                           · en las octavas: 1 26% · 5 20% · 3 17% · b7 9% · b3 8% · 11 4% · 13 4%
+grado de la nota de arriba · en el tiempo: 5 26% · 1 21% · 3 19% · b3 10% · b7 7% · 11 6% · 9 3%
+                           · a contratiempo: 1 25% · 5 18% · 3 18% · b7 10% · b3 9% · 11 5% · 13 5%
+                           · semicorcheas: 1 24% · 5 17% · 3 14% · b7 10% · b3 10% · 9 6% · 11 5%
+                           · en las octavas: 1 25% · 5 20% · 3 17% · b7 9% · b3 8% · 11 4% · 13 4%
                            · en notas sueltas/díadas: 5 22% · 1 21% · 3 20% · b3 10% · b7 8% · 11 7% · 13 4%
-nota de arriba: del acorde 81% · tensión (9, 11, 13) 8% · cromática/alterada 10%
-notas fuera del acorde: escapada (sale saltando) 59% · apoyatura (llega saltando, resuelve por paso) 17% · de paso 12% · bordadura 6% · se repite 5%
+nota de arriba: del acorde 81% · tensión (9, 11, 13) 9% · cromática/alterada 10%
+notas fuera del acorde: escapada (sale saltando) 60% · apoyatura (llega saltando, resuelve por paso) 17% · de paso 12% · bordadura 6% · se repite 5%
 línea (intervalos a la octava): repite 11% · semitono 8% · tono 11% · 3a 43% · 4a 21% · trítono 6% · sube 49% / baja 40% · cambia de dirección en 67%
-intervalos reales más usados (semitonos, + sube): 3:11% 0:8% 4:8% 5:6% -12:6% -7:5% -4:5% 12:5% 2:5% -3:5%
-después de un salto (3a o más, a la octava): vuelve con otro salto 63% · sigue para el mismo lado 29% · vuelve por paso 7%
+intervalos reales más usados (semitonos, + sube): 3:11% 0:8% 4:8% 5:6% -7:6% -12:6% 12:5% -4:5% 2:5% -3:5%
+después de un salto (3a o más, a la octava): vuelve con otro salto 64% · sigue para el mismo lado 29% · vuelve por paso 7%
 de un acorde al siguiente, la voz de arriba: paso (1-2 st) 44% · cuarta o más 26% · tercera 24% · nota común 6%
-cambios de acorde: 1826 · el piano anticipa en 54% (posición: 4& 98%, 4a 1%, 4 1%) · sin volver a atacar el 1: 79%
-   anticipa hacia el lado 3: 69% de 756 · hacia el lado 2: 44% de 791
-compases con dos acordes: 383 · el segundo se anticipa (en el 2&) en 63%
-parecido rítmico entre compases (ataques en común): al siguiente 67% · a 2 compases 77% · a 4 compases 80%
+cambios de acorde: 1868 · el piano anticipa en 54% (posición: 4& 98%, 4a 1%, 4 1%) · sin volver a atacar el 1: 79%
+   anticipa hacia el lado 3: 69% de 776 · hacia el lado 2: 44% de 807
+compases con dos acordes: 379 · el segundo se anticipa (en el 2&) en 63%
+parecido rítmico entre compases (ataques en común): al siguiente 67% · a 2 compases 78% · a 4 compases 80%
    a 2 compases, en la misma posición: misma nota 27% · misma forma transportada al acorde nuevo 14%
-   a 4 compases, en la misma posición: misma nota 42% · misma forma transportada al acorde nuevo 14%
-el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 60% · 4 compases → 18% · 2 compases → 15% · 8 compases → 6% · 1 compás → 0%
+   a 4 compases, en la misma posición: misma nota 41% · misma forma transportada al acorde nuevo 13%
+el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 59% · 4 compases → 18% · 2 compases → 17% · 8 compases → 6% · 1 compás → 0%
 ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = acorde; cada carácter = semicorchea):
    ..d. d.o. ..o. o.o. | ..o. o.o. d.o. x.o.   ×37
    ..d. d.o. ..o. o.o. | o... o.o. ..d. x.o.   ×33
@@ -142,14 +142,14 @@ ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = 
    ..o. ..o. ..o. ..o. | ..o. o.o. ..o. ..o.   ×10
    ..o. o.o. ..o. ..o. | o.o. o.o. ..o. ..o.   ×9
 los mismos, solo ritmo (x = ataque):
-   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×51
+   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×56
    ..x. x.x. ..x. x.x. | x... x.x. ..x. x.x.   ×46
    ..x. x.x. ..x. ..x. | x.x. x.x. ..x. ..x.   ×44
    ..x. x.x. ..x. x.x. | ..x. x.x. x.x. x.x.   ×38
    ..x. ..x. ..x. ..x. | x... x.x. ..x. ..x.   ×25
    ..x. ..x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×25
    ..x. x.x. ..x. x.x. | x.x. x.x. ..x. x.x.   ×23
-   ..x. x.x. ..x. x.x. | x... x... x.x. x.x.   ×22
+   x.x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×23
 ejemplo real del ciclo más común:
    lado 3 [F7] 1&:C4-C5-F5 2:F4-A4 2&:G3-G4-G5 3&:Bb3-Eb4-Bb4-Eb5 4:F3-F4-F5 4&:F3-F4-F5
    lado 2 [Bbsus4] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3:Bb3-Eb4 3&:Bb3-Bb4-Bb5 4:Eb4 4&:A3-A4-A5
@@ -215,7 +215,7 @@ ejemplo real del ciclo más común:
    lado 3 [G] 1&:G4-G5 2:A4-A5 2&:G4-D5 3:C#4-C#5-C#6 4:G4-G5-A5 4&:A4-C#5
    lado 2 [Dm7] 1:C4-C5-C6 2:F4-F5 2&:A4-A5 3&:C4-C5-C6 4:F5 4&:B3-B4-B5
 
-=== 1025.mid · Celia Cruz · Cuba qué lindos son tus paisajes · salsa · tonalidad Bb mayor · clave de son en la percusión (nota 75) · piano: canal 2 Acoustic Grand
+=== 1025.mid · Celia Cruz · Cuba qué lindos son tus paisajes · salsa · tonalidad Bb mayor · clave de son en la percusión (nota 75) · piano: canal 2 (programa 0)
 compases de montuno usados: 285 (con lado de clave confiable: lado 3 140, lado 2 145) · ataques: 1875
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  1  0100  5| 86  1 97  1|  1  5 96 29| 91 11 99  8|
@@ -266,57 +266,57 @@ ejemplo real del ciclo más común:
    lado 3 [F7] 1&:C4-C5-F5 2:F4-A4 2&:G3-G4-G5 3&:Bb3-Eb4-Bb4-Eb5 4:F3-F4-F5 4&:F3-F4-F5
    lado 2 [Bbsus4] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3:Bb3-Eb4 3&:Bb3-Bb4-Bb5 4:Eb4 4&:A3-A4-A5
 
-=== 1026.mid · Gilberto Santa Rosa · Mix · salsa · tonalidad D menor · clave de son en la percusión (nota 77) · piano: canal 2 Acoustic Grand, canal 3 Bright Acoustic
-compases de montuno usados: 358 (con lado de clave confiable: lado 3 94, lado 2 98) · ataques: 1979
+=== 1026.mid · Gilberto Santa Rosa · Mix · salsa · tonalidad G mayor · clave de son en la percusión (nota 77) · piano: canal 2 (programa 0), canal 3 (programa 1)
+compases de montuno usados: 408 (con lado de clave confiable: lado 3 120, lado 2 122) · ataques: 2239
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
-ataques lado 3  | 16  0 94  0| 72  0 99  0| 14  0 91  0| 39  0 96  1|
-ataques lado 2  | 47  0 55  0| 84  0 99  0| 27  0 90  0| 33  0 89  0|
-octavas lado 3  | 33  0 74  0| 60  0 80  0| 54  0 56  0|  3  0 54  0|   (% de los ataques de esa posición que son octava)
-octavas lado 2  | 83  0 69  0| 49  0 75  0| 50  0 67  0| 28  0 86  0|
-una sola nota 3 | 87  0 68  0| 91  0 76  0| 77  0 26  0| 81  0 81  0|   (% de ataques con una sola clase de nota: nota suelta u octava)
-una sola nota 2 | 87  0 89  0| 63  0 78  0| 92  0 43  0| 75  0 91  0|
-bloque 2+ lado 3| 13  0 32  0|  9  0 24  0| 23  0 74  0| 19  0 19  0|   (% de ataques con 2 o más notas distintas del acorde)
-bloque 2+ lado 2| 13  0 11  0| 37  0 22  0|  8  0 57  0| 25  0  9  0|
-velocidad lado 3|111  0 95  0| 95  0102  0|106  0 96  0|104  0105  0|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
-velocidad lado 2|107  0 97  0| 95  0100  0|107  0 96  0| 99  0105  0|
+ataques lado 3  | 28  0 94  0| 78  0 99  0| 12  0 92  0| 33  0 97  1|
+ataques lado 2  | 38  0 64  0| 80  0 99  0| 21  0 92  0| 26  0 91  0|
+octavas lado 3  | 68  0 68  0| 62  0 82  0| 57  0 59  0|  3  0 64  0|   (% de los ataques de esa posición que son octava)
+octavas lado 2  | 83  0 69  0| 51  0 79  0| 50  0 70  0| 28  0 88  0|
+una sola nota 3 | 71  0 67  0| 87  0 74  0| 71  0 26  0| 79  0 78  0|   (% de ataques con una sola clase de nota: nota suelta u octava)
+una sola nota 2 | 87  0 82  0| 69  0 78  0| 92  0 40  0| 75  0 86  0|
+bloque 2+ lado 3| 29  0 33  0| 13  0 26  0| 29  0 74  0| 21  0 22  0|   (% de ataques con 2 o más notas distintas del acorde)
+bloque 2+ lado 2| 13  0 18  0| 31  0 22  0|  8  0 60  0| 25  0 14  0|
+velocidad lado 3|111  0 95  0| 96  0102  0|102  0 98  0|100  0105  0|   (100 = velocidad media; muestra los acentos si el MIDI los tiene)
+velocidad lado 2|103  0 98  0| 95  0102  0|103  0 98  0| 95  0106  0|
 bajo lado 3     | 11  0  0  0|  1  0 99  0| 16  0  6  0| 93  0  9  0|
 bajo lado 2     | 29  0  0  0| 13  0 88  0| 20  0  2  0| 99  0  2  0|
-ataques por compás: lado 3 5.2, lado 2 5.2 · semicorcheas: 1% de los ataques (en corrida: 0%)
-mano derecha: octava 46% · sola 28% · díada 6a 6% · octava+2 6% · octava+1 5% · díada 3a 5% · acorde 2% · díada 4a 1%
-nota interna de la octava+1, en semitonos debajo de la nota de arriba: 4→24% 9→15% 3→14% 10→12% 7→8% 8→8% 2→7% 11→7%
-mano izquierda: nada 67% · dobla 8va 13% · décima 8% · nota suelta 8% · acorde/octava propia 2% · dobla 2 8vas 2%
-notas por ataque: 1:19% 2:49% 3:22% 4:6% 5:3% 6:1% 7:0%
-registro de la voz de arriba: Eb4–B5 (mediana C#5) · ámbito por compás (mediana): 9 semitonos
-grado de la nota de arriba · en el tiempo: 5 28% · 1 23% · 3 16% · b3 11% · b7 7% · 11 3% · 9 3%
-                           · a contratiempo: 1 25% · 5 18% · 3 16% · b7 11% · b3 8% · 13 5% · 9 4%
-                           · en las octavas: 1 30% · 5 19% · 3 14% · b7 11% · b3 6% · 13 5% · 9 3%
-                           · en notas sueltas/díadas: 5 26% · 3 18% · 1 17% · b3 13% · b7 8% · 9 4% · 11 4%
-nota de arriba: del acorde 81% · tensión (9, 11, 13) 9% · cromática/alterada 10%
-notas fuera del acorde: escapada (sale saltando) 51% · de paso 18% · apoyatura (llega saltando, resuelve por paso) 17% · bordadura 9% · se repite 5%
-línea (intervalos a la octava): repite 6% · semitono 10% · tono 10% · 3a 44% · 4a 26% · trítono 4% · sube 49% / baja 45% · cambia de dirección en 64%
-intervalos reales más usados (semitonos, + sube): 3:9% -5:9% -4:6% 4:6% -7:6% 1:6% 9:5% 5:5% -3:5% 7:5%
-después de un salto (3a o más, a la octava): vuelve con otro salto 62% · sigue para el mismo lado 31% · vuelve por paso 6%
-de un acorde al siguiente, la voz de arriba: paso (1-2 st) 34% · cuarta o más 32% · tercera 32% · nota común 3%
-cambios de acorde: 221 · el piano anticipa en 52% (posición: 4& 98%, 4 2%) · sin volver a atacar el 1: 91%
-   anticipa hacia el lado 3: 79% de 48 · hacia el lado 2: 42% de 73
-compases con dos acordes: 24 · el segundo se anticipa (en el 2&) en 75%
-parecido rítmico entre compases (ataques en común): al siguiente 71% · a 2 compases 76% · a 4 compases 74%
-   a 2 compases, en la misma posición: misma nota 15% · misma forma transportada al acorde nuevo 13%
-   a 4 compases, en la misma posición: misma nota 11% · misma forma transportada al acorde nuevo 14%
-el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 81% · 8 compases → 12% · 2 compases → 4% · 1 compás → 3%
+ataques por compás: lado 3 5.3, lado 2 5.1 · semicorcheas: 1% de los ataques (en corrida: 0%)
+mano derecha: octava 48% · sola 27% · octava+1 6% · díada 6a 5% · octava+2 5% · díada 3a 5% · acorde 2% · díada 4a 1%
+nota interna de la octava+1, en semitonos debajo de la nota de arriba: 4→26% 3→19% 7→13% 9→12% 10→9% 8→6% 2→5% 11→5%
+mano izquierda: nada 63% · dobla 8va 15% · nota suelta 10% · décima 8% · acorde/octava propia 3% · dobla 2 8vas 2%
+notas por ataque: 1:18% 2:46% 3:26% 4:6% 5:3% 6:1% 7:0%
+registro de la voz de arriba: Eb4–B5 (mediana D5) · ámbito por compás (mediana): 9 semitonos
+grado de la nota de arriba · en el tiempo: 5 29% · 1 22% · 3 14% · b3 11% · b7 8% · 9 4% · 11 3%
+                           · a contratiempo: 1 24% · 5 18% · 3 15% · b7 12% · b3 8% · 13 6% · 9 5%
+                           · en las octavas: 1 28% · 5 18% · 3 14% · b7 13% · b3 6% · 13 5% · 9 4%
+                           · en notas sueltas/díadas: 5 26% · 1 17% · 3 16% · b3 13% · b7 8% · 11 5% · 9 5%
+nota de arriba: del acorde 81% · tensión (9, 11, 13) 11% · cromática/alterada 9%
+notas fuera del acorde: escapada (sale saltando) 55% · de paso 17% · apoyatura (llega saltando, resuelve por paso) 17% · bordadura 8% · se repite 4%
+línea (intervalos a la octava): repite 7% · semitono 9% · tono 10% · 3a 43% · 4a 27% · trítono 4% · sube 50% / baja 44% · cambia de dirección en 64%
+intervalos reales más usados (semitonos, + sube): 3:11% -5:8% -7:7% 4:6% -4:6% 1:5% -3:5% 7:5% 2:5% 9:5%
+después de un salto (3a o más, a la octava): vuelve con otro salto 64% · sigue para el mismo lado 31% · vuelve por paso 6%
+de un acorde al siguiente, la voz de arriba: paso (1-2 st) 35% · cuarta o más 32% · tercera 29% · nota común 4%
+cambios de acorde: 263 · el piano anticipa en 54% (posición: 4& 99%, 4 1%) · sin volver a atacar el 1: 87%
+   anticipa hacia el lado 3: 76% de 68 · hacia el lado 2: 47% de 89
+compases con dos acordes: 20 · el segundo se anticipa (en el 2&) en 70%
+parecido rítmico entre compases (ataques en común): al siguiente 73% · a 2 compases 78% · a 4 compases 76%
+   a 2 compases, en la misma posición: misma nota 14% · misma forma transportada al acorde nuevo 12%
+   a 4 compases, en la misma posición: misma nota 9% · misma forma transportada al acorde nuevo 13%
+el ritmo se repite cada (pesado por largo de la sección): sin repetición clara → 70% · 2 compases → 17% · 8 compases → 10% · 1 compás → 3%
 ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = acorde; cada carácter = semicorchea):
    ..o. o.o. ..o. ..o. | ..o. o.o. ..o. ..o.   ×7
-   ..o. o.o. ..o. ..x. | o.o. o.o. ..a. ..o.   ×3
-   ..o. o.o. ..o. x.x. | o... o.o. ..o. ..o.   ×3
+   o.o. o.o. ..o. ..o. | ..o. o.o. ..o. ..o.   ×5
+   ..x. o.o. ..o. ..o. | ..o. o.o. ..o. ..o.   ×5
 los mismos, solo ritmo (x = ataque):
-   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×17
+   ..x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×22
+   x.x. x.x. ..x. ..x. | ..x. x.x. ..x. ..x.   ×11
    ..x. x.x. ..x. x.x. | x... x.x. ..x. ..x.   ×7
-   ..x. ..x. ..x. x.x. | x... x.x. ..x. ..x.   ×5
 ejemplo real del ciclo más común:
    lado 3 [F] 1&:A3-A4 2:C4-C5 2&:F3-F4 3&:A3-C4-F4-A4 4&:Eb3-Eb4
    lado 2 [Eb] 1&:F#3-G3-G4 2:Bb3-Bb4 2&:Eb3-Eb4 3&:G3-Bb3-Eb4-G4-Bb4 4&:F3-F4
 
-=== 1117.mid · Antonio Cartagena · Necesito un amor · salsa · tonalidad F mayor · clave de son en la percusión (nota 76) · piano: canal 2 Bright Acoustic
+=== 1117.mid · Antonio Cartagena · Necesito un amor · salsa · tonalidad F mayor · clave de son en la percusión (nota 76) · piano: canal 2 (programa 1)
 compases de montuno usados: 131 (con lado de clave confiable: lado 3 67, lado 2 64) · ataques: 767
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  4  0100  0| 91  0100  0|  4  0 94  0| 75  0 93  0|
@@ -366,7 +366,7 @@ ejemplo real del ciclo más común:
    lado 3 [F] 1&:C4-F5 2:F4-A5 2&:A3-C5-C6 3&:A5 4:C4-E5-E6 4&:C4-E5-E6
    lado 2 [C] 1:C4-E5-E6 2:E4-G4-G5-C6 3:C4-E5-E6 3&:E4-G5 4:G4-C6 4&:Bb3-D5-D6
 
-=== 1126.mid · Grupo Niche · Mecánico · salsa · tonalidad G menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 Acoustic Grand
+=== 1126.mid · Grupo Niche · Mecánico · salsa · tonalidad G menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 (programa 0)
 compases de montuno usados: 184 (con lado de clave confiable: lado 3 91, lado 2 93) · ataques: 1016
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 18  0 97  1| 89  0 98  0| 11  0 99  0| 54  0 68  0|
@@ -416,7 +416,7 @@ ejemplo real del ciclo más común:
    lado 3 [Gm] 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3&:Bb3-D4-Bb4-D5 4&:Bb3-Bb4-Bb5
    lado 2 [Cm7+F7] 1:Bb3-Bb4-Bb5 2:Eb4-G4-Eb5 2&:A3-A4-A5 3&:Eb4-F4-Eb5-F5 4&:A3-A4-A5
 
-=== 1148.mid · Oscar D'León · Mix · salsa · tonalidad C mayor · clave de son en la percusión (nota 75) · piano: canal 2 Bright Acoustic
+=== 1148.mid · Oscar D'León · Mix · salsa · tonalidad C mayor · clave de son en la percusión (nota 75) · piano: canal 2 (programa 1)
 compases de montuno usados: 354 (con lado de clave confiable: lado 3 183, lado 2 171) · ataques: 1843
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 14  0 91  1| 71  0100  0| 24  0 81  0| 50  1 82  2|
@@ -466,7 +466,7 @@ ejemplo real del ciclo más común:
    lado 3 [D] 1&:A3-A5 2:C4-C6 2&:F#3-F#5 3:F#3-F#5 4:F#3-F#5
    lado 2 [Gm] 1:G3-G5 2:Bb3-Bb5 2&:D4-D6 3&:G3-G5 4&:F3-F5
 
-=== 1161.mid · Orquesta de la Luz · Piano · salsa · tonalidad A menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 Bright Acoustic
+=== 1161.mid · Orquesta de la Luz · Piano · salsa · tonalidad A menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 (programa 1)
 compases de montuno usados: 128 (con lado de clave confiable: lado 3 62, lado 2 66) · ataques: 728
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 11  2 87  3| 58  2100  2| 18  3 87  2| 92  3 89  2|
@@ -517,7 +517,7 @@ ejemplo real del ciclo más común:
    lado 3 [Dsus4] 1&:D4-D5 2:G4-G5 2&:A4-A5 3&:G4-G5 4:D4-D5 4&:G4-G5
    lado 2 [Bm] 1:B4-B5 2:E4-E5 2&:B4-B5 3&:E4-E5 4:G4-G5 4&:Bb4-Bb5
 
-=== 1165.mid · Despacito (versión salsa) · salsa · tonalidad G mayor · clave de son en la percusión (nota 76) · piano: canal 2 Electric Grand
+=== 1165.mid · Despacito (versión salsa) · salsa · tonalidad G mayor · clave de son en la percusión (nota 76) · piano: canal 2 (programa 2)
 compases de montuno usados: 154 (con lado de clave confiable: lado 3 92, lado 2 62) · ataques: 921
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 67  0 93  0| 63  0100  0| 24  0 98  0| 52  0 64  0|
@@ -567,7 +567,7 @@ ejemplo real del ciclo más común:
    lado 3 [Am] 2:C#5 2&:Ab3-Ab4-Ab5 3&:C4-E4-C5-E5 4&:G3-G4-G5
    lado 2 [Am7] 1&:C4-C5 2:E5 2&:A3-A4-A5 3&:C4-E4-A4-C5-E5 4&:G4-G5
 
-=== 1176.mid · Benny Moré · Cachita · cubano · tonalidad G mayor · clave de rumba en la percusión (nota 76) · piano: canal 2 Acoustic Grand
+=== 1176.mid · Benny Moré · Cachita · cubano · tonalidad G mayor · clave de rumba en la percusión (nota 76) · piano: canal 2 (programa 0)
 compases de montuno usados: 156 (con lado de clave confiable: lado 3 74, lado 2 82) · ataques: 928
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  0  0100  0| 77  0100  3| 64  0 36 11| 92  3 86  0|
@@ -617,7 +617,7 @@ ejemplo real del ciclo más común:
    lado 3 [G] 1&:G4-G5 2:A4-A5 2&:G4-D5 3:C#4-C#5-C#6 4:G4-G5-A5 4&:A4-C#5
    lado 2 [Dm7] 1:C4-C5-C6 2:F4-F5 2&:A4-A5 3&:C4-C5-C6 4:F5 4&:B3-B4-B5
 
-=== 1178.mid · Héctor Lavoe · Todo tiene su final · salsa · tonalidad B mayor · sin clave en la percusión: lado deducido del piano · piano: canal 2 Bright Acoustic
+=== 1178.mid · Héctor Lavoe · Todo tiene su final · salsa · tonalidad B mayor · sin clave en la percusión: lado deducido del piano · piano: canal 2 (programa 1)
 compases de montuno usados: 9 (con lado de clave confiable: lado 3 5, lado 2 4) · ataques: 52
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 60  0 60  0|100  0100  0| 20  0 60  0| 80  0 60  0|
@@ -655,7 +655,7 @@ parecido rítmico entre compases (ataques en común): al siguiente - · a 2 comp
 ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = acorde; cada carácter = semicorchea):
 los mismos, solo ritmo (x = ataque):
 
-=== 1206.mid · Anaís · Lo que son las cosas · salsa · tonalidad F# mayor · clave de son en la percusión (nota 76) · piano: canal 2 Electric Grand
+=== 1206.mid · Anaís · Lo que son las cosas · salsa · tonalidad F# mayor · clave de son en la percusión (nota 76) · piano: canal 2 (programa 2)
 compases de montuno usados: 86 (con lado de clave confiable: lado 3 45, lado 2 41) · ataques: 471
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 18  0100  0| 93  0100  0|  2  0 98  0| 11  0 91  0|
@@ -705,7 +705,7 @@ ejemplo real del ciclo más común:
    lado 3 [C#7] 1&:B3-B4 2:Eb4-Eb5 2&:F3-F4-F5 3&:B3-C#4-F4-B4 4&:F3-F4-F5
    lado 2 [F#] 1:F#3-F#4-F#5 1&:Bb3-Bb4 2:C#4-C#5 2&:F#3-F#4-F#5 3&:Bb3-C#4-Bb4-C#5 4&:F#3-F#4-F#5
 
-=== 1210.mid · Grupo Niche · Anamilé · salsa · tonalidad C# menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 Bright Acoustic
+=== 1210.mid · Grupo Niche · Anamilé · salsa · tonalidad C# menor · sin clave en la percusión: lado deducido del piano · piano: canal 2 (programa 1)
 compases de montuno usados: 179 (con lado de clave confiable: lado 3 87, lado 2 92) · ataques: 940
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 18  0 86  1| 74  0 95  2|  9  1 94  3| 30  0 91  0|
@@ -755,7 +755,7 @@ ejemplo real del ciclo más común:
    lado 3 [C#sus4] 1&:C#4-C#5 2:A3 2&:F#3-F#4-F#5 3&:F#3-F#4-F#5 4&:F#3-F#4-F#5
    lado 2 [C#sus4] 1&:C#4-C#5 2:A4 2&:F#3-F#4 3&:F#3-C#4-A4-C#5 4&:F#3-F#4
 
-=== 715.mid · Timba (midistimberos 2017) · cubano · tonalidad G menor · clave de son en la percusión (nota 76) · piano: canal 1 Bright Acoustic
+=== 715.mid · Timba (midistimberos 2017) · cubano · tonalidad G menor · clave de son en la percusión (nota 76) · piano: canal 1 (programa 1)
 compases de montuno usados: 6 (con lado de clave confiable: lado 3 2, lado 2 4) · ataques: 34
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  0  0100  0| 50  0100  0|  0  0100 50|100  0100  0|
@@ -802,7 +802,7 @@ ejemplo real del ciclo más común:
    lado 3 [Cm] 1&:C4-C5 2:Eb4-Eb5 2&:G3-G4-G5 3&:G3-G4-G5 4:C4-C5 4&:Eb4-Eb5
    lado 2 [Dsus4] 1:G3-G4-G5 1&:Bb3-Bb4 2:D4-D5 2&:G3-G4-G5 3&:Bb3-D4-Bb4-D5 4&:F#3-F#4
 
-=== Joe Arroyo - La Rebeli n.mid · Joe Arroyo · La Rebelión · salsa · tonalidad C menor · clave de son en la percusión (nota 75) · piano: canal 2 Electric Grand
+=== Joe Arroyo - La Rebeli n.mid · Joe Arroyo · La Rebelión · salsa · tonalidad C menor · clave de son en la percusión (nota 75) · piano: canal 2 (programa 2)
 compases de montuno usados: 242 (con lado de clave confiable: lado 3 122, lado 2 120) · ataques: 1480
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 25  4 98  6| 61  4100  0| 25  3 98  5| 39  3 98  2|
@@ -853,7 +853,7 @@ ejemplo real del ciclo más común:
    lado 3 [Cm] 1&:C4-Eb4-C5-Eb5 2&:Ab3-Ab4-C#5-Ab5 3&:C4-Eb4-C5-Eb5 4&:Bb3-D5-D6
    lado 2 [Bb] 1&:D4-F5 2:F4-Bb5 2&:Ab3-C5-C6 3&:D4-F4-C5-F5-Bb5 4&:F3-Bb4-Bb5
 
-=== Lloraras.mid · Oscar D'León · Llorarás · salsa · tonalidad A menor · clave de son en la percusión (nota 77) · piano: canal 1 Acoustic Grand
+=== Lloraras.mid · Oscar D'León · Llorarás · salsa · tonalidad A menor · clave de son en la percusión (nota 77) · piano: canal 1 (programa 0)
 compases de montuno usados: 187 (con lado de clave confiable: lado 3 0, lado 2 0) · ataques: 1092
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  0  0  0  0|  0  0  0  0|  0  0  0  0|  0  0  0  0|
@@ -893,7 +893,7 @@ el ritmo se repite cada (pesado por largo de la sección): sin repetición clara
 ciclos lado 3 | lado 2 más comunes (o = octava, x = nota sola, d = díada, a = acorde; cada carácter = semicorchea):
 los mismos, solo ritmo (x = ataque):
 
-=== Marc Anthony - Vivir mi vida.mid · Marc Anthony · Vivir mi vida · salsa · tonalidad Eb mayor · sin clave en la percusión: lado deducido del piano · piano: canal 1 Bright Acoustic
+=== Marc Anthony - Vivir mi vida.mid · Marc Anthony · Vivir mi vida · salsa · tonalidad Eb mayor · sin clave en la percusión: lado deducido del piano · piano: canal 1 (programa 1)
 compases de montuno usados: 126 (con lado de clave confiable: lado 3 63, lado 2 63) · ataques: 637
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 24  0100  5| 32  0 94  5| 83  0 17  0| 71  0 29  5|
@@ -942,7 +942,7 @@ ejemplo real del ciclo más común:
    lado 3 [Cm] 1&:C4-Eb4-G4-C5-Eb5 2&:Eb3-Eb4-Eb5 3:G3-G4-G5 4:C4-Eb4-G4-C5-Eb5
    lado 2 [Cm7] 1:G3-G4-G5 1&:C4-C5 2:Eb4-Eb5 2&:Bb3-Bb4-Bb5 3:Bb3-Bb4-Bb5 4&:Ab3-Ab4-Ab5
 
-=== Soy normal natural.mid · Soy normal, natural (Int. MIDI Hits 1998) · cubano · tonalidad G mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 Bright Acoustic
+=== Soy normal natural.mid · Soy normal, natural (Int. MIDI Hits 1998) · cubano · tonalidad G mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 (programa 1)
 compases de montuno usados: 20 (con lado de clave confiable: lado 3 11, lado 2 9) · ataques: 119
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  9  9 82 18| 73  9 91  9| 18  0100  9| 82  0 73  9|
@@ -991,7 +991,7 @@ ejemplo real del ciclo más común:
    lado 3 [G] 1&:B3-B4 2&:D3-D4 3&:E3-E4 4:G3-G4 4&:G3-G4
    lado 2 [G+A] 1&:B3-B4 2&:A3-A4 3&:C#4-C#5 4:B3-B4 4&:G3-G4
 
-=== la bola.mid · La bola (Int. MIDI Hits 1998) · cubano · tonalidad Ab mayor · sin clave en la percusión: lado deducido del piano · piano: canal 11 Bright Acoustic
+=== la bola.mid · La bola (Int. MIDI Hits 1998) · cubano · tonalidad Ab mayor · sin clave en la percusión: lado deducido del piano · piano: canal 11 (programa 1)
 compases de montuno usados: 26 (con lado de clave confiable: lado 3 13, lado 2 13) · ataques: 128
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  8  0100  0|  8  0100  0|100  0100  0|  0  0 54  8|
@@ -1039,7 +1039,7 @@ ejemplo real del ciclo más común:
    lado 3 [C#] 1&:F4-Ab4-Ab5-C#6 2&:C4-E5 3:C#4-F5 3&:F4-Ab4-Ab5-C#6 4&:Bb3-Eb5
    lado 2 [Eb] 1&:Eb4-G4-G5-Bb5 2&:Bb3-Eb5 3&:Eb4-G4-G5-Bb5 4&:Ab4-C6
 
-=== la mtiad de la havana.mid · La mitad de La Habana (Int. MIDI Hits 1998) · cubano · tonalidad F mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 Bright Acoustic
+=== la mtiad de la havana.mid · La mitad de La Habana (Int. MIDI Hits 1998) · cubano · tonalidad F mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 (programa 1)
 compases de montuno usados: 6 (con lado de clave confiable: lado 3 5, lado 2 1) · ataques: 28
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  |  0  0 60 20| 20 20 80 20| 20 20 80  0| 40  0 80  0|
@@ -1082,7 +1082,7 @@ ejemplo real del ciclo más común:
    lado 3 [Gm7] 2&:F3-F4-F5 3&:F#3-F#4-F#5 4:G3-G4 4&:Ab3-Ab4-Ab5
    lado 2 [Bbm7] 1&:C#4-F4-C#5-F5 2&:Ab3-Ab4 3:Ab3-Ab4-Ab5 3&:C#4-F4-C#5-F5 4&:G3-G4-G5
 
-=== ya empezo la fiesta.mid · Ya empezó la fiesta (Int. MIDI Hits 1998) · cubano · tonalidad D mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 Bright Acoustic
+=== ya empezo la fiesta.mid · Ya empezó la fiesta (Int. MIDI Hits 1998) · cubano · tonalidad D mayor · sin clave en la percusión: lado deducido del piano · piano: canal 9 (programa 1)
 compases de montuno usados: 23 (con lado de clave confiable: lado 3 12, lado 2 11) · ataques: 148
 posición →        1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
 ataques lado 3  | 33  0 92  0| 92  0100 25|  0  0 92  8|100  0100  0|

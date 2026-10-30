@@ -1,28 +1,26 @@
 /* =====================================================================
    Informe de tumbaos: analiza todos los MIDI de una carpeta y junta las estadísticas del piano
    uso: node informe.js [carpeta con .mid] [carpeta de salida]
-   salida: informe.txt (números), corpus_tumbaos.json (estadísticas + biblioteca de ciclos A|B)
+   lee los .mid de la carpeta y de su subcarpeta midis/, con los datos de fuentes.json
+   salida: informe.txt (números) y corpus_tumbaos.json (las mismas estadísticas en JSON);
+   los ciclos reales que usa el generador los arma construir.js en base_tumbaos.json
    ===================================================================== */
 const fs = require('fs'), path = require('path');
-const { analizarArchivo, nom, pc, GRADO } = require('./analizar.js');
+const TM = require('./motor');
+const { nom, pc, GRADO } = TM;
 
 const dir = process.argv[2] || path.join(__dirname, '..');
 const outDir = process.argv[3] || __dirname;
-const TITULOS = {
-  '1025.mid': ['Celia Cruz · Cuba qué lindos son tus paisajes', 'salsa'], '1026.mid': ['Gilberto Santa Rosa · Mix', 'salsa'],
-  '1117.mid': ['Antonio Cartagena · Necesito un amor', 'salsa'], '1126.mid': ['Grupo Niche · Mecánico', 'salsa'],
-  '1148.mid': ['Oscar D\'León · Mix', 'salsa'], '1161.mid': ['Orquesta de la Luz · Piano', 'salsa'],
-  '1165.mid': ['Despacito (versión salsa)', 'salsa'], '1176.mid': ['Benny Moré · Cachita', 'cubano'],
-  '1178.mid': ['Héctor Lavoe · Todo tiene su final', 'salsa'], '1206.mid': ['Anaís · Lo que son las cosas', 'salsa'],
-  '1210.mid': ['Grupo Niche · Anamilé', 'salsa'], '715.mid': ['Timba (midistimberos 2017)', 'cubano'],
-  'Joe Arroyo - La Rebeli n.mid': ['Joe Arroyo · La Rebelión', 'salsa'], 'Lloraras.mid': ['Oscar D\'León · Llorarás', 'salsa'],
-  'Marc Anthony - Vivir mi vida.mid': ['Marc Anthony · Vivir mi vida', 'salsa'],
-  'la bola.mid': ['La bola (Int. MIDI Hits 1998)', 'cubano'], 'la mtiad de la havana.mid': ['La mitad de La Habana (Int. MIDI Hits 1998)', 'cubano'],
-  'Soy normal natural.mid': ['Soy normal, natural (Int. MIDI Hits 1998)', 'cubano'], 'ya empezo la fiesta.mid': ['Ya empezó la fiesta (Int. MIDI Hits 1998)', 'cubano']
-};
-
-const archivos = fs.readdirSync(dir).filter(f => /\.midi?$/i.test(f)).sort();
-const R = archivos.map(f => { try { return analizarArchivo(path.join(dir, f)); } catch (e) { console.error(f, e.message); return null; } }).filter(Boolean);
+const META = Object.assign(JSON.parse(fs.readFileSync(path.join(__dirname, 'fuentes.json'), 'utf8')), fs.existsSync(path.join(dir, 'fuentes.json')) ? JSON.parse(fs.readFileSync(path.join(dir, 'fuentes.json'), 'utf8')) : {});
+// el informe agrupa en salsa y cubano (la timba cuenta como cubana)
+const TITULOS = Object.fromEntries(Object.entries(META).filter(([k]) => !k.startsWith('_')).map(([k, m]) => [k, [m.titulo || k, m.estilo === 'salsa' ? 'salsa' : 'cubano']]));
+function analizarArchivo(ruta) {
+  const det = TM.analizarDetalle(TM.leerMidi(fs.readFileSync(ruta)), META[path.basename(ruta)] || {});
+  return { archivo: path.basename(ruta), ...det, ladoSeguro: det.ladoFuente === 'clave' || det.ladoFuente === 'declarado' };
+}
+const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)) : [];
+const archivos = [...listar(dir), ...listar(path.join(dir, 'midis'))].sort();
+const R = archivos.map(f => { try { return analizarArchivo(f); } catch (e) { console.error(path.basename(f), e.message); return null; } }).filter(Boolean);
 
 const usable = (r, pt, i) => pt.compases[i].tipo === 'montuno' && r.compases[i].grillaOK && r.compases[i].acordes.length > 0;
 const vec = c => { const v = new Array(16).fill(0); for (const a of c.as) v[a.pos] = 1; return v; };
@@ -202,18 +200,6 @@ function acumular(S, r, pt, esPrincipal) {
   }
 }
 
-// ---------- biblioteca de ciclos A|B: notas reales + acordes, para el generador
-const biblioteca = [];
-function guardarCiclos(r, pt) {
-  const C = r.compases;
-  for (let i = 0; i + 1 < C.length; i++) {
-    if (C[i].lado !== 'A' || C[i + 1].lado !== 'B' || !usable(r, pt, i) || !usable(r, pt, i + 1) || C[i].conflicto) continue;
-    const ev = [];
-    for (const k of [0, 1]) for (const a of pt.compases[i + k].as) ev.push([a.pos + 16 * k, Math.max(1, Math.round(a.dur * 2)), a.ps, Math.round(a.vel)]);
-    biblioteca.push({ archivo: r.archivo, compas: i, lado: r.ladoSeguro ? 'clave' : 'deducido', acordes: [C[i].acordes.map(a => a.nombre), C[i + 1].acordes.map(a => a.nombre)], ev });
-  }
-}
-
 const porArchivo = {}, global = { salsa: nuevo(), cubano: nuevo(), todo: nuevo() };
 for (const r of R) {
   const [titulo, grupo] = TITULOS[r.archivo] || [r.archivo, 'salsa'];
@@ -222,7 +208,6 @@ for (const r of R) {
     const n = pt.compases.filter((c, i) => usable(r, pt, i)).length;
     if (pi > 0 && n < 8) return;
     acumular(S, r, pt, pi === 0); acumular(global[grupo], r, pt, pi === 0); acumular(global.todo, r, pt, pi === 0);
-    guardarCiclos(r, pt);
   });
   porArchivo[r.archivo] = { titulo, grupo, S, r };
 }
@@ -307,18 +292,16 @@ bloque('CUBANO (timba de los 90, Benny Moré)', global.cubano, 8);
 for (const f of Object.keys(porArchivo)) {
   const { titulo, grupo, S, r } = porArchivo[f];
   const clave = r.clave ? `clave de ${r.clave.tipo} en la percusión (nota ${r.clave.instrumento})` : 'sin clave en la percusión: lado deducido del piano';
-  bloque(`${f} · ${titulo} · ${grupo} · tonalidad ${r.tonalidad.raiz} ${r.tonalidad.modo} · ${clave} · piano: ${r.partes.map(p => 'canal ' + p.canal + ' ' + p.programa).join(', ')}`, S, 3);
+  bloque(`${f} · ${titulo} · ${grupo} · tonalidad ${r.tonalidad.raiz} ${r.tonalidad.modo} · ${clave} · piano: ${r.partes.map(p => 'canal ' + p.canal + ' (programa ' + p.programa + ')').join(', ')}`, S, 3);
 }
 fs.writeFileSync(path.join(outDir, 'informe.txt'), lineas.join('\n') + '\n');
 
 const limpio = S => ({ ...S, tops: undefined, ambito: undefined, ejemplos: undefined, densidad: { A: S.densidad.A.length, B: S.densidad.B.length } });
 fs.writeFileSync(path.join(outDir, 'corpus_tumbaos.json'), JSON.stringify({
   generado: new Date().toISOString().slice(0, 10),
-  nota: 'Ciclos lado 3 | lado 2 de montuno de piano. ev = [semicorchea 0..31, duración en semicorcheas, notas MIDI, velocidad]. acordes = nombre por compás (uno o dos).',
   perfilLado: PF, validacion,
   archivos: Object.fromEntries(Object.entries(porArchivo).map(([f, x]) => [f, { titulo: x.titulo, grupo: x.grupo, tonalidad: x.r.tonalidad, clave: x.r.clave, deduccion: x.r.deduccion || null, montuno: x.S.montuno }])),
-  global: { todo: limpio(global.todo), salsa: limpio(global.salsa), cubano: limpio(global.cubano) },
-  biblioteca
+  global: { todo: limpio(global.todo), salsa: limpio(global.salsa), cubano: limpio(global.cubano) }
 }));
 console.log(lineas.join('\n'));
-console.error(`\n${biblioteca.length} ciclos en la biblioteca · ${R.length} archivos`);
+console.error(`\n${R.length} archivos analizados`);

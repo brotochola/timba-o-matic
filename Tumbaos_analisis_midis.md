@@ -334,9 +334,12 @@ Db   1&: F4-Ab4 | Ab5-C#6   2&: C4 | E5   3: C#4 | F5   3&: F4-Ab4 | Ab5-C#6   4
 | Línea al azar hacia arriba o hacia abajo, compás por compás | Zigzag por 3as y 4as. Paso o 3a en el cambio de acorde. Gancho repetido |
 | Solo Pupy repite su figura en cada clave; las demás ondas sortean de nuevo cada compás | Todo tumbao repite: 78–80% del ritmo, 42–77% de las notas cada 4 compases, con las notas acomodadas al acorde nuevo |
 
-### 9.2 Diseño propuesto
+### 9.2 El diseño (ya está en la app como «Algoritmo nuevo»)
 
-La idea es armar el tumbao en capas, cada una con sus números medidos.
+La idea es armar el tumbao en capas, cada una con sus números medidos. Está hecho en `analisis_tumbaos/motor/` y la app lo trae como opción, al lado del algoritmo clásico. Las pruebas cambiaron dos cosas respecto del plan:
+
+- **La línea sortea primero la función armónica de cada ataque** (fundamental, 3a, 5a, 7a, tensión o cromática), con las proporciones de la base, y recién después la búsqueda en haz elige la nota. La búsqueda sola se quedaba con lo más probable: 98% de notas del acorde y 25% de notas repetidas.
+- **El cromatismo va solo en ataques cortos, nunca en el 1 ni en el 3,** y tiene que resolver por paso. Imitar el 10% «crudo» del corpus metía notas largas fuera del acorde en tiempos fuertes, y parte de ese 10% es ruido de la detección de acordes.
 
 1. **Gancho rítmico por sección.**
    - Elegir una célula lado 3 | lado 2 del vocabulario de §2.2, filtrado por estilo.
@@ -367,20 +370,28 @@ La idea es armar el tumbao en capas, cada una con sus números medidos.
    - Semicorcheas en un 2–6% de los ataques.
    - El disminuido de paso de Pupy, como adorno ocasional.
 6. **Dinámica.** Acentos de +5% en el 1, el 2&, el 4& y el 3 del lado 3, y semicorcheas al 80%.
-7. **Modo biblioteca (opcional).**
-   - `analisis_tumbaos/corpus_tumbaos.json` trae **995 ciclos reales** lado 3 | lado 2, con sus notas y acordes.
-   - El generador puede tomar uno con el mismo ritmo armónico y reacomodar sus notas a los acordes nuevos según la función: fundamental a fundamental, 3a a 3a, y así.
-   - Sirve para la salsa clásica. Para la timba todavía hay pocos ejemplos.
+7. **Células reales.**
+   - `analisis_tumbaos/base_tumbaos.json` trae unos **990 ciclos de piano** lado 3 | lado 2, **1.420 de bajo** y **840 juegos de percusión**, con sus notas y acordes.
+   - El generador toma las células de piano de un mismo tema («a la manera de…»), para que el estilo sea coherente, y vuelve a elegir las notas sobre los acordes nuevos.
+   - El bajo usa ciclos con roles claros (raíz, quinta, anticipo de la raíz que viene, aproximación cromática), pesados por cuántas veces aparece su ritmo en la base.
+   - La percusión usa juegos completos (un patrón por instrumento), clasificados por marcha. La clave no se aprende: la escribe el generador según lo que elijas.
 
 ### 9.3 Cómo saber si suena creíble
 
-La misma herramienta sirve de crítico:
+La misma herramienta sirve de crítico. `node analisis_tumbaos/probar_motor.js carpeta` genera 36 tumbaos, los guarda como MIDI y `informe.js carpeta carpeta` los analiza como si fueran del corpus. Con los valores por defecto:
 
-1. Exportar el MIDI del tumbao generado (la app ya tiene `exportMidi`).
-2. Pasarlo por `informe.js`.
-3. Comparar sus tablas con las del corpus: dónde ataca, octavas y bloques, grados, intervalos, anticipo y repetición.
+| Medida | Generado | Corpus |
+|---|---|---|
+| Octavas | 54% | 49% |
+| Línea por 3as / 4as | 49% / 21% | 42% / 21% |
+| Notas repetidas | 14% | 11% |
+| Cambia de dirección | 67% | 67% |
+| Después de un salto, vuelve con otro | 64% | 63% |
+| Enlace entre acordes por paso | 45% | 43% |
+| Bajo en el 2& / en el 4 | 88–97% / 89–97% | 89–97% / 88–94% |
+| Parecido rítmico a 2 compases | 85% | 78% |
 
-Si el generado se parece en esos números, va a sonar mucho más cerca de un pianista. Si se aleja, la tabla dice en qué.
+Queda un poco más repetitivo que el corpus, a propósito: es el gancho. La perilla «Variación por vuelta» lo afloja. Además, las partituras generadas compilan sin errores ni avisos en LilyPond 2.24.
 
 ### 9.4 Lo que falta medir
 
@@ -395,22 +406,26 @@ Si el generado se parece en esos números, va a sonar mucho más cerca de un pia
 Desde la carpeta del proyecto:
 
 ```
-node analisis_tumbaos/informe.js            analiza todos los .mid de la carpeta
-node analisis_tumbaos/ver.js "la bola.mid" 12 8      muestra 8 compases desde el 12
+node analisis_tumbaos/construir.js                     analiza los .mid y actualiza la base y index.html
+node analisis_tumbaos/construir.js --importar mios.json  suma a midis/ los MIDI exportados desde la app
+node analisis_tumbaos/informe.js                       las tablas de este documento
+node analisis_tumbaos/ver.js "la bola.mid" 12 8        muestra 8 compases desde el 12
+node analisis_tumbaos/probar_motor.js carpeta          genera tumbaos de prueba para el crítico
 ```
 
-- `informe.js` escribe dos archivos:
-  - `analisis_tumbaos/informe.txt`: todas las tablas, para el corpus, por grupo y por archivo.
-  - `analisis_tumbaos/corpus_tumbaos.json`: las estadísticas y la biblioteca de ciclos.
-- `ver.js` muestra el acorde, el lado de la clave y el ritmo del piano compás por compás, con las notas.
-- Para sumar temas, se copian los `.mid` a la carpeta y se vuelve a correr `informe.js`.
+- Los MIDI van en la carpeta del proyecto o en `midis/`. El `.gitignore` los deja afuera del repositorio: al repositorio va solo la base ya analizada.
+- Los datos de cada MIDI (título, estilo, clave, rol, acordes) van en `analisis_tumbaos/fuentes.json`.
+- `informe.js` escribe `informe.txt` (todas las tablas, para el corpus, por grupo y por archivo) y `corpus_tumbaos.json` (las mismas estadísticas en JSON).
+- Desde la app también se suman MIDIs (panel «3 Base de MIDIs»). Quedan en el navegador hasta que se exportan y se importan con `construir.js`.
 
 Los archivos de la herramienta:
 
 | Archivo | Qué hace |
 |---|---|
-| `smf.js` | Lee el MIDI |
-| `grilla.js` | Pulso, deriva, compás y clave |
-| `analizar.js` | Acordes, ataques del piano y texturas |
-| `informe.js` | Junta las estadísticas y arma la biblioteca |
-| `ver.js` | Visor compás por compás |
+| `motor/01_midi.js` | Lee y escribe MIDI |
+| `motor/02_analisis.js` | Pulso, deriva, compás, clave, acordes, texturas; de un MIDI a una fuente (ciclos de piano, bajo y percusión) |
+| `motor/03_modelo.js` | Junta las fuentes elegidas en las tablas del generador |
+| `motor/04_generador.js` | Piano, bajo y percusión a partir de los acordes, con sus perillas |
+| `motor/05_salida.js` | LilyPond (con la ortografía de cada acorde) y MIDI |
+| `construir.js` | Arma `base_tumbaos.json` y mete motor y base en `index.html` |
+| `informe.js`, `ver.js`, `probar_motor.js` | Informe, visor y crítico |
