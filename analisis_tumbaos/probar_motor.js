@@ -1,16 +1,18 @@
 /* =====================================================================
    Prueba del motor nuevo sin navegador
-   uso: node analisis_tumbaos/probar_motor.js [carpeta de salida]
+   uso: node analisis_tumbaos/probar_motor.js [carpeta de salida] [--todo]
    - muestra un tumbao generado compás por compás
    - genera una tanda de variantes, las guarda como MIDI (con su fuentes.json) y las pasa por el informe:
      comparando ese informe con el del corpus se ve si el motor «suena» como la base
    ===================================================================== */
 const fs = require('fs'), path = require('path');
 const TM = require('./motor');
+const args = process.argv.slice(2);
 const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'base_tumbaos.json'), 'utf8'));
-const M = TM.construirModelo(base.fuentes);
+// como la página: aprende de la base original; con --todo suma las colecciones (el preset «todos los MIDIs»)
+const M = TM.construirModelo(base.fuentes.filter(f => args.includes('--todo') || !f.coleccion));
 const titulo = id => (base.fuentes.find(f => f.id === id) || {}).titulo || id;
-const salida = process.argv[2];
+const salida = args.find(a => !a.startsWith('--'));
 
 function ver(res) {
   const nom = TM.nom;

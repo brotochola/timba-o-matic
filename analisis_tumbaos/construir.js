@@ -30,21 +30,34 @@ if (iImp >= 0) {
   fs.writeFileSync(META_F, JSON.stringify(META, null, 2) + '\n');
 }
 
-// ---------- analizar en dos pasadas: la primera aprende el perfil rítmico del piano por lado de clave
-const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)) : [];
-const archivos = [...listar(RAIZ), ...listar(MIDIS)].filter(f => !(META[path.basename(f)] || {}).excluir).sort();
-const datos = archivos.map(f => ({ f, nombre: path.basename(f), bytes: new Uint8Array(fs.readFileSync(f)), meta: META[path.basename(f)] || {} }));
+// ---------- qué MIDIs: la base original (carpeta del proyecto y midis/) y las colecciones (cada carpeta dentro de midis/,
+// con su propio fuentes.json). Las colecciones entran a la base pero la página las deja apagadas hasta que se elijan.
+const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)).sort() : [];
+const leerMeta = d => fs.existsSync(path.join(d, 'fuentes.json')) ? JSON.parse(fs.readFileSync(path.join(d, 'fuentes.json'), 'utf8')) : {};
+const archivos = [...listar(RAIZ), ...listar(MIDIS)].sort().map(f => ({ f, nombre: path.basename(f), meta: META[path.basename(f)] || {} }));
+const colecciones = {};
+for (const col of fs.existsSync(MIDIS) ? fs.readdirSync(MIDIS, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name).sort() : []) {
+  const meta = leerMeta(path.join(MIDIS, col)), lista = listar(path.join(MIDIS, col));
+  if (!lista.length) continue;
+  colecciones[col] = { titulo: meta._titulo || col };
+  for (const f of lista) archivos.push({ f, nombre: path.basename(f), meta: meta[path.basename(f)] || {}, coleccion: col });
+}
+
+// ---------- analizar en dos pasadas: la primera aprende el perfil rítmico del piano por lado de clave (solo con la base original)
+const datos = archivos.filter(a => !a.meta.excluir).map(a => ({ ...a, bytes: new Uint8Array(fs.readFileSync(a.f)) }));
 const primera = datos.map(d => { try { return TM.analizarFuente(d.bytes, d.meta); } catch (e) { console.error(d.nombre + ': ' + e.message); return null; } });
-const perfil = TM.perfilLado(primera.filter(f => f && ['clave', 'declarado'].includes(f.analisis.ladoFuente)).flatMap(f => f.piano));
+const perfil = TM.perfilLado(primera.filter((f, i) => f && !datos[i].coleccion && ['clave', 'declarado'].includes(f.analisis.ladoFuente)).flatMap(f => f.piano));
 const fuentes = [];
 datos.forEach((d, i) => {
   if (!primera[i]) return;
   const f = TM.analizarFuente(d.bytes, d.meta, { perfil });
-  fuentes.push({ id: 'b:' + d.nombre, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...f });
+  const id = 'b:' + (d.coleccion ? d.coleccion + '/' : '') + d.nombre;
+  if (!f.piano.length && !f.bajo.length && !f.perc.length) { console.log(`${id.slice(2).padEnd(34)} sin compases usables de piano, bajo ni percusión: queda afuera`); return; }
+  fuentes.push({ id, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...(d.coleccion ? { coleccion: d.coleccion } : {}), ...f });
   const a = f.analisis;
-  console.log(`${d.nombre.padEnd(34)} ${String(f.piano.length).padStart(4)} ciclos de piano · ${String(f.bajo.length).padStart(4)} de bajo · ${String(f.perc.length).padStart(3)} juegos de percusión · lado: ${a.ladoFuente}${a.conflicto ? ' (' + a.conflicto + ' compases en contra)' : ''}`);
+  console.log(`${(d.coleccion ? d.coleccion + '/' : '') + d.nombre.padEnd(34)} ${String(f.piano.length).padStart(4)} ciclos de piano · ${String(f.bajo.length).padStart(4)} de bajo · ${String(f.perc.length).padStart(3)} juegos de percusión · lado: ${a.ladoFuente}${a.conflicto ? ' (' + a.conflicto + ' compases en contra)' : ''}`);
 });
-const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, fuentes };
+const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, colecciones, fuentes };
 const json = JSON.stringify(base);
 fs.writeFileSync(BASE_F, json);
 console.log(`\nbase: ${fuentes.length} fuentes · ${(json.length / 1024).toFixed(0)} kB → ${path.relative(RAIZ, BASE_F)}`);

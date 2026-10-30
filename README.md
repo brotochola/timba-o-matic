@@ -7,6 +7,8 @@ Generador de tumbaos de timba y salsa: ponés los acordes y la página arma pian
 1. **Acordes.** Un acorde por compás, o dos con «½». Hay progresiones para cargar.
 2. **Arreglo.** Algoritmo, onda (Pupy, Melón, Tirso, songo, salsa), marcha (cuerpo, coro, mambo, presión, despelote, muela) y clave. Con el algoritmo nuevo, cada columna trae sus perillas: densidad, octavas, bloques, semicorcheas, tensiones, cromatismo, registro, mano izquierda, anticipos, gancho, estilo del bajo, intensidad y mezcla de la percusión…
 3. **Base de MIDIs.** De dónde aprende el algoritmo nuevo. Se pueden marcar o desmarcar temas y sumar MIDIs propios.
+   - De entrada aprende de los 18 temas originales (y de los tuyos).
+   - «Todos los MIDIs» suma además la colección de mididb.com: 104 temas más, casi todos de salsa (ver [§11 del análisis](Tumbaos_analisis_midis.md)).
 
 «Generar y escuchar» lo toca en loop. «Copiar LilyPond» da la partitura, que compila tal cual en LilyPond 2.24.
 
@@ -52,15 +54,23 @@ Si tocás piano, bajo o percusión, tus grabaciones mejoran el algoritmo, sobre 
 
 Los `.mid` no se suben al repositorio (ver `.gitignore`); sube la base ya analizada.
 
+### Colecciones
+
+Cada carpeta dentro de `midis/` es una colección; por ejemplo, `midis/mididb/`.
+- Lleva su propio `fuentes.json` con los datos de cada archivo; `_titulo` es el nombre que muestra la página.
+- Entra a la base, pero la página la deja apagada. Se prende con «todos los MIDIs» o con la casilla de la colección.
+- El perfil de la clave (con qué se adivina el lado en los temas sin clave) se aprende solo de los originales.
+- Los archivos que no dejan nada usable (ni piano, ni bajo, ni percusión) quedan afuera.
+
 ## Para tocar el código
 
 Hace falta Node 18 o más nuevo, sin dependencias.
 
 ```
-node analisis_tumbaos/construir.js          analiza los MIDI (carpeta del proyecto y midis/) y actualiza la base y index.html
+node analisis_tumbaos/construir.js          analiza los MIDI (carpeta del proyecto, midis/ y sus colecciones) y actualiza la base y index.html
 node analisis_tumbaos/informe.js            estadísticas del corpus (informe.txt)
 node analisis_tumbaos/ver.js "tema.mid"     visor compás por compás
-node analisis_tumbaos/probar_motor.js out   genera tumbaos de prueba para compararlos con el corpus
+node analisis_tumbaos/probar_motor.js out   genera tumbaos de prueba para compararlos con el corpus (--todo: con las colecciones)
 ```
 
 El motor vive en `analisis_tumbaos/motor/`: MIDI, análisis, modelo, generador y salida. Corre igual en Node y en el navegador. `construir.js` lo copia dentro de `index.html` entre las marcas `<!--motor-tumbaos-->`, así que los cambios se hacen en `motor/` y no en la página.

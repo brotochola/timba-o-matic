@@ -1,0 +1,554 @@
+{
+ "_titulo": "mididb.com",
+ "_ayuda": "Colección bajada de https://www.mididb.com/genres/latino-salsa-midi/ (ver Tumbaos_analisis_midis.md §11). Mismos campos que analisis_tumbaos/fuentes.json; fuente = página de origen.",
+ "Celia Cruz - Quimbara.mid": {
+  "titulo": "Celia Cruz · Quimbara",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/celia-cruz/quimbara-midi/"
+ },
+ "Buena Vista Social Club - El Cuarto De Tula.mid": {
+  "titulo": "Buena Vista Social Club · El Cuarto De Tula",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/buena-vista-social-club/el-cuarto-de-tula-midi/"
+ },
+ "El Gran Combo De Puerto Rico - Me Libere.mid": {
+  "titulo": "El Gran Combo De Puerto Rico · Me Libere",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-gran-combo-de-puerto-rico/me-libere-midi/"
+ },
+ "Grupo Africando - Yay Boy.mid": {
+  "titulo": "Grupo Africando · Yay Boy",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-africando/yay-boy-midi/"
+ },
+ "Grupo Niche - Cali Pachanguero.mid": {
+  "titulo": "Grupo Niche · Cali Pachanguero",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-niche/cali-pachanguero-t2068-midi/"
+ },
+ "El Gran Combo De Puerto Rico - Mujer Celosa.mid": {
+  "titulo": "El Gran Combo De Puerto Rico · Mujer Celosa",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-gran-combo-de-puerto-rico/mujer-celosa-midi/"
+ },
+ "Puerto Rican Power - Tu Carinito.mid": {
+  "titulo": "Puerto Rican Power · Tu Carinito",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/puerto-rican-power/tu-carinito-midi/"
+ },
+ "Marc Anthony - Celos.mid": {
+  "titulo": "Marc Anthony · Celos",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/celos-midi/"
+ },
+ "Los Van Van - Disco Azucar.mid": {
+  "titulo": "Los Van Van · Disco Azucar",
+  "estilo": "timba",
+  "fuente": "https://www.mididb.com/los-van-van/disco-azucar-midi/"
+ },
+ "Raulin Rosendo - Uno Se Cura.mid": {
+  "titulo": "Raulin Rosendo · Uno Se Cura",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/raulin-rosendo/uno-se-cura-midi/"
+ },
+ "Grupo Niche - Han Cogido La Cosa.mid": {
+  "titulo": "Grupo Niche · Han Cogido La Cosa",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-niche/han-cogido-la-cosa-t2067-midi/"
+ },
+ "Puerto Rican Power - Pena De Amor.mid": {
+  "titulo": "Puerto Rican Power · Pena De Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/puerto-rican-power/pena-de-amor-midi/"
+ },
+ "El Gran Combo De Puerto Rico - Don Goyo.mid": {
+  "titulo": "El Gran Combo De Puerto Rico · Don Goyo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-gran-combo-de-puerto-rico/don-goyo-midi/"
+ },
+ "Tito Nieves - Le Gusta Que La Vean.mid": {
+  "titulo": "Tito Nieves · Le Gusta Que La Vean",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tito-nieves/le-gusta-que-la-vean-midi/"
+ },
+ "Pedro Conga - Si Supieras.mid": {
+  "titulo": "Pedro Conga · Si Supieras",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/pedro-conga/si-supieras-midi/"
+ },
+ "Hector Lavoe - Periodico De Ayer.mid": {
+  "titulo": "Hector Lavoe · Periodico De Ayer",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/hector-lavoe/periodico-de-ayer-midi/"
+ },
+ "Conjunto Clasico - Senora Ley.mid": {
+  "titulo": "Conjunto Clasico · Senora Ley",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/conjunto-clasico/senora-ley-midi/"
+ },
+ "Jay Lozada - Por Amarte Asi.mid": {
+  "titulo": "Jay Lozada · Por Amarte Asi",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jay-lozada/por-amarte-asi-midi/"
+ },
+ "Charlie Cruz - Bombon De Azucar.mid": {
+  "titulo": "Charlie Cruz · Bombon De Azucar",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/charlie-cruz/bombon-de-azucar-midi/"
+ },
+ "Primi Cruz - La Misma Quimica.mid": {
+  "titulo": "Primi Cruz · La Misma Quimica",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/primi-cruz/la-misma-quimica-midi/"
+ },
+ "Cheo Feliciano - Ahora.mid": {
+  "titulo": "Cheo Feliciano · Ahora",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/cheo-feliciano/ahora-midi/"
+ },
+ "Paquito Guzman - Cinco Noches.mid": {
+  "titulo": "Paquito Guzman · Cinco Noches",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/paquito-guzman/cinco-noches-t2075-midi/"
+ },
+ "Antonio Cartagena - Propiedad Privada.mid": {
+  "titulo": "Antonio Cartagena · Propiedad Privada",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/antonio-cartagena/propiedad-privada-midi/"
+ },
+ "Oscar D'leon - Mi Mujer Es Una Bomba.mid": {
+  "titulo": "Oscar D'leon · Mi Mujer Es Una Bomba",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/oscar-dleon/mi-mujer-es-una-bomba-midi/"
+ },
+ "Grupo Bravo - Vivo Sin Ti.mid": {
+  "titulo": "Grupo Bravo · Vivo Sin Ti",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-bravo/vivo-sin-ti-midi/"
+ },
+ "Mickey Taveras - Quiereme.mid": {
+  "titulo": "Mickey Taveras · Quiereme",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/mickey-taveras/quiereme-midi/"
+ },
+ "Tito Nieves - Un Amor Asi.mid": {
+  "titulo": "Tito Nieves · Un Amor Asi",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tito-nieves/un-amor-asi-midi/"
+ },
+ "Jerry Rivera - Ese.mid": {
+  "titulo": "Jerry Rivera · Ese",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jerry-rivera/ese-midi/"
+ },
+ "Lefty Perez - Mentira.mid": {
+  "titulo": "Lefty Perez · Mentira",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/lefty-perez/mentira-midi/"
+ },
+ "Marc Anthony - La Luna Sobre Nuestro Amor.mid": {
+  "titulo": "Marc Anthony · La Luna Sobre Nuestro Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/la-luna-sobre-nuestro-amor-midi/"
+ },
+ "Cherry X - Que Tentacion.mid": {
+  "titulo": "Cherry X · Que Tentacion",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/cherry-x/que-tentacion-midi/"
+ },
+ "Deddi Romero - Recaditos No.mid": {
+  "titulo": "Deddi Romero · Recaditos No",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/deddi-romero/recaditos-no-midi/"
+ },
+ "George Lamond - Cuando Se Ama.mid": {
+  "titulo": "George Lamond · Cuando Se Ama",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/george-lamond/cuando-se-ama-midi/"
+ },
+ "Celia Cruz - Bamboleo.mid": {
+  "titulo": "Celia Cruz · Bamboleo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/celia-cruz/bamboleo-midi/"
+ },
+ "Celia Cruz - Sobreviviré (Siempre Viviré - I Will Survive).mid": {
+  "titulo": "Celia Cruz · Sobreviviré (Siempre Viviré - I Will Survive)",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/celia-cruz/sobrevivir-siempre-vivir-i-will-survive-midi/"
+ },
+ "Compay Segundo - Chan Chan.mid": {
+  "titulo": "Compay Segundo · Chan Chan",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/compay-segundo/chan-chan-midi/"
+ },
+ "Johny Rivera - A Hard Days Night.mid": {
+  "titulo": "Johny Rivera · A Hard Days Night",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/johny-rivera/a-hard-days-night-midi/"
+ },
+ "Fruko Y Sus Tesos - El Preso.mid": {
+  "titulo": "Fruko Y Sus Tesos · El Preso",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/fruko-y-sus-tesos/el-preso-midi/"
+ },
+ "Polo Montañez - Un Montón De Estrellas.mid": {
+  "titulo": "Polo Montañez · Un Montón De Estrellas",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/polo-montaez/un-montn-de-estrellas-midi/"
+ },
+ "La Factoria Latina - Salsa Mix.mid": {
+  "titulo": "La Factoria Latina · Salsa Mix",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/kako-senante/popurri-de-salsa-midi/"
+ },
+ "Jennifer Lopez - No Me Ames.mid": {
+  "titulo": "Jennifer Lopez · No Me Ames",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/jennifer-lopez-and-mark-anthony/no-me-ames-midi/"
+ },
+ "Simón Díaz - Caballo Viejo (Approx 6 Min. Vers).mid": {
+  "titulo": "Simón Díaz · Caballo Viejo (Approx 6 Min. Vers)",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/simn-daz/caballo-viejo-approx-6-min-vers-midi/"
+ },
+ "Gloria Estefan - Hablemos El Mismo Idioma.mid": {
+  "titulo": "Gloria Estefan · Hablemos El Mismo Idioma",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/gloria-estefan/hablemos-el-mismo-idioma-midi/"
+ },
+ "Oscar De Leon - Yo Me Voy Pa Cali.mid": {
+  "titulo": "Oscar De Leon · Yo Me Voy Pa Cali",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/oscar-de-leon/yo-me-voy-pa-cali-midi/"
+ },
+ "Willy Deville - Demasiado Corazon.mid": {
+  "titulo": "Willy Deville · Demasiado Corazon",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/willy-deville/demasiado-corazn-midi/"
+ },
+ "Gloria Estefan - Si Senor.mid": {
+  "titulo": "Gloria Estefan · Si Senor",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/gloria-estefan/si-senor-midi/"
+ },
+ "Gloria Estefan - Ayer.mid": {
+  "titulo": "Gloria Estefan · Ayer",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/gloria-estefan/ayer-midi/"
+ },
+ "Orquesta Mira Quien Baila - Devorame Otra Vez.mid": {
+  "titulo": "Orquesta Mira Quien Baila · Devorame Otra Vez",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquesta-mira-quien-baila/devorame-otra-vez-midi/"
+ },
+ "Brenda K. Starr - I Still Believe.mid": {
+  "titulo": "Brenda K. Starr · I Still Believe",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/brenda-k-starr/i-still-believe-midi/"
+ },
+ "Eddy Mclean Y Merensalsa - Azucar.mid": {
+  "titulo": "Eddy Mclean Y Merensalsa · Azucar",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/eddy-mclean-y-merensalsa/azucar-midi/"
+ },
+ "Ruben Blades - Pedro Navaja.mid": {
+  "titulo": "Ruben Blades · Pedro Navaja",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ruben-blades/pedro-navaja-midi/"
+ },
+ "Ana Gabriel - Obsesión.mid": {
+  "titulo": "Ana Gabriel · Obsesión",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ana-gabriel/obsesin-midi/"
+ },
+ "Lalo Rodriguez - Devorame Otra Vez.mid": {
+  "titulo": "Lalo Rodriguez · Devorame Otra Vez",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/lalo-rodrguez/devrame-otra-vez-midi/"
+ },
+ "El Gran Combo De Puerto Rico - No Hay Cama Pa Tanta Gente.mid": {
+  "titulo": "El Gran Combo De Puerto Rico · No Hay Cama Pa Tanta Gente",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-gran-combo-de-puerto-rico/no-hay-cama-pa-tanta-gente-midi/"
+ },
+ "Maná - Se Me Olvidó Otra Vez.mid": {
+  "titulo": "Maná · Se Me Olvidó Otra Vez",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/man/se-me-olvid-otra-vez-midi/"
+ },
+ "Albita - Que Manera De Quererte.mid": {
+  "titulo": "Albita · Que Manera De Quererte",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/albita/que-manera-de-quererte-midi/"
+ },
+ "Mecano - Bailando Salsa.mid": {
+  "titulo": "Mecano · Bailando Salsa",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/mecano/bailando-salsa-midi/"
+ },
+ "Salsa Traditional - Herencias.mid": {
+  "titulo": "Salsa Traditional · Herencias",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/salsa-traditional/herencias-midi/"
+ },
+ "Orquesta De La Luz - Salsa No Tiene Fronteras.mid": {
+  "titulo": "Orquesta De La Luz · Salsa No Tiene Fronteras",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquesta-de-la-luz/salsa-no-tiene-fronteras-midi/"
+ },
+ "Vicente Israel Y José - Pedro Navaja.mid": {
+  "titulo": "Vicente Israel Y José · Pedro Navaja",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/vicente-israel-y-jos/pedro-navaja-midi/"
+ },
+ "Compay Segundo - El Cuarto De Tula.mid": {
+  "titulo": "Compay Segundo · El Cuarto De Tula",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/compay-segundo/el-cuarto-de-tula-midi/"
+ },
+ "La India - Ese Hombre (Que Tu Ves Ahí).mid": {
+  "titulo": "La India · Ese Hombre (Que Tu Ves Ahí)",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/la-india/ese-hombre-que-tu-ves-ah-midi/"
+ },
+ "Standard - Cachita.mid": {
+  "titulo": "Standard · Cachita",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/standard/cachita-midi/"
+ },
+ "Grupo Niche - Chimpum Callao.mid": {
+  "titulo": "Grupo Niche · Chimpum Callao",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-niche/chimpum-callao-midi/"
+ },
+ "Oscar Dleon - Melao De Cana.mid": {
+  "titulo": "Oscar Dleon · Melao De Cana",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/oscar-dleon/melao-de-cana-midi/"
+ },
+ "Gloria Estefan - No Me Dejes De Querer.mid": {
+  "titulo": "Gloria Estefan · No Me Dejes De Querer",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/gloria-estefan/no-me-dejes-de-querer-midi/"
+ },
+ "Alfredo De La Fe - Salsa Computarizada.mid": {
+  "titulo": "Alfredo De La Fe · Salsa Computarizada",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/alfredo-de-la-fe/salsa-computarizada-midi/"
+ },
+ "El Grupo Niche - Caliaji.mid": {
+  "titulo": "El Grupo Niche · Caliaji",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-grupo-niche/caliaji-midi/"
+ },
+ "Salsaloco De Cuba - Azucar.mid": {
+  "titulo": "Salsaloco De Cuba · Azucar",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/salsaloco-de-cuba/azucar-midi/"
+ },
+ "Milagros Hernandéz - Como Una Loba.mid": {
+  "titulo": "Milagros Hernandéz · Como Una Loba",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/milagros-hernandz/como-una-loba-midi/"
+ },
+ "Orquestra Selvatana - Lola La Tavernera.mid": {
+  "titulo": "Orquestra Selvatana · Lola La Tavernera",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquestra-selvatana/lola-la-tavernera-midi/"
+ },
+ "G. Estefan Y C. Cruz - Tres Gotas De Agua Bendita.mid": {
+  "titulo": "G. Estefan Y C. Cruz · Tres Gotas De Agua Bendita",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/g-estefan-y-c-cruz/tres-gotas-de-agua-bendita-midi/"
+ },
+ "Lalo Rodriguez - Despues De Hacer El Amor.mid": {
+  "titulo": "Lalo Rodriguez · Despues De Hacer El Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/lalo-rodrguez/despus-de-hacer-el-amor-midi/"
+ },
+ "Celia Cruz - Sazón.mid": {
+  "titulo": "Celia Cruz · Sazón",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/celia-cruz/sazn-midi/"
+ },
+ "Oscar De Leon - Mi Mujer Es Una Bomba.mid": {
+  "titulo": "Oscar De Leon · Mi Mujer Es Una Bomba",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/oscar-de-leon/mi-mujer-es-una-bomba-midi/"
+ },
+ "Tito Gomez - Viernes Social.mid": {
+  "titulo": "Tito Gomez · Viernes Social",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tito-gomez/viernes-social-midi/"
+ },
+ "El Chato - Te Gusta La Vida.mid": {
+  "titulo": "El Chato · Te Gusta La Vida",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-chato/te-gusta-la-vida-midi/"
+ },
+ "Chayanne Y Vanessa Willams - Refugio De Amor.mid": {
+  "titulo": "Chayanne Y Vanessa Willams · Refugio De Amor",
+  "estilo": "otro",
+  "fuente": "https://www.mididb.com/chayanne-y-vanessa-willams/refugio-de-amor-midi/"
+ },
+ "Manzanita - Hueso Na' Mas.mid": {
+  "titulo": "Manzanita · Hueso Na' Mas",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/manzanita/hueso-na-mas-midi/"
+ },
+ "Marc Anthony - Da La Vuelta.mid": {
+  "titulo": "Marc Anthony · Da La Vuelta",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/da-la-vuelta-midi/"
+ },
+ "Jerry Rivera - Ese (Version Salsa).mid": {
+  "titulo": "Jerry Rivera · Ese (Version Salsa)",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jerry-rivera/ese-version-salsa-midi/"
+ },
+ "La India - Ese Hombre.mid": {
+  "titulo": "La India · Ese Hombre",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/india/ese-hombre-midi/"
+ },
+ "Andy Montanes - Me Gusta.mid": {
+  "titulo": "Andy Montanes · Me Gusta",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/andy-montanes/me-gusta-midi/"
+ },
+ "Celia Cruz Y Azuquita - El Tostadero.mid": {
+  "titulo": "Celia Cruz Y Azuquita · El Tostadero",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/celia-cruz-azuquita/el-tostadero-midi/"
+ },
+ "Tate Montoya - Dejeme Pasar.mid": {
+  "titulo": "Tate Montoya · Dejeme Pasar",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tate-montoya/dejeme-pasar-midi/"
+ },
+ "Elena Gadel Y Hugo - Devorame Otra Vez.mid": {
+  "titulo": "Elena Gadel Y Hugo · Devorame Otra Vez",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/elena-gadel-y-hugo/devorame-otra-vez-midi/"
+ },
+ "Salsa Traditional - Balia Guapa.mid": {
+  "titulo": "Salsa Traditional · Balia Guapa",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/salsa-traditional/balia-guapa-midi/"
+ },
+ "Standard - Cali Pachangero.mid": {
+  "titulo": "Standard · Cali Pachangero",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/standard/cali-pachangero-midi/"
+ },
+ "Standard - Cartagenera.mid": {
+  "titulo": "Standard · Cartagenera",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/standard/cartagenera-midi/"
+ },
+ "Los Tupadoros - Chacucha.mid": {
+  "titulo": "Los Tupadoros · Chacucha",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/los-tupadoros/chacucha-midi/"
+ },
+ "Salsa Traditional - El Piso De La Luna.mid": {
+  "titulo": "Salsa Traditional · El Piso De La Luna",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/salsa-traditional/el-piso-de-la-luna-midi/"
+ },
+ "La India - Nunca Voy A Olvidarte.mid": {
+  "titulo": "La India · Nunca Voy A Olvidarte",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/india/nunca-voy-a-olvidarte-midi/"
+ },
+ "Sanz Alejandro - Esto Es Amor.mid": {
+  "titulo": "Sanz Alejandro · Esto Es Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/sanz-alejandro/esto-es-amor-midi/"
+ },
+ "Gato Perez - Gitanitos Y Morenos.mid": {
+  "titulo": "Gato Perez · Gitanitos Y Morenos",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gato-prez/gitanitos-y-morenos-midi/"
+ },
+ "Grupo Niche - La Negra No Quiere.mid": {
+  "titulo": "Grupo Niche · La Negra No Quiere",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-niche/la-negra-no-quiere-midi/"
+ },
+ "Salsa Traditional - Tierra Latina.mid": {
+  "titulo": "Salsa Traditional · Tierra Latina",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/salsa-traditional/tierra-latina-midi/"
+ },
+ "El Gran Combo - El Ladron.mid": {
+  "titulo": "El Gran Combo · El Ladron",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/el-gran-combo/el-ladron-midi/"
+ },
+ "Charlie Cardona - De Amor Ya No Se Muere.mid": {
+  "titulo": "Charlie Cardona · De Amor Ya No Se Muere",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/charlie-cardona/de-amor-ya-no-se-muere-midi/"
+ },
+ "Galy Galiano - La Cita.mid": {
+  "titulo": "Galy Galiano · La Cita",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/galy-galiano/la-cita-midi/"
+ },
+ "Grant Geissman - El Cabon Rides Again.mid": {
+  "titulo": "Grant Geissman · El Cabon Rides Again",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grant-geissman/el-cabon-rides-again-midi/"
+ },
+ "C Aguilera Becky G N Nicole Y N Peluso - Pa Mis Muchachas.mid": {
+  "titulo": "C Aguilera Becky G N Nicole Y N Peluso · Pa Mis Muchachas",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/c-aguilera-becky-g-n-nicole-y-n-peluso/pa-mis-muchachas-midi/"
+ },
+ "Ritmo Caliente - La Vamo A Tumba.mid": {
+  "titulo": "Ritmo Caliente · La Vamo A Tumba",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ritmo-caliente/la-vamo-a-tumba-midi-rc4892/"
+ },
+ "Garibaldi - Vamonos De Fiesta.mid": {
+  "titulo": "Garibaldi · Vamonos De Fiesta",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/garibaldi/vmonos-de-fiesta-midi/"
+ },
+ "Orquesta Panorama - Que Levante La Mano.mid": {
+  "titulo": "Orquesta Panorama · Que Levante La Mano",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquesta-panorama/que-levante-la-mano-midi/"
+ },
+ "Lefty Pérez - Mentira.mid": {
+  "titulo": "Lefty Pérez · Mentira",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/lefty-prez/mentira-midi/"
+ },
+ "Susanna - Se Dice De Mi.mid": {
+  "titulo": "Susanna · Se Dice De Mi",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/susanna/se-dice-de-mi-midi/"
+ },
+ "Puerto Rican Power - Emergencia De Amor.mid": {
+  "titulo": "Puerto Rican Power · Emergencia De Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/puerto-rican-power/emergencia-de-amor-midi/"
+ },
+ "Rosana - Domingos En El Cielo.mid": {
+  "titulo": "Rosana · Domingos En El Cielo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/rosana/domingos-en-el-cielo-midi/"
+ },
+ "Yiyo Sarante - Mi Todo.mid": {
+  "titulo": "Yiyo Sarante · Mi Todo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/yiyo-sarante/mi-todo-midi/"
+ },
+ "Bustamante Y Gisela - Refugio De Amor.mid": {
+  "titulo": "Bustamante Y Gisela · Refugio De Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/bustamante-y-gisela/refugio-de-amor-midi/"
+ }
+}
