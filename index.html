@@ -5318,7 +5318,12 @@ ${vientosStaff}    \\new PianoStaff <<
   // ---------- perillas (definidas en el motor: TM.PERILLAS_UI)
   // k: las de toda la canción. Con una sección elegida (alcance), lo que se toca queda en sec.perillas, solo para ella.
   const DEF=TM.PERILLAS;
-  let k=Object.assign({},DEF,leer('tdt-perillas',{}));
+  // una perilla fuera de su rango (un valor viejo, de otra escala: Deslizamientos guardado en 33 hacía glissandos en cada
+  // salto del bajo) vuelve al borde de su rango
+  const RANGO=Object.fromEntries(TM.PERILLAS_UI.filter(d=>d.tipo!=='sel'&&d.min!=null&&d.max!=null).map(d=>[d.id,[d.min,d.max]]));
+  const acotar=p=>{if(p)for(const id in p)if(RANGO[id]&&p[id]!=='auto'&&p[id]!=null&&p[id]!==''&&!isNaN(+p[id]))p[id]=Math.max(RANGO[id][0],Math.min(RANGO[id][1],+p[id]));return p};
+  window.__tdtAcotar=acotar;
+  let k=acotar(Object.assign({},DEF,leer('tdt-perillas',{})));
   let alcance=null;
   let capa={};   // las perillas del estilo del piano de la sección elegida
   const valor=id=>alcance&&id in alcance.perillas?alcance.perillas[id]:id in capa?capa[id]:k[id];
@@ -5391,7 +5396,7 @@ ${vientosStaff}    \\new PianoStaff <<
   }
   window.TUMBAO2={generarCancion,contar,
     perillas:()=>({...k}),
-    ponerPerillas(p){k=Object.assign({},DEF,p||{});pintar();guardar('tdt-perillas',k)},
+    ponerPerillas(p){k=acotar(Object.assign({},DEF,p||{}));pintar();guardar('tdt-perillas',k)},
     // sec: la sección cuyas perillas se editan; null: las de toda la canción
     alcance(sec){alcance=sec||null;if(alcance&&!alcance.perillas)alcance.perillas={};const E=TM.ESTILOS[sec&&(sec.pianoComo||sec.estilo)];capa=E?{...E.piano,...(E.bajo?{}:{})}:{};pintar()}};
 })();
@@ -5445,7 +5450,10 @@ ${vientosStaff}    \\new PianoStaff <<
   // ---------- la canción: secciones con sus acordes, marcha, onda, perillas propias, pistas que tocan y transición
   const seccion=o=>Object.assign({id:nid(),nombre:'',bars:fromProg(PRESETS[0][0],8),vueltas:2,marcha:'marcha',estilo:'pupy',perillas:{},pistas:{},vol:{},transicion:'ninguna',semilla:azar()},o);
   let song=load('tdt-cancion2',null);
-  if(!song||!song.secciones||!song.secciones.length||song.secciones.some(s=>!TM.ESTILOS[s.estilo]))song={version:2,titulo:'',clave:'son 2-3',mezcla:{},secciones:[seccion({})]};
+  // una canción con un estilo que ya no existe (el mambo de los años 50) no se pierde: esa sección pasa a salsa; y las perillas
+  // de cada sección, dentro de su rango
+  const sanear=c=>{for(const s of c.secciones){if(!TM.ESTILOS[s.estilo])s.estilo='salsa';if(s.pianoComo&&!TM.ESTILOS[s.pianoComo])delete s.pianoComo;if(window.__tdtAcotar)window.__tdtAcotar(s.perillas)}return c};
+  if(!song||!song.secciones||!song.secciones.length)song={version:2,titulo:'',clave:'son 2-3',mezcla:{},secciones:[seccion({})]};else sanear(song);
   let cur=Math.max(0,Math.min(+load('tdt-cancion-sel',0)||0,song.secciones.length-1));
   const S=()=>song.secciones[cur];
   const nombreDe=s=>s.nombre||MARCHA_TXT[s.marcha]||'Sección';
@@ -5854,6 +5862,7 @@ ${vientosStaff}    \\new PianoStaff <<
     const c=clon(j.cancion);
     if(!c||!Array.isArray(c.secciones)||!c.secciones.length||!c.secciones.every(s=>Array.isArray(s.bars)&&s.bars.length))throw new Error('no es una canción de timba-o-matic');
     song=c;cur=0;for(const s of song.secciones){s.id=s.id||nid();s.perillas=s.perillas||{};s.pistas=s.pistas||{};s.vueltas=s.vueltas||1;s.semilla=s.semilla||azar()}
+    sanear(song);
     if(j.perillas)T2.ponerPerillas(j.perillas);if(song.bpm){setTempo(song.bpm);$('tempo').value=song.bpm}
     refrescar();go(true);inf(nombre);
   }
