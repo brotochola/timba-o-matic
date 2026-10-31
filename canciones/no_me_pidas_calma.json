@@ -1,14 +1,63 @@
 {
  "tipo": "timba-o-matic · canción",
- "version": 2,
+ "version": 1,
  "cancion": {
   "version": 2,
   "titulo": "No me pidas calma",
   "clave": "rumba 2-3",
   "banda": "timba",
   "bajoSonido": "bass",
-  "mezcla": {},
-  "bpm": 200,
+  "mezcla": {
+   "piano": {
+    "mute": false,
+    "solo": true
+   },
+   "bajo": {
+    "mute": false,
+    "solo": false
+   },
+   "clave": {
+    "mute": false,
+    "solo": false
+   },
+   "congas": {
+    "mute": false,
+    "solo": true
+   },
+   "bongo": {
+    "mute": false,
+    "solo": false
+   },
+   "campanas": {
+    "mute": false,
+    "solo": false
+   },
+   "timbales": {
+    "mute": false,
+    "solo": false
+   },
+   "guiro": {
+    "mute": false,
+    "solo": false
+   },
+   "bateria": {
+    "mute": false,
+    "solo": false
+   },
+   "trompetas": {
+    "mute": false,
+    "solo": true
+   },
+   "trombones": {
+    "mute": false,
+    "solo": true
+   },
+   "saxos": {
+    "mute": false,
+    "solo": true
+   }
+  },
+  "bpm": 190,
   "secciones": [
    {
     "id": "s1",
@@ -54,7 +103,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 101
+    "semilla": 101,
+    "semillaVientos": 1020
    },
    {
     "id": "s2",
@@ -131,7 +181,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 102
+    "semilla": 102,
+    "semillaVientos": 5359
    },
    {
     "id": "s3",
@@ -226,11 +277,27 @@
    {
     "id": "s5",
     "pistas": {},
-    "vol": {},
+    "vol": {
+     "trompetas": 1.5,
+     "trombones": 1.5,
+     "saxos": 1.5,
+     "piano": 0.45
+    },
     "transicion": "cierre",
     "entrada": "plato4y",
     "perillas": {
-     "frase": "frase"
+     "frase": "frase",
+     "v_largo": "1",
+     "v_repite": 0.35,
+     "v_dens": 1.5,
+     "v_reg": 5,
+     "v_art": 1.5,
+     "v_crom": 0,
+     "v_cresc": 1,
+     "v_agudo": 1,
+     "v_remate": "golpe",
+     "v_fuente": "todo",
+     "v_forma": "escalonado"
     },
     "nombre": "Mambo",
     "tipo": "mambo",
@@ -264,11 +331,15 @@
        "r": 0,
        "q": "m7"
       },
-      "b": null
+      "b": {
+       "r": 0,
+       "q": "7"
+      }
      }
     ],
     "vueltas": 4,
-    "semilla": 105
+    "semilla": 105,
+    "semillaVientos": 8127
    },
    {
     "id": "s6",
@@ -320,7 +391,9 @@
     "vol": {},
     "transicion": "ninguna",
     "entrada": "plato4y",
-    "perillas": {},
+    "perillas": {
+     "v_forma": "contrapunto"
+    },
     "nombre": "Despelote",
     "tipo": "despelote",
     "marcha": "despelote",
@@ -400,7 +473,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 108
+    "semilla": 108,
+    "semillaVientos": 3701
    },
    {
     "id": "s9",
@@ -488,7 +562,11 @@
      }
     ],
     "vueltas": 1,
-    "semilla": 110
+    "semilla": 110,
+    "vientos": {
+     "entrada": "juntos",
+     "toca": "bloques"
+    }
    }
   ],
   "letra": {
@@ -536,6 +614,17 @@
   "b_dens": 1,
   "b_reg": "medio",
   "b_gliss": 0,
+  "v_forma": "auto",
+  "v_largo": "auto",
+  "v_repite": 0.5,
+  "v_dens": 1,
+  "v_reg": 0,
+  "v_art": 1,
+  "v_crom": 0.7,
+  "v_cresc": 0.3,
+  "v_agudo": 0,
+  "v_remate": "auto",
+  "v_fuente": "estilo",
   "p_int": 0.55,
   "p_relleno": 0.6,
   "m_clave": 1,
