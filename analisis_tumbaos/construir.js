@@ -135,7 +135,7 @@ function meterEnHtml(json) {
   // las demos: las canciones de canciones/ (el formato de «Exportar canción»), en el orden de su campo «orden»
   const DEMOS_D = path.join(RAIZ, 'canciones');
   const demos = fs.existsSync(DEMOS_D) ? fs.readdirSync(DEMOS_D).filter(f => f.endsWith('.json')).map(f => JSON.parse(fs.readFileSync(path.join(DEMOS_D, f), 'utf8')))
-    .filter(j => j.cancion && j.cancion.secciones).sort((a, b) => (a.cancion.orden ?? 99) - (b.cancion.orden ?? 99)) : [];
+    .filter(j => j.cancion && j.cancion.secciones && j.cancion.orden != null).sort((a, b) => (a.cancion.orden ?? 99) - (b.cancion.orden ?? 99)) : [];
   // la página aprende el piano, el bajo y la percusión de la base original y de las colecciones encendidas; de las demás solo usa
   // los vientos, así que de esas va nada más eso (el resto queda en base_tumbaos.json, para los análisis)
   const B = JSON.parse(json), encendida = c => !c || !!((B.colecciones || {})[c] || {}).encendida;

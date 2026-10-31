@@ -330,7 +330,9 @@
   const GM_APP = {
     35: 'kick', 36: 'kick', 37: 'rim', 38: 'snare', 40: 'snare', 39: 'palito', 41: 'tomL', 43: 'tomL', 45: 'tomL', 47: 'tomH', 48: 'tomH', 50: 'tomH',
     42: 'hhC', 44: 'hhP', 46: 'hhO', 49: 'crash', 52: 'crash', 55: 'crash', 57: 'crash', 51: 'ride', 59: 'ride', 53: 'rideBell', 54: 'maraca',
-    56: 'bell', 60: 'bongoH', 61: 'bongoL', 62: 'congaS', 63: 'congaO', 64: 'salidor', 65: 'timbalH', 66: 'timbalL', 67: 'bongoBell', 68: 'bell',
+    // campanas: la 56 es casi siempre la boca de la campana del bongó, la 68 el contracampaneo y la 67, cuando aparece, el
+    // talón del bongó en otra nota (investigacion_campana.md, con el corpus)
+    56: 'bongoBell', 60: 'bongoH', 61: 'bongoL', 62: 'congaS', 63: 'congaO', 64: 'salidor', 65: 'timbalH', 66: 'timbalL', 67: 'bongoBellC', 68: 'bell',
     69: 'maraca', 70: 'maraca', 73: 'guiroS', 74: 'guiroL', 75: 'clave', 76: 'palito', 77: 'block', 82: 'maraca'
   };
   const digito = v => String(Math.max(1, Math.min(9, Math.round(v / 127 * 9))));

@@ -122,7 +122,7 @@ ${vientosStaff}    \\new PianoStaff <<
 
   // ---------- MIDI del resultado (piano, bajo, percusión General MIDI)
   const APP_GM = { clave: 75, palito: 76, block: 77, cascara: 37, congaO: 63, congaS: 62, congaH: 62, muff: 62, salidor: 64, tresdos: 63, quintoO: 63, quintoS: 62,
-    bongoH: 60, bongoL: 61, bongoM: 60, bell: 56, bellC: 56, bongoBell: 67, bongoBellC: 67, campana: 56, maraca: 70, guiroS: 73, guiroL: 74, timbalH: 65, timbalL: 66, plato: 57,
+    bongoH: 60, bongoL: 61, bongoM: 60, bell: 68, bellC: 68, bongoBell: 56, bongoBellC: 56, campana: 68, maraca: 70, guiroS: 73, guiroL: 74, timbalH: 65, timbalL: 66, plato: 57,
     kick: 36, bombo: 36, snare: 38, rim: 37, hhC: 42, hhP: 44, hhO: 46, ride: 51, rideBell: 53, crash: 49, tomH: 50, tomL: 45 };
   // o.porFamilia: una pista de percusión por familia (para el DAW); o.perc: golpes por compás que reemplazan a res.perc
   // (por ejemplo, los que tocó la página). Las secciones de una canción van como marcadores.
