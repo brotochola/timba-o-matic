@@ -51,5 +51,27 @@ const pistasPerc = mid.pistas.filter(p => p.nombre in TM.FAMILIAS);
 ok(pistasPerc.reduce((a, p) => a + p.notas.length, 0) === perc.filter(n => TM.APP_GM[n.drum]).length, 'MIDI: los mismos golpes que suenan, también los de la percusión clásica');
 ok(pistasPerc.every(p => p.notas.every(x => TM.familiaPerc(Object.keys(TM.APP_GM).find(d => TM.APP_GM[d] === x.alt && TM.familiaPerc(d) === p.nombre) || '') === p.nombre)), 'MIDI: cada golpe en la pista de su familia');
 console.log(`${perc.length} golpes · ${ms.length} compases · marcas: ${(score.marks || []).map(x => x.text).join(' | ')} · MIDI: ${mid.pistas.map(p => p.nombre).join(', ')}`);
+
+// percusión clásica con los patrones de las fuentes (Kevin Moore, Beyond Salsa Percussion, tabla p. 22; James Dreier, «Timba Groove #1»)
+const clasica = { titulo: 'Clásica', clave: 'son 2-3', perillas: { p_fuente: 'clasica' }, secciones: [
+  { id: 'c', nombre: 'Cuerpo', prog: 'Am Dm E7 Am', marcha: 'cuerpo', semilla: 1 },
+  { id: 'k', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', semilla: 2 },
+  { id: 'b', nombre: 'Bomba', prog: 'Am Am E7 E7', marcha: 'bomba', semilla: 3 },
+  { id: 'p', nombre: 'Presión', prog: 'Am Am E7 E7', marcha: 'presion', semilla: 4 }] };
+const rc = TM.generarCancion(clasica, M);
+ctx.__percMotor = { id: 'motor-2', compases: rc.perc, extra: rc.extra, mix: rc.mixes, estilo: rc.estilos };
+const sc = evaluate(parse(TM.aLilyPond(rc, { clave: 'son 2-3', bpm: 190, percusionId: 'motor-2' }))), notas2 = buildNotes(sc).filter(n => n.part === 'perc');
+const msc = sc.measures, en = (b, d) => notas2.filter(n => n.drum === d && n.t >= msc[b].start && n.t < msc[b].end).map(n => Math.round((n.t - msc[b].start) / ((msc[b].end - msc[b].start) / 16))).sort((a, b) => a - b).join(',');
+const sec = id => rc.secciones.find(s => s.id === id), lado = b => rc.lados[b];
+const k0 = sec('k').inicio;
+ok([0, 1, 2, 3].every(i => en(k0 + i, 'kick') === (lado(k0 + i) === 'B' ? '0,6' : '2,8,12')), 'coro: el bombo de la marcha de timba (lado 2: 1 y 2&; lado 3: 1&, 3 y 4)');
+ok(en(k0, 'bell') && !en(k0, 'cascara') && en(k0, 'bongoBell'), 'coro: el timbalero pasa de la cáscara a la campana, con la campana del bongó');
+ok([0, 1].every(i => en(k0 + i, 'bongoBellC').split(',').includes('6') === (lado(k0 + i) === 'A')), 'campana del bongó: sin el talón del 2& en el lado 2');
+const c0 = sec('c').inicio;
+ok(en(c0, 'cascara') && en(c0, 'guiroL') && en(c0, 'timbalL') === '6,12', 'cuerpo: cáscara, güiro y la izquierda en el timbal grave (6 y 12)');
+const b0 = sec('b').inicio, bajoB = rc.bajo.filter(e => e.p >= b0 * 16 && e.p < (b0 + sec('b').compases) * 16);
+ok(en(b0, 'ride') && bajoB.some(e => /glissando/.test(e.art)), 'bomba: ride en la batería y el bajo deslizándose');
+const p0 = sec('p').inicio, kp = [0, 1, 2, 3].map(i => en(p0 + i, 'kick'));
+ok(kp.slice(0, 3).every(x => !x.split(',').includes('2')), 'presión: el bombo del 2 no va en cada lado 3, solo al final de la frase');
 console.log(fallas ? fallas + ' fallas' : 'cadena bien');
 process.exit(fallas ? 1 : 0);

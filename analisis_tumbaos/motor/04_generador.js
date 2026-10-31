@@ -23,6 +23,8 @@
     marcha: { dens: 1, oct: 1, blq: 1, semi: 1, perc: 'marcha', bajo: 'aprendido', marca: 'Coro · marcha' },
     mambo: { dens: 1, oct: 0.8, blq: 1.8, semi: 1, perc: 'mambo', bajo: 'aprendido', marca: 'Mambo · marcha de mambo' },
     presion: { dens: 0.62, oct: 0.4, blq: 2.2, semi: 0.3, perc: 'presion', bajo: 'pedal', marca: 'Presión' },
+    // bomba: el otro breakdown de la timba (Kevin Moore, Beyond Salsa Percussion); el bajo se desliza por la cuerda grave
+    bomba: { dens: 0.85, oct: 0.7, blq: 1.4, semi: 0.6, perc: 'bomba', bajo: 'deslizado', marca: 'Bomba' },
     despelote: { dens: 1.2, oct: 0.8, blq: 1.6, semi: 2.5, rep: 0.6, perc: 'despelote', bajo: 'deslizado', marca: 'Despelote' },
     muela: { dens: 0.55, oct: 0.15, blq: 0.5, semi: 0, perc: 'muela', bajo: 'muela', marca: 'Muela' }
   };
@@ -373,7 +375,8 @@
     const grave = ch => 28 + ((ch.raiz - 4 + 12) % 12);   // la raíz en la octava más grave del bajo (mi a re#)
     if (estiloBajo === 'pedal' || estiloBajo === 'largas') {
       // nota pedal: una sola nota grave (la raíz del primer acorde) sostenida; se vuelve a tocar cada 4 compases para que no se apague.
-      // notas largas (el «pedal» de Kevin Moore): la raíz cada dos compases, sostenida mientras no cambia
+      // notas largas (el «pedal» de Kevin Moore en timba.com, «Gears in Action» 1: «notas largas y sostenidas, que cambian a lo
+      // sumo cada uno o dos pasos básicos»): la raíz cada dos compases, sostenida mientras no cambia
       let ultima = null, desde = 0;
       for (let b = 0; b < nb; b += 2) {
         const ch = estiloBajo === 'pedal' ? acordesDe(0)[0] : acordesDe(b)[0], m = grave(ch), L_ = Math.min(2, nb - b) * 16;

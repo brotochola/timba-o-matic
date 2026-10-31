@@ -11,8 +11,8 @@
   const PERC = ['clave', 'congas', 'bongo', 'campanas', 'timbales', 'guiro', 'bateria'];
   const PISTAS = ['piano', 'bajo', ...PERC];
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
-  const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', despelote: 'despelote', muela: 'muela' };
-  const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', despelote: 'despelote', muela: 'muela' };
+  const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
+  const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
   // transiciones, en semicorcheas del último compás de la sección.
   // Abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2.
   // Cierre: toda la banda junta sobre la clave, el último golpe anticipado al acorde que viene. Corte: golpe en el 1 y silencio.

@@ -367,8 +367,8 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
         </span>
       </div>
       <div class="sec-flds">
-        <label class="fld"><span>Tipo</span><select id="sc-tipo"><option value="">elegí…</option><option value="intro">Intro</option><option value="cuerpo">Cuerpo (verso)</option><option value="coro">Coro / montuno</option><option value="mambo">Mambo</option><option value="mona">Moña</option><option value="presion">Presión</option><option value="despelote">Despelote</option><option value="muela">Muela</option><option value="bloque">Bloque</option><option value="final">Final</option></select></label>
-        <label class="fld"><span>Marcha</span><select id="tb-gear"><option value="cuerpo">Cuerpo</option><option value="marcha" selected>Coro · marcha</option><option value="mambo">Mambo</option><option value="presion">Presión</option><option value="despelote">Despelote</option><option value="muela">Muela</option></select></label>
+        <label class="fld"><span>Tipo</span><select id="sc-tipo"><option value="">elegí…</option><option value="intro">Intro</option><option value="cuerpo">Cuerpo (verso)</option><option value="coro">Coro / montuno</option><option value="mambo">Mambo</option><option value="mona">Moña</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option><option value="bloque">Bloque</option><option value="final">Final</option></select></label>
+        <label class="fld"><span>Marcha</span><select id="tb-gear"><option value="cuerpo">Cuerpo</option><option value="marcha" selected>Coro · marcha</option><option value="mambo">Mambo</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option></select></label>
         <label class="fld"><span>Onda del piano</span><select id="tb-onda"><option value="pupy" selected>Pupy</option><option value="melon">Melón</option><option value="tirso">Tirso / Charanga</option><option value="songo">Songo setentoso</option><option value="salsa">Montuno de salsa</option><option value="libre">Libre</option></select></label>
         <label class="fld"><span>Compases</span><select id="cg-n"><option>2</option><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label>
         <label class="fld"><span>Vueltas</span><select id="sc-vueltas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option><option>8</option></select></label>
@@ -1061,7 +1061,7 @@ function buildComp(score){
   const marks=score.marks||[];
   const gearOf=s=>{s=(s||'').toLowerCase();
     return /corte|bloque/.test(s)?'corte':/final/.test(s)?'final':/presi[oó]n|pedal/.test(s)?'presion':/bomba/.test(s)?'bomba':
-      /muela|hablado/.test(s)?'muela':/despelote|masacote|mazacote/.test(s)?'despelote':/rumba|guaguanc/.test(s)?'rumba':
+      /muela|hablado/.test(s)?'muela':/masacote|mazacote/.test(s)?'presion':/despelote/.test(s)?'despelote':/rumba|guaguanc/.test(s)?'rumba':
       /estrofa|o[íi]d|trono|cuerpo/.test(s)?'verso':/coronados/.test(s)?'break':/mambo/.test(s)?'mambo':'marcha'};
   const markAt=t=>{let k=null;for(const x of marks){if(x.t<=t)k=x;else break}return k};
   // onsets of written notes per measure (for bloques, the whole band hits together)
@@ -1124,9 +1124,10 @@ function buildComp(score){
               [[2,'quintoS'],[3,'quintoS'],[5,'quintoO'],[6,'quintoO'],[7,'quintoS']]];
     const quinto=(k,full)=>{const ph=QF[(bi*7+3)%QF.length];(full?ph:ph.slice(-2)).forEach(([p,d])=>D(t0+p*E,d,(d==='quintoS'?.85:.7)*k))};
     const lastBar=m.end>=secEnd-1, firstBar=t0<=secStart+1;
-    // batería / timbal (songo-timba): el bombo cae entre las notas del bajo ("bombos" a contratiempo)
+    // batería / timbal (songo-timba). Bombo de la marcha: el «standard timba marcha kick» de Kevin Moore (Beyond Salsa
+    // Percussion, tabla de la p. 22; también la opción 2 de «Timba Groove #1» de James Dreier): lado 2 en el 1 y el 2&, lado 3 en el 1&, el 3 y el 4
     const kit={
-      kickM:two?[1,5]:[3,7], hat:[2,6],
+      kickM:two?[0,3]:[1,4,6], hat:[2,6],
       fill:k=>{[[4,'tomH',.8],[5,'tomH',.7],[6,'tomL',.85],[7,'snare',.9]].forEach(([p,d,v])=>D(t0+p*E,d,v*k))}
     };
     // conga "bota": la marcha de la timba (Van Van, Paulito FG, Manolito y su Trabuco) — manoteo en todos los pulsos, slaps en 3 de cada 8
@@ -1134,15 +1135,19 @@ function buildComp(score){
       for(let p=0;p<8;p++){const c=pat[p];if(c==='.')continue;
         D(t0+p*E,c==='s'?'congaS':c==='o'?'congaO':(p%2?'muff':'congaH'),(c==='s'?.85:c==='o'?.95:(p%2?.38:.5))*k)}};
     const martillo=k=>[[0,'bongoH',.6],[1,'bongoM',.35],[2,'bongoH',.5],[3,'bongoM',.35],[4,'bongoH',.6],[5,'bongoM',.35],[6,'bongoL',.75],[7,'bongoM',.4]].forEach(([p,d,v])=>D(t0+p*E,d,v*k));
-    const campanaB=k=>[[0,'bongoBell',.9],[2,'bongoBellC',.6],[3,'bongoBellC',.4],[4,'bongoBell',.85],[6,'bongoBellC',.6],[7,'bongoBellC',.4]].forEach(([p,d,v])=>D(t0+p*E,d,v*k));
+    // campana del bongó: el campaneo de Moore (p. 22): boca en el 1 y el 3, talón en el resto; en el lado 2 no hay talón en el 2&
+    const campanaB=k=>[[0,'bongoBell',.9],[2,'bongoBellC',.6],...(two?[]:[[3,'bongoBellC',.4]]),[4,'bongoBell',.85],[6,'bongoBellC',.6],[7,'bongoBellC',.4]].forEach(([p,d,v])=>D(t0+p*E,d,v*k));
     const guiro=k=>[[0,'guiroL',.6],[2,'guiroS',.45],[3,'guiroS',.4],[4,'guiroL',.55],[6,'guiroS',.45],[7,'guiroS',.4]].forEach(([p,d,v])=>D(t0+p*E,d,v*k));
-    const campanaT=k=>(two?[0,2,4,5,7]:[0,2,3,5,6]).forEach(p=>D(t0+p*E,'bell',(p===0||p===4?.95:.65)*k));
+    // campana del timbal: el contracampaneo de Moore (p. 22), sin el 1 en el lado 3
+    const campanaT=k=>(two?[0,2,4,5,6,7]:[1,2,3,4,6,7]).forEach(p=>D(t0+p*E,'bell',(p%2?.6:.9)*k));
+    // acentos de la cáscara (Moore p. 22 y Dreier): lado 2 en el 1, el 2 y el 3&; lado 3 en el 1, el 2& y el 3&
+    const acentoC=two?[0,2,5]:[0,3,5];
     const abanico=k=>{[[4,'timbalH',.7],[5,'timbalH',.6],[6,'timbalL',.8],[7,'timbalL',.95]].forEach(([p,d,v])=>D(t0+p*E,d,v*k))};
     if(sty==='presion'){            // pedal / presión: se caen congas y bajo; quedan clave, bombo y charles (Branly / Calixto)
       const k=.75+.55*prog;
       P8(clave,'clave',.95);
       P8([0,3,4,7],'hhC',p=>(p%4===0?.75:.55)*k);
-      P8([4,6],'kick',.95*k); if(!two)D(t0+1*E,'kick',.7*k);
+      P8([4,6],'kick',.95*k); if(!two&&barInPhrase===3)D(t0+1*E,'kick',.7*k);
       if(barInPhrase===3)P8([2,6],'snare',.35*k);
       if(lastBar)kit.fill(1.1);
       return;
@@ -1172,25 +1177,25 @@ function buildComp(score){
       return;
     }
     if(sty==='rumba'){
-      P8(clave,'clave',1.5);P8(palitos,'palito',p=>clave.includes(p)?1.7:1.2);guaguanco(1.75);quinto(1.8,true);P8([0,2,4,6],'maraca',.9);
+      P8(clave,'clave',1.5);P8(palitos,'palito',p=>clave.includes(p)?1.7:1.2);guaguanco(1.75);quinto(1.8,true);
       return;
     }
     if(sty==='break'){P8(clave,'clave',.55);D(t0,'salidor',.55);if(barInPhrase===3)quinto(.6,false);return}
     if(sty==='verso'){
-      P8(clave,'clave',.75);P8(palitos,'cascara',p=>clave.includes(p)?.7:.45);guaguanco(.62);martillo(.8);
+      P8(clave,'clave',.75);P8(palitos,'cascara',p=>acentoC.includes(p)?.7:.45);D(t0+3*E,'timbalL',.4);D(t0+6*E,'timbalL',.7);
+      guaguanco(.62);martillo(.8);guiro(.6);
       if(barInPhrase===3)quinto(.65,false);
-      P8([0,2,4,6],'maraca',.4);
       P8([2,6],'hhC',.3); if(!two)D(t0+3*E,'kick',.4);
       return;
     }
-    // mambo y coros: guaguancó a pleno, campana del bongó y el quinto en los finales de frase
-    P8(clave,'clave',.9);if(sty!=='mambo')P8(palitos,'cascara',p=>clave.includes(p)?.6:.4);(sty==='marcha'||sty==='mambo')?bota(1.05):guaguanco(1);
-    campanaB(1);guiro(.9);
+    // mambo y coros (marcha arriba): conga bota, las dos campanas (el timbalero deja la cáscara: Moore, Beyond Salsa
+    // Percussion vol. 3, cap. 2), güiro y el quinto en los finales de frase
+    P8(clave,'clave',.9);(sty==='marcha'||sty==='mambo')?bota(1.05):guaguanco(1);
+    campanaB(1);campanaT(1);guiro(.9);
     if(barInPhrase===3)quinto(.9,true);
-    for(let p=0;p<8;p++)D(t0+p*E,'maraca',p%2?.4:.65);
     // marcha: bombo entre las notas del bajo y charles con el pie; marcha de mambo: platillo ride, crash y redobles
     P8(kit.kickM,'kick',.75); P8(kit.hat,'hhC',.38);
-    if(sty==='mambo'){campanaT(1);P8([0,4],'ride',.45); if(firstBar)D(t0,'crash',.75); if(lastBar)abanico(1.05)}
+    if(sty==='mambo'){P8([0,4],'ride',.45); if(firstBar)D(t0,'crash',.75); if(lastBar)abanico(1.05)}
     else if(lastBar)abanico(.8);
     }
   });
@@ -3523,6 +3528,8 @@ window.PACK_DATA={"manifest": {"perc": {"clave": {"layers": [["k/clave_0_0.mp3"]
     marcha: { dens: 1, oct: 1, blq: 1, semi: 1, perc: 'marcha', bajo: 'aprendido', marca: 'Coro · marcha' },
     mambo: { dens: 1, oct: 0.8, blq: 1.8, semi: 1, perc: 'mambo', bajo: 'aprendido', marca: 'Mambo · marcha de mambo' },
     presion: { dens: 0.62, oct: 0.4, blq: 2.2, semi: 0.3, perc: 'presion', bajo: 'pedal', marca: 'Presión' },
+    // bomba: el otro breakdown de la timba (Kevin Moore, Beyond Salsa Percussion); el bajo se desliza por la cuerda grave
+    bomba: { dens: 0.85, oct: 0.7, blq: 1.4, semi: 0.6, perc: 'bomba', bajo: 'deslizado', marca: 'Bomba' },
     despelote: { dens: 1.2, oct: 0.8, blq: 1.6, semi: 2.5, rep: 0.6, perc: 'despelote', bajo: 'deslizado', marca: 'Despelote' },
     muela: { dens: 0.55, oct: 0.15, blq: 0.5, semi: 0, perc: 'muela', bajo: 'muela', marca: 'Muela' }
   };
@@ -3873,7 +3880,8 @@ window.PACK_DATA={"manifest": {"perc": {"clave": {"layers": [["k/clave_0_0.mp3"]
     const grave = ch => 28 + ((ch.raiz - 4 + 12) % 12);   // la raíz en la octava más grave del bajo (mi a re#)
     if (estiloBajo === 'pedal' || estiloBajo === 'largas') {
       // nota pedal: una sola nota grave (la raíz del primer acorde) sostenida; se vuelve a tocar cada 4 compases para que no se apague.
-      // notas largas (el «pedal» de Kevin Moore): la raíz cada dos compases, sostenida mientras no cambia
+      // notas largas (el «pedal» de Kevin Moore en timba.com, «Gears in Action» 1: «notas largas y sostenidas, que cambian a lo
+      // sumo cada uno o dos pasos básicos»): la raíz cada dos compases, sostenida mientras no cambia
       let ultima = null, desde = 0;
       for (let b = 0; b < nb; b += 2) {
         const ch = estiloBajo === 'pedal' ? acordesDe(0)[0] : acordesDe(b)[0], m = grave(ch), L_ = Math.min(2, nb - b) * 16;
@@ -4057,7 +4065,7 @@ window.PACK_DATA={"manifest": {"perc": {"clave": {"layers": [["k/clave_0_0.mp3"]
     };
     const nb = res.compases;
     const cif = res.acordes.map(cs => cs.map(c => RAICES[c.raiz] + (cs.length > 1 ? '2' : '1') + (LYQ[c.q] ?? '')).join(' ')).join(' | ');
-    const DIN = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', despelote: '\\ff', muela: '\\p' };
+    const DIN = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', bomba: '\\f', despelote: '\\ff', muela: '\\p' };
     // secciones de una canción: cada una con su marca, su doble barra y su dinámica (si cambia)
     const secs = res.secciones || [{ inicio: 0, compases: nb, marcha: res.marcha, texto: res.marca }];
     const conDin = a => {
@@ -4148,8 +4156,8 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   const PERC = ['clave', 'congas', 'bongo', 'campanas', 'timbales', 'guiro', 'bateria'];
   const PISTAS = ['piano', 'bajo', ...PERC];
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
-  const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', despelote: 'despelote', muela: 'muela' };
-  const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', despelote: 'despelote', muela: 'muela' };
+  const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
+  const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
   // transiciones, en semicorcheas del último compás de la sección.
   // Abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2.
   // Cierre: toda la banda junta sobre la clave, el último golpe anticipado al acorde que viene. Corte: golpe en el 1 y silencio.
@@ -4532,14 +4540,14 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     salsa:'El montuno de salsa, aprendido de los temas de salsa de la base.',
     libre:'Sin ajustes de estilo: las perillas de la canción tal cual.'};
   const PISTAS=[['piano','Piano'],['bajo','Bajo'],['clave','Clave'],['congas','Congas'],['bongo','Bongó'],['campanas','Campana'],['timbales','Timbales'],['guiro','Güiro'],['bateria','Batería']];
-  const MARCHA_TXT={cuerpo:'Cuerpo',marcha:'Coro',mambo:'Mambo',presion:'Presión',despelote:'Despelote',muela:'Muela'};
+  const MARCHA_TXT={cuerpo:'Cuerpo',marcha:'Coro',mambo:'Mambo',presion:'Presión',bomba:'Bomba',despelote:'Despelote',muela:'Muela'};
   // tipos de sección: marcha, cómo entra, cómo termina y qué pistas no tocan. En salsa el bongó y el timbal pasan a las campanas
   // recién en el coro (en el cuerpo: martillo y cáscara), el abanico del timbal lleva del cuerpo al coro y el plato del
   // timbalero marca la entrada de las partes fuertes. En la presión (pedal) la percusión se cae salvo la clave y el bombo.
   const TIPOS={intro:{n:'Intro',marcha:'cuerpo',trans:'abanico',sin:['campanas'],compases:4,vueltas:1},
     cuerpo:{n:'Cuerpo',marcha:'cuerpo',trans:'abanico',sin:['campanas']},coro:{n:'Coro',marcha:'marcha',trans:'ninguna',entrada:'plato'},
     mambo:{n:'Mambo',marcha:'mambo',trans:'cierre',entrada:'plato'},mona:{n:'Moña',marcha:'mambo',trans:'ninguna',entrada:'plato'},
-    presion:{n:'Presión',marcha:'presion',trans:'cierre'},despelote:{n:'Despelote',marcha:'despelote',trans:'ninguna',entrada:'plato'},
+    presion:{n:'Presión',marcha:'presion',trans:'cierre'},bomba:{n:'Bomba',marcha:'bomba',trans:'cierre'},despelote:{n:'Despelote',marcha:'despelote',trans:'ninguna',entrada:'plato'},
     muela:{n:'Muela',marcha:'muela',trans:'ninguna'},bloque:{n:'Bloque',marcha:'marcha',trans:'cierre',compases:2,vueltas:1},
     final:{n:'Final',marcha:'marcha',trans:'corte',compases:4,vueltas:1}};
   const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}, load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(_){return d}};
@@ -4952,6 +4960,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     marcha:'Coro · marcha: el tumbao propio del tema, campanas y congas con abiertos; el bajo pegado a la clave.',
     mambo:'Mambo: más bloques y terceras en el piano para dejar lugar a los vientos; campana de timbal y ride.',
     presion:'Presión: se caen bajo y congas; piano ralo en terceras, bombo y charles empujando hasta el final.',
+    bomba:'Bomba: el otro breakdown de la timba (Moore); bombo y caja «funk», ride, congas a pleno y sin campana; el bajo se desliza por la cuerda grave.',
     despelote:'Despelote: todo empuja; notas repetidas y terceras en el piano, caja en 2 y 4.',
     muela:'Muela: casi todo se apaga para que el cantante hable con el público; notas sueltas.'};
   const CLAVES={'rumba 3-2':'Clave de rumba: el tercer golpe del lado 3 se atrasa al 4&. Empieza por el lado 3 (tres golpes).',

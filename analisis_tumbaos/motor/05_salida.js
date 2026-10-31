@@ -61,7 +61,7 @@
     };
     const nb = res.compases;
     const cif = res.acordes.map(cs => cs.map(c => RAICES[c.raiz] + (cs.length > 1 ? '2' : '1') + (LYQ[c.q] ?? '')).join(' ')).join(' | ');
-    const DIN = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', despelote: '\\ff', muela: '\\p' };
+    const DIN = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', bomba: '\\f', despelote: '\\ff', muela: '\\p' };
     // secciones de una canción: cada una con su marca, su doble barra y su dinámica (si cambia)
     const secs = res.secciones || [{ inicio: 0, compases: nb, marcha: res.marcha, texto: res.marca }];
     const conDin = a => {
