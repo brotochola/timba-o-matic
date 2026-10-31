@@ -1,0 +1,529 @@
+{
+ "_titulo": "Mambos de salsa (vientos)",
+ "_ayuda": "MIDIs y partituras bajados para estudiar los arreglos de vientos. fuente = página de origen.",
+ "Chayanne - Marianna Mambo.mid": {
+  "titulo": "Chayanne · Marianna Mambo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/chayanne/marianna-mambo-midi/",
+  "vientos": "brass, trompeta, sax, baritono, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "Chayanne; demo gratuito de mididb.com"
+ },
+ "Chayanne - Mira Ven Ven.mid": {
+  "titulo": "Chayanne · Mira Ven Ven",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/chayanne/mira-ven-ven-midi/",
+  "vientos": "brass, trombon, sax, baritono (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Chayanne - Ay Mam.mid": {
+  "titulo": "Chayanne · Ay Mam",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/chayanne/ay-mam-midi/",
+  "vientos": "trompeta, trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Abriendo Puertas.mid": {
+  "titulo": "Gloria Estefan · Abriendo Puertas",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/abriendo-puertas-midi/",
+  "vientos": "trompeta, sord, brass, sax, alto, trombon (4 pista(s) con vientos de 12)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Cuando Hay Amor.mid": {
+  "titulo": "Gloria Estefan · Cuando Hay Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/cuando-hay-amor-midi/",
+  "vientos": "trompeta, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Gloria Estefan Medley.mid": {
+  "titulo": "Gloria Estefan · Gloria Estefan Medley",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/gloria-estefan-medley-midi/",
+  "vientos": "trompeta, trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - La Parranda.mid": {
+  "titulo": "Gloria Estefan · La Parranda",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/la-parranda-midi/",
+  "vientos": "sax, alto, trombon, brass, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Montuno.mid": {
+  "titulo": "Gloria Estefan · Montuno",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/montuno-midi/",
+  "vientos": "brass, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Oye.mid": {
+  "titulo": "Gloria Estefan · Oye",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/oye-midi/",
+  "vientos": "synth, brass, sax, alto (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Oye Mi Canto.mid": {
+  "titulo": "Gloria Estefan · Oye Mi Canto",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/oye-mi-canto-midi/",
+  "vientos": "synth, brass, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Tres Deseos.mid": {
+  "titulo": "Gloria Estefan · Tres Deseos",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/tres-deseos-midi/",
+  "vientos": "sax, alto, brass, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan - Turn The Beat Around.mid": {
+  "titulo": "Gloria Estefan · Turn The Beat Around",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/gloria-estefan/turn-the-beat-around-midi/",
+  "vientos": "brass, trompeta, sax, alto (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Gloria Estefan And The Miami Sound Machine - Sobe Son.mid": {
+  "titulo": "Gloria Estefan And The Miami Sound Machine · Sobe Son",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/gloria-estefan-and-the-miami-sound-machine/sobe-son-midi/",
+  "vientos": "brass, synth (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Grupo Niche - La Canoa Rancha.mid": {
+  "titulo": "Grupo Niche · La Canoa Rancha",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/grupo-niche/la-canoa-rancha-midi/",
+  "vientos": "trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Isaac Delgado - La Vida Es Un Carnaval.mid": {
+  "titulo": "Isaac Delgado · La Vida Es Un Carnaval",
+  "estilo": "timba",
+  "fuente": "https://www.mididb.com/isaac-delgado/la-vida-es-un-carnaval-midi/",
+  "vientos": "brass, trompeta, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Jennifer Lopez - Lets Get Loud.mid": {
+  "titulo": "Jennifer Lopez · Lets Get Loud",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jennifer-lopez/lets-get-loud-midi/",
+  "vientos": "sax, alto, brass, trompeta, baritono (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Jennifer Lopez - Si Ya Se Acabo.mid": {
+  "titulo": "Jennifer Lopez · Si Ya Se Acabo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jennifer-lopez/si-ya-se-acabo-midi/",
+  "vientos": "brass, corno (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Jennifer Lopez - Dame.mid": {
+  "titulo": "Jennifer Lopez · Dame",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/jennifer-lopez/dame-midi/",
+  "vientos": "brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Johnny Colon - Boogaloo Blues.mid": {
+  "titulo": "Johnny Colon · Boogaloo Blues",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/johnny-colon/boogaloo-blues-midi/",
+  "vientos": "sax, tenor, trompeta, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Juan Luis Guerra - A Pedir La Mano.mid": {
+  "titulo": "Juan Luis Guerra · A Pedir La Mano",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/juan-luis-guerra/a-pedir-la-mano-midi/",
+  "vientos": "brass, sax, alto, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Juan Luis Guerra - Rosalia.mid": {
+  "titulo": "Juan Luis Guerra · Rosalia",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/juan-luis-guerra/rosalia-midi/",
+  "vientos": "brass, sax, alto, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Juan Luis Guerra - Visa Para Un Sueno.mid": {
+  "titulo": "Juan Luis Guerra · Visa Para Un Sueno",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/juan-luis-guerra/visa-para-un-sueno-midi/",
+  "vientos": "brass, sax, alto, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Latino - Cula Cula.mid": {
+  "titulo": "Latino · Cula Cula",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/latino/cula-cula-midi/",
+  "vientos": "trombon, sax, alto, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Latino - El Salpicato.mid": {
+  "titulo": "Latino · El Salpicato",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/latino/el-salpicato-midi/",
+  "vientos": "brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Los Latin Brothers - Como Te Va.mid": {
+  "titulo": "Los Latin Brothers · Como Te Va",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/los-latin-brothers/como-te-va-midi/",
+  "vientos": "trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Los Corraleros De Majagual - Hace Un Mes.mid": {
+  "titulo": "Los Corraleros De Majagual · Hace Un Mes",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/los-corraleros-de-majagual/hace-un-mes-midi/",
+  "vientos": "sax, alto, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Mambo Kings - Bella Maria.mid": {
+  "titulo": "Mambo Kings · Bella Maria",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/mambo-kings/bella-maria-midi/",
+  "vientos": "brass, trombon, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Manny Manuel - Mi Problema.mid": {
+  "titulo": "Manny Manuel · Mi Problema",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/manny-manuel/mi-problema-midi/",
+  "vientos": "brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Manny Manuel - Se Me Sube.mid": {
+  "titulo": "Manny Manuel · Se Me Sube",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/manny-manuel/se-me-sube-midi/",
+  "vientos": "brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Marc Anthony - I Need To Know.mid": {
+  "titulo": "Marc Anthony · I Need To Know",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/i-need-to-know-midi/",
+  "vientos": "sax, alto, brass, baritono, tenor, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "Large full horn section (5 brass/sax programs); demo gratuito de mididb.com"
+ },
+ "Marc Anthony - Parece Mentira.mid": {
+  "titulo": "Marc Anthony · Parece Mentira",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/parece-mentira-midi/",
+  "vientos": "trombon, trompeta, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Marc Anthony - Vivir Lo Nuestro.mid": {
+  "titulo": "Marc Anthony · Vivir Lo Nuestro",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/vivir-lo-nuestro-midi/",
+  "vientos": "trombon, trompeta, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Marc Anthony - Vivir Mi Vida Version Pop.mid": {
+  "titulo": "Marc Anthony · Vivir Mi Vida Version Pop",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/marc-anthony/vivir-mi-vida-version-pop-midi/",
+  "vientos": "brass, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Orquesta Guayacan - El Torero.mid": {
+  "titulo": "Orquesta Guayacan · El Torero",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquesta-guayacan/el-torero-midi/",
+  "vientos": "trombon, sax, alto, trompeta, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ray Sepulveda - No Vale La Pena Enamorarse.mid": {
+  "titulo": "Ray Sepulveda · No Vale La Pena Enamorarse",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ray-sepulveda/no-vale-la-pena-enamorarse-midi/",
+  "vientos": "trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Dame Ms.mid": {
+  "titulo": "Ricky Martin · Dame Ms",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/dame-ms-midi/",
+  "vientos": "trompeta, trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - La Bomba.mid": {
+  "titulo": "Ricky Martin · La Bomba",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/la-bomba-midi/",
+  "vientos": "brass, trombon, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Livin La Vida Loca.mid": {
+  "titulo": "Ricky Martin · Livin La Vida Loca",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/livin-la-vida-loca-midi/",
+  "vientos": "trombon, brass, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Loaded.mid": {
+  "titulo": "Ricky Martin · Loaded",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/loaded-midi/",
+  "vientos": "brass, trompeta, trombon, sax, baritono (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Lola.mid": {
+  "titulo": "Ricky Martin · Lola",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/lola-midi/",
+  "vientos": "trompeta, brass, corno (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Por Arriba Por Abajo.mid": {
+  "titulo": "Ricky Martin · Por Arriba Por Abajo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/por-arriba-por-abajo-midi/",
+  "vientos": "brass, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - She Bangs.mid": {
+  "titulo": "Ricky Martin · She Bangs",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/she-bangs-midi/",
+  "vientos": "trombon, brass, sax, tenor, alto (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Vive La Vida Loca.mid": {
+  "titulo": "Ricky Martin · Vive La Vida Loca",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/vive-la-vida-loca-midi/",
+  "vientos": "brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - The Cup Of Life.mid": {
+  "titulo": "Ricky Martin · The Cup Of Life",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/the-cup-of-life-midi/",
+  "vientos": "trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ricky Martin - Mara Remix.mid": {
+  "titulo": "Ricky Martin · Mara Remix",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ricky-martin/mara-remix-midi/",
+  "vientos": "trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Sandy Y Papo - Mueve Mueve.mid": {
+  "titulo": "Sandy Y Papo · Mueve Mueve",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/sandy-y-papo/mueve-mueve-midi/",
+  "vientos": "trombon, trompeta, sax, alto, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Tito Rojas - Porque Este Amor.mid": {
+  "titulo": "Tito Rojas · Porque Este Amor",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tito-rojas/porque-este-amor-midi/",
+  "vientos": "trombon, trompeta, brass (3 pista(s) con vientos de 8)",
+  "nota": "Separate trombone, trumpet, brass tracks; demo gratuito de mididb.com"
+ },
+ "Tito Rojas - Senora De Madrugada.mid": {
+  "titulo": "Tito Rojas · Senora De Madrugada",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/tito-rojas/senora-de-madrugada-midi/",
+  "vientos": "trombon, trompeta, sord, brass (4 pista(s) con vientos de 9)",
+  "nota": "Separate trombone, trumpet, muted trumpet, brass tracks; demo gratuito de mididb.com"
+ },
+ "Willy Chirino - Son De La Loma.mid": {
+  "titulo": "Willy Chirino · Son De La Loma",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/willy-chirino/son-de-la-loma-midi/",
+  "vientos": "trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Willy Chirino - Tu Cumpleaos.mid": {
+  "titulo": "Willy Chirino · Tu Cumpleaos",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/willy-chirino/tu-cumpleaos-midi/",
+  "vientos": "sax, alto, trompeta, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Wilfrido Vargas - A Mover La Colita.mid": {
+  "titulo": "Wilfrido Vargas · A Mover La Colita",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/wilfrido-vargas/a-mover-la-colita-midi/",
+  "vientos": "brass, sax, alto (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Wilfrido Vargas - El Baile Del Perrito.mid": {
+  "titulo": "Wilfrido Vargas · El Baile Del Perrito",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/wilfrido-vargas/el-baile-del-perrito-midi/",
+  "vientos": "trompeta, sax, alto, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Ilya Serov Feat Poncho Sanchezt - Tangerine.mid": {
+  "titulo": "Ilya Serov Feat Poncho Sanchezt · Tangerine",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/ilya-serov-feat-poncho-sanchezt/tangerine-midi/",
+  "vientos": "corno, trompeta, brass, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "Latin-jazz/salsa with Poncho Sanchez; demo gratuito de mididb.com"
+ },
+ "Ibrahim Ferrer Omara Portuondo - Silencio.mid": {
+  "titulo": "Ibrahim Ferrer Omara Portuondo · Silencio",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/ibrahim-ferrer-omara-portuondo/silencio-midi/",
+  "vientos": "sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "Bolero with sax tenor; demo gratuito de mididb.com"
+ },
+ "Joe Arroyo - Vuelve.mid": {
+  "titulo": "Joe Arroyo · Vuelve",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/joe-arroyo/vuelve-midi/",
+  "vientos": "trompeta, sord, corno (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "La 33 - La Pantera Rosa Version Mambo.mid": {
+  "titulo": "La 33 · La Pantera Rosa Version Mambo",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/la-33/la-pantera-rosa-version-mambo-midi/",
+  "vientos": "trombon, trompeta, sax, alto, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Los Reyes Del Mambo - La Bella Mara De Mi Corazn.mid": {
+  "titulo": "Los Reyes Del Mambo · La Bella Mara De Mi Corazn",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/los-reyes-del-mambo/la-bella-mara-de-mi-corazn-midi/",
+  "vientos": "trompeta, brass, sax, alto, sord (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Cerezo Rosa.mid": {
+  "titulo": "Perez Prado · Cerezo Rosa",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/cerezo-rosa-midi/",
+  "vientos": "trombon, brass, trompeta, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Guadalajara.mid": {
+  "titulo": "Perez Prado · Guadalajara",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/guadalajara-midi/",
+  "vientos": "trompeta, trombon, sax, alto, tenor, baritono (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Rico Mambo.mid": {
+  "titulo": "Perez Prado · Rico Mambo",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/rico-mambo-midi/",
+  "vientos": "sax, tenor, brass, trombon, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Mama Yo Quiero.mid": {
+  "titulo": "Perez Prado · Mama Yo Quiero",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/mama-yo-quiero-midi/",
+  "vientos": "sax, tenor, alto, brass, baritono, trombon, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Cherry Pink Apple Blossom White.mid": {
+  "titulo": "Perez Prado · Cherry Pink Apple Blossom White",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/cherry-pink-apple-blossom-white-midi/",
+  "vientos": "brass, sax, alto, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Medley Cha Cha Cha.mid": {
+  "titulo": "Perez Prado · Medley Cha Cha Cha",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/medley-cha-cha-cha-midi/",
+  "vientos": "sax, tenor, baritono, trompeta, brass (4 pista(s) con vientos de 14)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Perez Prado - Mambo No 5.mid": {
+  "titulo": "Perez Prado · Mambo No 5",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/perez-prado/mambo-no-5-midi/",
+  "vientos": "trompeta, brass, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Mambo All Stars - Perfidia.mid": {
+  "titulo": "Mambo All Stars · Perfidia",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/mambo-all-stars/perfidia-midi/",
+  "vientos": "sax, baritono, trompeta, trombon, sord, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Mambo Maniacs - Mambo No 5.mid": {
+  "titulo": "Mambo Maniacs · Mambo No 5",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/mambo-maniacs/mambo-no-5-midi/",
+  "vientos": "trompeta, sax, tenor, baritono, sord, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Dave Sherriff - Red Hot Salsa.mid": {
+  "titulo": "Dave Sherriff · Red Hot Salsa",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/dave-sherriff/red-hot-salsa-midi/",
+  "vientos": "brass, trompeta, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Lucy Grau - Last Dance Extended Salsa Version.mid": {
+  "titulo": "Lucy Grau · Last Dance Extended Salsa Version",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/lucy-grau/last-dance-extended-salsa-version-midi/",
+  "vientos": "sax, tenor, trompeta, trombon, brass (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "La Banda El Mexicano - Mambo Lupito.mid": {
+  "titulo": "La Banda El Mexicano · Mambo Lupito",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/la-banda-el-mexicano/mambo-lupito-midi/",
+  "vientos": "synth, brass, sax, alto, trombon (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Luis Cobos - Super Mambo Popurri.mid": {
+  "titulo": "Luis Cobos · Super Mambo Popurri",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/luis-cobos/super-mambo-popurri-midi/",
+  "vientos": "brass, trombon, sax, alto, tenor, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Mambo - Mambo Mix.mid": {
+  "titulo": "Mambo · Mambo Mix",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/mambo/mambo-mix-midi/",
+  "vientos": "brass, sax, tenor, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Standard - Mambo Italiano.mid": {
+  "titulo": "Standard · Mambo Italiano",
+  "estilo": "cubano",
+  "fuente": "https://www.mididb.com/standard/mambo-italiano-midi/",
+  "vientos": "brass, sax, tenor (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Willie Colon Hector Lavoe - Abuelita Willie Colon Y Hector Lavoe.mid": {
+  "titulo": "Willie Colon Hector Lavoe · Abuelita Willie Colon Y Hector Lavoe",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/willie-colon-hector-lavoe/abuelita-willie-colon-y-hector-lavoe-midi/",
+  "vientos": "trombon, trompeta (archivo de 1 pista, vientos por canal)",
+  "nota": "Willie Colon / Hector Lavoe; trombone and trumpet; demo gratuito de mididb.com"
+ },
+ "Orquesta Salsarena 2024 - Mix Musical.mid": {
+  "titulo": "Orquesta Salsarena 2024 · Mix Musical",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/orquesta-salsarena-2024/mix-musical-midi/",
+  "vientos": "trompeta, sax, alto, tenor, trombon, brass, soprano (archivo de 1 pista, vientos por canal)",
+  "nota": "demo gratuito de mididb.com"
+ },
+ "Kirk Franklin - He Reigns Salsa Section.mid": {
+  "titulo": "Kirk Franklin · He Reigns Salsa Section",
+  "estilo": "salsa",
+  "fuente": "https://www.mididb.com/kirk-franklin/he-reigns-salsa-section-midi/",
+  "vientos": "sax, baritono, trombon, brass (3 pista(s) con vientos de 15)",
+  "nota": "demo gratuito de mididb.com"
+ }
+}
