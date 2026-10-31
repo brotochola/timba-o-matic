@@ -155,7 +155,7 @@ for (const [tr, lados] of Object.entries(FIG)) for (const [lado, porL] of Object
   ok(ataques(rf.der) === espPB.join() && ataques(rf.bajo) === espPB.join(), `${caso}: piano y bajo golpean en ${espPB.join(',') || 'nada'} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
   if (espPB !== esp) ok(rf.der.some(x => x.p === S + L && x.ch.nombre === 'Dm'), `${caso}: en la llegada (${L}) el piano ya trae el acorde de la que sigue`);
   ok(ataques(rf.vientos.trompetas) === esp.join(), `${caso}: los vientos golpean con la banda (${ataques(rf.vientos.trompetas)})`);
-  ok([...new Set(rf.perc[u].filter(e => e.p >= desde && e.d !== 'plato').map(e => e.p))].every(q => esp.includes(q)), `${caso}: la percusión solo en los golpes`);
+  ok([...new Set(rf.perc[u].filter(e => e.p >= desde && e.d !== 'plato' && e.d !== 'clave').map(e => e.p))].every(q => esp.includes(q)), `${caso}: la percusión solo en los golpes`);
   const ult = esp[esp.length - 1], e = rf.der.find(x => x.p === S + ult);
   if (ult === L) ok(e && e.ch.nombre === 'Dm', `${caso}: el golpe de la llegada (en ${ult}) ya trae el acorde que viene`);
   else if (ult != null) ok(e && e.ch.nombre !== 'Dm', `${caso}: el último golpe (en ${ult}) es del acorde de ahora`);

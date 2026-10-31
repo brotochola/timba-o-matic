@@ -245,11 +245,14 @@
     // del corpus: ciclos del tipo pedido, prefiriendo la tradición (salsa o cubano), la campana si la sección la tiene y la densidad pedida
     // la tradición de cada tema: salsa, cubano (y timba) u otros géneros (merengue, cumbia, bolero, pop: casi no entran)
     const trad = e => e === 'cubano' || e === 'timba' ? 'cubano' : e === 'otro' ? 'otro' : 'salsa';
+    // lo «cubano» de la base es casi todo mambo de los 50, chachachá y big band (vientos2): con un estilo de timba o de son que
+    // aprende de lo cubano, eso casi no entra (no es timba, y el dueño no quiere el género mambo); con «Aprende de: todos», sí
+    const fueraDeGenero = x => /mambo|chach|cha-cha|big band|latin jazz|swing/i.test(x.genero || '');
     const fuente = kv('v_fuente', 'estilo'), tradicion = fuente === 'estilo' ? opc.estilo : fuente === 'todo' ? null : fuente;
     const pool = (V.porTipo[opc.toca] || []).filter(x => x.n <= 24);
     if (!pool.length) return listo();
     const nMed = pool.map(x => x.n).sort((a, b) => a - b)[pool.length >> 1], meta = nMed * dens;
-    const peso = x => (tradicion ? (trad(tradicion) === trad(x.estilo) ? 1 : trad(x.estilo) === 'otro' ? 0.01 : 0.25) * (/^bolero/.test(x.genero || '') && opc.toca !== 'fondo' ? 0.3 : 1) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4)
+    const peso = x => (tradicion ? (trad(tradicion) === 'cubano' && fueraDeGenero(x) ? 0.01 : trad(tradicion) === trad(x.estilo) ? 1 : trad(x.estilo) === 'otro' ? 0.01 : 0.25) * (/^bolero/.test(x.genero || '') && opc.toca !== 'fondo' ? 0.3 : 1) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4)
       * (x.voces >= 2 || modo !== 'fuente' ? 1 : 0.5) * (Math.abs(dens - 1) < 0.02 ? 1 : Math.exp(-(((x.n - meta) / (meta * 0.45 + 1)) ** 2)))
       // una línea que abarca más de una décima no entra entera en el registro (suele ser un cruce de voces del MIDI): casi no entra
       * (x.ancho > 17 ? Math.exp(-(x.ancho - 17) / 6) : 1);

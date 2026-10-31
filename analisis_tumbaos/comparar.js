@@ -20,12 +20,13 @@ function cadenaPagina() {
   vm.createContext(ctx); vm.runInContext(L.slice(i0, i1).join('\n') + '\n;globalThis.__api={parse,evaluate,buildNotes};', ctx);
   return ctx;
 }
-function modeloDeEntrada() {
+// o.sinLocal: sin las colecciones compradas (lo que oye quien abre la página sin base_local.js)
+function modeloDeEntrada(o = {}) {
   const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'base_tumbaos.json'), 'utf8'));
   const LOCAL = path.join(__dirname, 'base_local.js');
-  let loc = []; if (fs.existsSync(LOCAL)) { require(LOCAL); loc = (globalThis.BASE_TUMBAOS_LOCAL || {}).fuentes || []; }
+  let loc = []; if (!o.sinLocal && fs.existsSync(LOCAL)) { require(LOCAL); loc = (globalThis.BASE_TUMBAOS_LOCAL || {}).fuentes || []; }
   // como la página: el modelo aprende de la base original y de las colecciones encendidas; los vientos, de todos los temas
-  const todas = base.fuentes.concat(loc), cols = { ...base.colecciones, ...((globalThis.BASE_TUMBAOS_LOCAL || {}).colecciones || {}) };
+  const todas = base.fuentes.concat(loc), cols = { ...base.colecciones, ...(o.sinLocal ? {} : (globalThis.BASE_TUMBAOS_LOCAL || {}).colecciones || {}) };
   const M = TM.construirModelo(todas.filter(f => !f.coleccion || !!(cols[f.coleccion] || {}).encendida));
   M.vientos = TM.construirVientos(todas);
   return { base, M };

@@ -1,8 +1,9 @@
 /* =====================================================================
    Exportar: una canción (.json de «Exportar canción») a .mid, como el botón «Bajar MIDI» de la página
-   uso: node analisis_tumbaos/exportar.js cancion.json salida.mid [--loop] [--muestrario]
+   uso: node analisis_tumbaos/exportar.js cancion.json salida.mid [--loop] [--muestrario] [--sin-local]
      --loop: como loop (el final anticipa el principio y no va el primer 1)
      --muestrario: en vez de la canción, una sección de coro por estilo con los acordes de su primera sección
+     --sin-local: sin la colección comprada (base_local.js): lo que oye quien abre la página
    Piano y bajo del motor; la percusión tal como suena (por la cadena de la página), una pista por familia.
    ===================================================================== */
 const fs = require('fs'), path = require('path');
@@ -19,7 +20,7 @@ if (args.includes('--muestrario')) {
   const coro = secs.find(s => s.tipo === 'coro') || secs[0];
   secs = Object.entries(TM.ESTILOS).map(([e, E], i) => ({ id: 'm' + i, nombre: E.n, tipo: 'coro', marcha: 'marcha', estilo: e, prog: coro.prog, vueltas: 2, semilla: 7 + i, plato: 'entra', perillas: {} }));
 }
-const { M } = C.modeloDeEntrada(), ctx = C.cadenaPagina(), { parse, evaluate, buildNotes } = ctx.__api;
+const { M } = C.modeloDeEntrada({ sinLocal: args.includes('--sin-local') }), ctx = C.cadenaPagina(), { parse, evaluate, buildNotes } = ctx.__api;
 const r = TM.generarCancion({ titulo: c.titulo, clave: c.clave, perillas: J.perillas || {}, vientos: c.vientos, loop: loop ? { desde: 0, hasta: secs.length - 1 } : null, secciones: secs }, M);
 ctx.__percMotor = { id: 'motor-x', compases: r.perc, extra: r.extra, mix: r.mixes, estilo: r.estilos };
 const score = evaluate(parse(TM.aLilyPond(r, { clave: c.clave, bpm: c.bpm || 190, percusionId: 'motor-x' }))), notas = buildNotes(score), ms = score.measures;

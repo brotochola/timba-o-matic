@@ -26,7 +26,8 @@
   // timba). Golpe: todos juntos en la llegada. Corte: golpe en el 1 y silencio. Los rellenos de percusión (el abanico: golpe de
   // borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2), abajo
   const GOLPES_FIN = {
-    cierre: (lado, tipo, L) => [...new Set([...(lado === 'B' ? [4, 8] : [0, 6, 12]), L < 16 ? L : 12])].sort((a, b) => a - b),
+    cierre: (lado, tipo, L) => { const c = lado === 'B' ? [4, 8] : tipo === 'rumba' ? [0, 6, 14] : [0, 6, 12];
+      return [...new Set([...c.filter(q => q < L), L < 16 ? L : lado === 'B' ? 12 : c[c.length - 1]])].sort((a, b) => a - b); },
     parada: (lado, tipo) => lado === 'B' ? [4, 8] : tipo === 'rumba' ? [0, 6, 14] : [0, 6, 12],
     contratiempos: (lado, tipo, L) => [2, 6, 10, Math.min(L, 14)],
     tresxcuatro: (lado, tipo, L) => { const p = []; for (let q = L === 16 ? 13 : L; q >= 0; q -= 3) p.unshift(q); return p; },
@@ -58,6 +59,7 @@
     if (top == null) top = ref;
     let inn = null; for (let m = top - 5; m <= top - 3; m++) if (ch.pcs.includes(pc(m))) inn = m;
     let iz = 36 + pc(ch.raiz); if (iz < 41) iz += 12;
+    while (iz >= top - 12 && iz - 12 >= 28) iz -= 12;   // la izquierda debajo de la derecha (no la misma nota en las dos manos)
     return { der: inn != null ? [top - 12, inn, top] : [top - 12, top], izq: [iz] };
   }
   const raizCerca = (ch, ref) => { let best = null; for (let m = 28; m <= 50; m++) if (pc(m) === ch.raiz && (best == null || Math.abs(m - ref) < Math.abs(best - ref))) best = m; return best; };
@@ -212,6 +214,7 @@
           for (const [d, v] of GOLPE) if (suena(on, d) && (r.mix[TM.familiaPerc(d)] ?? 1) > 0) golpes.push({ p: q, d, v });
           if (n === 0 && on.bateria && tr !== 'golpe') golpes.push({ p: q, d: 'crash', v: 0.8 });
         });
+        for (const e of perc[nb - 1] || []) if (e.d === 'clave' && e.p >= desde && suena(on, 'clave') && !golpes.some(g => g.p === e.p && g.d === 'clave')) golpes.push(e);
         perc[nb - 1] = golpes; extra[nb - 1] = (extra[nb - 1] || []).filter(e => e.p < desde);
         // sin golpe anticipado, el bajo de lo que sigue entra con la raíz en el 1; el golpe solo hacia el 1 cae en el 1 que viene
         Object.assign(fin, { ligaAl1: anticipaFin && on.piano, entraSolo: !anticipaFin }); pend = [];
@@ -227,7 +230,7 @@
       // ---------- relleno de percusión en el último compás (si la banda sigue derecho)
       const RL = RELLENOS[s.relleno];
       if (RL && tr === 'ninguna' && on[RL.toca] && (r.mix[RL.toca] ?? 1) > 0) {
-        const quita = e => e.p >= RL.desde && RL.fam.includes(TM.familiaPerc(e.d));
+        const quita = e => e.p >= RL.desde && (RL.fam.includes(TM.familiaPerc(e.d)) || e.d === 'timbalH' || e.d === 'timbalL');
         perc[nb - 1] = (perc[nb - 1] || []).filter(e => !quita(e)); extra[nb - 1] = (extra[nb - 1] || []).filter(e => !quita(e));
         for (const [p, d, v] of RL.golpes) perc[nb - 1].push({ p, d, v: +(v * (r.mix[TM.familiaPerc(d)] ?? 1)).toFixed(3) });
         pend = pend.filter(e => !RL.siguiente.some(x => x.d === e.d) && e.d !== 'crash').concat(RL.siguiente.map(x => ({ ...x })));

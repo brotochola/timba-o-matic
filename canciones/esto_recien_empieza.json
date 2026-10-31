@@ -365,7 +365,8 @@
     "transicion": "ninguna",
     "perillas": {
      "v_forma": "bloque",
-     "b_estilo": "timba"
+     "b_estilo": "timba",
+     "v_fuente": "salsa"
     },
     "nombre": "Coro",
     "tipo": "coro",
@@ -374,7 +375,7 @@
     "vueltas": 4,
     "semilla": 106,
     "semillaBajo": 3,
-    "semillaVientos": 157,
+    "semillaVientos": 269,
     "entra": "4y",
     "plato": "entra",
     "ganchoDe": "p1",
