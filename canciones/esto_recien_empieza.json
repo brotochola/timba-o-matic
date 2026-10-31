@@ -1,0 +1,892 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 1,
+ "cancion": {
+  "version": 2,
+  "titulo": "Esto recién empieza",
+  "orden": 0,
+  "portada": true,
+  "descripcion": "timba entera: el piano solo, coro con respuestas, mambo, presión, bomba, despelote, muela y el gancho que vuelve en capas",
+  "clave": "rumba 2-3",
+  "banda": "timba",
+  "bajoSonido": "bass",
+  "mezcla": {},
+  "bpm": 196,
+  "vientos": {
+   "formato": "timba"
+  },
+  "secciones": [
+   {
+    "id": "p1",
+    "pistas": {
+     "bajo": false,
+     "congas": false,
+     "bongo": false,
+     "campanas": false,
+     "guiro": false,
+     "bateria": false,
+     "trompetas": false,
+     "trombones": false,
+     "saxos": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {},
+    "nombre": "Intro: piano solo",
+    "tipo": "intro",
+    "marcha": "marcha",
+    "estilo": "melon",
+    "vueltas": 1,
+    "semilla": 101,
+    "semillaPiano": 46,
+    "percusion": {
+     "timbal": null
+    },
+    "relleno": "redoble",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p2",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "perillas": {
+     "v_forma": "bloque",
+     "v_repite": 1,
+     "v_largo": "2",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Presentación",
+    "tipo": "intro",
+    "marcha": "mambo",
+    "estilo": "melon",
+    "vueltas": 2,
+    "semilla": 102,
+    "semillaVientos": 338,
+    "entra": "1",
+    "plato": "1",
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "moña",
+     "armonia": "terceras",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p3",
+    "pistas": {
+     "trompetas": false,
+     "trombones": false,
+     "saxos": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "salsa",
+     "v_forma": "bloque",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Cuerpo",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "songo",
+    "cambio": "4",
+    "vueltas": 1,
+    "semilla": 103,
+    "semillaPiano": 177,
+    "semillaVientos": 122,
+    "entra": "4y",
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p4",
+    "pistas": {},
+    "vol": {
+     "trompetas": 0.85,
+     "trombones": 0.85,
+     "saxos": 0.85
+    },
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "salsa",
+     "v_forma": "bloque",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Cuerpo, segunda estrofa",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "marchaPerc": "mambo",
+    "estilo": "songo",
+    "cambio": "4",
+    "vueltas": 1,
+    "semilla": 104,
+    "semillaPerc": 2,
+    "ganchoDe": "p3",
+    "percusion": {
+     "bongo": "bocas"
+    },
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    },
+    "relleno": "floreo",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p5",
+    "pistas": {},
+    "vol": {},
+    "transicion": "tresxcuatro",
+    "perillas": {},
+    "nombre": "Puente",
+    "tipo": "bloque",
+    "marcha": "marcha",
+    "estilo": "melon",
+    "vueltas": 1,
+    "semilla": 105,
+    "semillaPiano": 36,
+    "entra": "4",
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p6",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "v_forma": "bloque",
+     "b_estilo": "timba"
+    },
+    "nombre": "Coro",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "vueltas": 4,
+    "semilla": 106,
+    "semillaBajo": 3,
+    "semillaVientos": 157,
+    "entra": "4y",
+    "plato": "entra",
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    },
+    "relleno": "abanico",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p7",
+    "pistas": {},
+    "vol": {},
+    "transicion": "contratiempos",
+    "perillas": {
+     "v_forma": "contrapunto",
+     "v_largo": "2",
+     "v_dens": 1.2,
+     "v_cresc": 0.8,
+     "v_remate": "pickups",
+     "v_repite": 0.5,
+     "v_fuente": "salsa",
+     "b_lado2_notas": "raiz"
+    },
+    "nombre": "Mambo",
+    "tipo": "mambo",
+    "marcha": "mambo",
+    "estilo": "melon",
+    "pianoComo": "tirso",
+    "vueltas": 4,
+    "semilla": 107,
+    "semillaPiano": 8,
+    "semillaVientos": 422,
+    "entra": "1",
+    "plato": "1",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "terceras",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p8",
+    "pistas": {},
+    "vol": {
+     "bateria": 1.15
+    },
+    "transicion": "parada",
+    "perillas": {
+     "v_forma": "pregunta",
+     "v_largo": "1",
+     "v_dens": 0.7,
+     "v_cresc": 0.8,
+     "v_remate": "nada",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Presión",
+    "tipo": "presion",
+    "marcha": "presion",
+    "estilo": "melon",
+    "vueltas": 2,
+    "semilla": 108,
+    "semillaVientos": 295,
+    "entra": "4y",
+    "plato": "entra",
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "unisono",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p9",
+    "pistas": {
+     "piano": false
+    },
+    "vol": {
+     "congas": 1.15
+    },
+    "transicion": "tresxcuatro",
+    "perillas": {},
+    "nombre": "Bomba",
+    "tipo": "bomba",
+    "marcha": "bomba",
+    "estilo": "melon",
+    "vueltas": 2,
+    "semilla": 109,
+    "entra": "1",
+    "plato": "1",
+    "vientos": {
+     "toca": "nada"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p10",
+    "pistas": {},
+    "vol": {},
+    "transicion": "golpe",
+    "perillas": {
+     "v_forma": "champola",
+     "v_largo": "2",
+     "v_cresc": 1,
+     "v_agudo": 0.7,
+     "v_remate": "golpe",
+     "v_repite": 0.4,
+     "v_fuente": "salsa"
+    },
+    "nombre": "Despelote",
+    "tipo": "despelote",
+    "marcha": "despelote",
+    "estilo": "melon",
+    "vueltas": 4,
+    "semilla": 110,
+    "semillaVientos": 545,
+    "entra": "4y",
+    "plato": "entra",
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "cuartas",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p13",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "b_lado2": "nunca"
+    },
+    "nombre": "Muela",
+    "tipo": "muela",
+    "marcha": "muela",
+    "estilo": "melon",
+    "vueltas": 2,
+    "semilla": 113,
+    "semillaPerc": 12,
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "nada"
+    },
+    "relleno": "toms",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p11",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "v_forma": "bloque",
+     "v_repite": 0.9,
+     "v_largo": "2",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Coro final y moña",
+    "tipo": "mona",
+    "marcha": "mambo",
+    "estilo": "melon",
+    "vueltas": 3,
+    "semilla": 111,
+    "semillaPerc": 5,
+    "semillaVientos": 91,
+    "entra": "4y",
+    "plato": "entra",
+    "ganchoDe": "p2",
+    "percusion": {
+     "bongo": "empujes"
+    },
+    "vientos": {
+     "toca": "moña",
+     "armonia": "terceras",
+     "entrada": "capas"
+    },
+    "relleno": "redoble",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "p12",
+    "pistas": {},
+    "vol": {},
+    "transicion": "corte",
+    "perillas": {},
+    "nombre": "Final",
+    "tipo": "final",
+    "marcha": "mambo",
+    "estilo": "melon",
+    "vueltas": 1,
+    "semilla": 112,
+    "entra": "4y",
+    "ganchoDe": "p1",
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     }
+    ]
+   }
+  ],
+  "letra": {
+   "intro": "(el piano solo, con la clave; el timbal redobla y entra la banda con los metales)",
+   "cuerpo": [
+    "Primero entró el piano, solito, buscando la clave; / después llegó el bajo, caminando como el que sabe.",
+    "Las congas lo siguieron, el güiro pidió permiso, / y la noche se fue armando de a poquito, sin aviso."
+   ],
+   "cuerpo2": [
+    "Vos que llegaste tarde y te quedaste en la puerta, / pasá, que acá se baila con la ventana abierta.",
+    "No mires el reloj, que el reloj no sabe nada: / la noche es del que baila y la clave no se apaga."
+   ],
+   "puente": "¿Y te vas a ir ahora? ¿Ahora, que se puso linda? ¡Escuchá!",
+   "coro": "Quedate, que esto recién empieza",
+   "pregones": [
+    "Prendé la luz, que llegó la orquesta",
+    "El piano llama y el tambor le contesta",
+    "Si te vas ahora te perdés lo mejor",
+    "Abrí la puerta, que la timba no se cierra",
+    "Mirá cómo suben los metales"
+   ],
+   "presion": "¡Apretá, apretá! Que la clave no se suelta (y el coro sigue: «quedate…»)",
+   "bomba": "¡Bomba! ¡Para abajo, para abajo!",
+   "despelote": "¡Ahora sí! ¡Que se suelte todo el mundo!",
+   "muela": "(hablado) ¿Y? ¿Ya se cansaron? No, no, no… acá nadie se va. A ver ese trombón… ¡dale!",
+   "corofinal": "Quedate, que esto recién empieza (y los metales de a uno: el trombón, el saxo, las trompetas)",
+   "final": "¡Y esto… recién empieza!"
+  }
+ },
+ "perillas": {
+  "frase": "opus",
+  "tt_estilo": "auto",
+  "tt_parte": "auto",
+  "tt_var": 0,
+  "dens": 1,
+  "oct": 1,
+  "int": 1,
+  "blq": 1,
+  "semi": 1,
+  "leg": 0.5,
+  "acc": 1,
+  "reg": 0,
+  "salto": 0,
+  "rep": 0,
+  "ten": 1,
+  "crom": 1,
+  "dim": 0,
+  "lh": "auto",
+  "largo": "auto",
+  "gancho": 0.75,
+  "var": 0.35,
+  "b_estilo": "auto",
+  "b_aprox": 0.25,
+  "b_dens": 1,
+  "b_reg": "medio",
+  "b_gliss": 0,
+  "b_lado2": "auto",
+  "b_lado2_notas": "caminando",
+  "v_forma": "auto",
+  "v_largo": "auto",
+  "v_repite": 0.5,
+  "v_dens": 1,
+  "v_reg": 0,
+  "v_art": 1,
+  "v_crom": 0.9,
+  "v_cresc": 0.5,
+  "v_agudo": 0,
+  "v_remate": "auto",
+  "v_fuente": "estilo",
+  "p_int": 0.55,
+  "p_relleno": 0.6,
+  "m_clave": 1,
+  "m_congas": 1,
+  "m_bongo": 1,
+  "m_campanas": 1,
+  "m_timbales": 1,
+  "m_guiro": 1,
+  "m_bateria": 0.8
+ }
+}
