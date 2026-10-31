@@ -80,7 +80,8 @@
     const antes = i => i > 0 ? i - 1 : loop && i === loop.desde ? loop.hasta : null;
     const despues = i => loop && i === loop.hasta ? loop.desde : i + 1 < secs.length ? i + 1 : null;
     const cambioDe = i => secs[i].cambio || (TM.ESTILOS[secs[i].estilo] || TM.ESTILOS.pupy).cambio || '4y';
-    const entraDe = i => ['4y', '4', '1'].includes(secs[i].entra) ? secs[i].entra : antes(i) != null ? cambioDe(antes(i)) : '1';
+    // sin elegir, entra como cambia el acorde la de antes; después de un corte (golpe en el 1 y silencio), en el 1
+    const entraDe = i => ['4y', '4', '1'].includes(secs[i].entra) ? secs[i].entra : antes(i) == null || secs[antes(i)].transicion === 'corte' ? '1' : cambioDe(antes(i));
     secs.forEach((s, i) => {
       const prog = progs[i]; if (!prog.length) throw new Error(`La sección ${i + 1} no tiene acordes`);
       // el estilo de la sección (toda la banda) y el del piano, que puede ser otro; sus perillas van debajo de las de la sección
@@ -133,6 +134,50 @@
         const d0 = r.der.length ? r.der[0].p + inicio * 16 : null, b0 = r.bajo.length ? r.bajo[0].p + inicio * 16 : null;
         for (const e of ligados.der) if (d0 != null) e.L = d0 - e.p;
         for (const e of ligados.bajo) if (b0 != null) e.L = Math.min(e.cola, b0 - e.p);
+      }
+      // ---------- la sección entra en el 4& o en el 4 del compás de antes: todo lo de esta sección arranca ahí. El bajo (aunque
+      // sea un pedal) y el piano entran en la llegada y siguen sonando, sin volver a atacar el 1; la percusión toca lo de esta
+      // sección desde ahí; lo de la sección de antes que no sigue se calla ahí. Si la de antes termina con golpes o con un
+      // relleno, esos mandan en su último compás (el golpe de la llegada ya es la entrada)
+      if (i > 0 && Le < 16) {
+        const t0 = inicio * 16, tL = t0 - 16 + Le, sa = secs[i - 1], libre = (sa.transicion || 'ninguna') === 'ninguna' && !RELLENOS[sa.relleno];
+        const callar = (evs, desde, salvo = []) => { for (let k = evs.length - 1; k >= 0; k--) { const e = evs[k]; if (salvo.includes(e)) continue;
+          if (e.p >= desde && e.p < t0) evs.splice(k, 1); else if (e.p < desde && e.p + e.L > desde) { e.L = desde - e.p; delete e.liga; delete e.cola; } } };
+        // el bajo: su primera nota, si cae en el 1, arranca en la llegada (fundida con la que dejó ahí la sección de antes)
+        const b1 = r.bajo.find(e => e.p === 0), enL = res.bajo.find(e => e.p === tL);
+        if (!on.bajo) callar(res.bajo, tL);
+        else if (b1) {
+          callar(res.bajo, tL, enL ? [enL] : []);
+          if (enL) { Object.assign(enL, { ps: b1.ps, L: t0 - tL + b1.L, ch: b1.ch }); delete enL.cola; r.bajo.splice(r.bajo.indexOf(b1), 1); }
+          else { b1.p = tL - t0; b1.L += t0 - tL; }
+        }
+        // el piano: el acorde de esta sección entra en la llegada, ligado al 1 (con la entrada en el 4, también el piano en el 4)
+        if (!on.piano) { callar(res.der, tL); callar(res.izq, tL); }
+        else {
+          const ant = res.der.filter(e => e.p >= tL && e.p < t0 && e.antic && e.liga);   // el anticipo del generador (en el 4&)
+          if (ant.length) {
+            const pA = ant[0].p, mueven = [...ant, ...res.izq.filter(e => e.p === pA)];
+            callar(res.der, tL, mueven); callar(res.izq, tL, mueven);
+            for (const e of mueven) { e.L += pA - tL; e.p = tL; }
+          } else {
+            // sin cambio de acorde no hay anticipo: el primer ataque de esta sección (o un golpe con su acorde) pasa a la llegada
+            const d1 = r.der.filter(e => e.p === 0), i1 = r.izq.filter(e => e.p === 0), ref = res.der.filter(e => e.p < tL).pop();
+            callar(res.der, tL); callar(res.izq, tL);
+            if (d1.length) for (const e of [...d1, ...i1]) { e.p = tL - t0; e.L += t0 - tL; }
+            else { const ch = r.acordes[0][0], g = golpePiano(ch, ref ? ref.ps[ref.ps.length - 1] : 74);
+              r.der.push({ p: tL - t0, L: t0 - tL, ps: g.der, v: 100, art: '->', antic: true, ch }); r.izq.push({ p: tL - t0, L: t0 - tL, ps: g.izq, v: 92, ch }); }
+          }
+        }
+        // la percusión: desde la llegada, lo de esta sección (su compás del mismo lado de la clave); el plato de la entrada queda
+        if (libre) {
+          const u = inicio - 1, q = nb >= 2 ? 1 : 0, queda = e => e.p < Le || e.d === 'plato' || e.d === 'crash';
+          res.perc[u] = (res.perc[u] || []).filter(queda); res.extra[u] = (res.extra[u] || []).filter(queda);
+          for (const e of (perc[q] || []).concat(extra[q] || [])) if (e.p >= Le && e.d !== 'plato' && e.d !== 'crash') res.perc[u].push({ ...e });
+          // las familias de esta sección suenan en ese compás con su volumen de acá
+          res.mixes[u] = { ...res.mixes[u] }; for (const f of PERC) if (on[f]) res.mixes[u][f] = r.mix[f] ?? 1;
+        }
+        // los vientos de la de antes que no siguen en esta, callados desde la llegada (con golpes al final, el de la llegada queda)
+        if (libre) for (const f of VIENTOS) if (!vientos[f].length) callar(res.vientos[f], tL);
       }
       // ---------- transición al final de la sección
       const lado = r.lados[nb - 1], chs = r.acordes[nb - 1], chEn = q => chs.length > 1 && q >= 8 ? chs[1] : chs[0];
