@@ -53,7 +53,7 @@
     { g: 'Piano · armonía y forma', id: 'mezcla', l: 'Mezclar fuentes', min: 0, max: 1, st: 0.05, def: 0.15, f: '%', h: '0 = todas las células de un mismo tema de la base; 100% = de cualquiera' },
     { g: 'Piano · armonía y forma', id: 'temp', l: 'Libertad', min: 0, max: 2, st: 0.05, def: 0.6, f: 'x', h: 'Cuánto se permite salir de lo más probable' },
     { g: 'Piano · armonía y forma', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves' },
-    { g: 'Bajo', id: 'b_estilo', l: 'Qué toca', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha de la sección'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
+    { g: 'Bajo', id: 'b_estilo', l: 'Qué toca', tipo: 'sel', def: 'auto', ops: [['auto', 'según el estilo y la marcha'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['timba', 'timba (2& y 3 repetidos, la 3a en el 4)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
     { g: 'Bajo', id: 'b_aprox', l: 'Aproximaciones cromáticas', min: 0, max: 1, st: 0.05, def: 0.25, f: '%', h: 'Medio tono antes de la raíz que viene' },
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
     { g: 'Bajo', id: 'b_reg', l: 'Registro del bajo', tipo: 'sel', def: 'medio', ops: [['grave', 'grave'], ['medio', 'medio'], ['agudo', 'agudo']], h: 'En qué octava toca el bajo' },
@@ -69,18 +69,28 @@
     { g: 'Mezcla de percusión', id: 'm_bateria', l: 'Batería', min: 0, max: 1.5, st: 0.05, def: 0.8, f: 'x', h: 'Volumen de la batería: bombo, caja, charles y platillos (0 = no suena)' }
   ];
   const PERILLAS = Object.fromEntries(PERILLAS_UI.map(k => [k.id, k.def]));
-  // las ondas de la app como ajustes de perillas (y de qué estilo de la base aprender; grupo: los estilos de una colección,
-  // como los de Toontrack, que la onda prefiere cuando están en la base)
-  const ONDAS = {
-    pupy: { banda: 'timba', cambio: '4y', gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
-    melon: { banda: 'timba', cambio: '4y', lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
-    tirso: { banda: 'timba', cambio: '4y', blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
-    songo: { banda: 'songo', cambio: '4y', dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
-    sonmontuno: { banda: 'son', cambio: '4', lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
-    mambo: { banda: 'mambo', cambio: '4', lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
-    funk: { banda: 'timba', cambio: '4y', lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
-    salsa: { banda: 'salsa', cambio: '4', lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
-    libre: { banda: 'timba', cambio: '4y' }
+  // los estilos: cómo toca toda la banda en una sección. piano: sus perillas (el piano puede tocar como otro estilo);
+  // estilo y grupo: de qué temas de la base aprende el piano (grupo: los estilos de Toontrack, si están en la base local);
+  // banda: la percusión de entrada (07_percusion.js); cambio: el cambio de acorde; bajo: el tumbao en cuerpo, coro y mambo
+  const ESTILOS = {
+    sonmontuno: { n: 'Son montuno', d: 'El conjunto de los años 40 y 50 (Arsenio, Lilí Martínez): piano en octavas con la izquierda doblando, el bajo anticipado en el 4, una conga y bongó, sin timbal.',
+      banda: 'son', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'], piano: { lh: 'dobla8', oct: 1.2, blq: 0.6, semi: 0.5, crom: 0.6 } },
+    mambo: { n: 'Mambo', d: 'Los años 50: el montuno más cargado, con bloques, para que entren los metales; campana de mambo y bajo anticipado en el 4.',
+      banda: 'mambo', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['mambo'], piano: { lh: 'auto', blq: 1.4, oct: 0.9 } },
+    charanga: { n: 'Charanga', d: 'La orquesta de flauta y violines (Aragón, «Pare cochero»): el piano de notas sueltas con la izquierda doblando, timbal y conga sin bongó.',
+      banda: 'charanga', cambio: '4', bajo: 'salsa', estilo: 'salsa', piano: { oct: 0.25, blq: 0.6, lh: 'dobla16', semi: 0.6, crom: 0.6 } },
+    salsabrava: { n: 'Salsa brava', d: 'Nueva York en los 70 (Palmieri, Fania): montuno en octavas con la izquierda a dos octavas, percusivo; bajo en el 2& y el 4, campanas al frente.',
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_media'], piano: { lh: 'dobla16', oct: 1.4, blq: 0.7, ten: 0.8 } },
+    salsa: { n: 'Salsa de los 90', d: 'La salsa romántica (Gilberto, Marc Anthony): más aire, la izquierda a la décima, tensiones; bajo en el 2& y el 4.',
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_rapida', 'salsa_media'], piano: { lh: 'decima', ten: 1.2 } },
+    songo: { n: 'Songo (Van Van)', d: 'Los 70 y 80: más aire, la derecha en los tiempos y sostenida, la izquierda a la octava; batería de Changuito y el bajo de Formell.',
+      banda: 'songo', cambio: '4y', bajo: 'songo', estilo: 'cubano', grupo: ['songo'], piano: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8' } },
+    pupy: { n: 'Timba · Pupy', d: 'Gancho que se repite igual en cada clave, manos en movimiento contrario y disminuidos de paso; el bajo en motivo con el piano.',
+      banda: 'timba', cambio: '4y', bajo: 'motivo', estilo: 'timba', piano: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5 } },
+    melon: { n: 'Timba · Melón', d: 'Chorro continuo con corridas hacia las notas de referencia y la izquierda que mete notas entre las de la derecha; el bajo de timba.',
+      banda: 'timba', cambio: '4y', bajo: 'timba', estilo: 'timba', piano: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8 } },
+    tirso: { n: 'Timba · Tirso', d: 'Células de 3+4 pulsos, terceras paralelas y saltos de registro; la izquierda ancla en el grave; el bajo timbero.',
+      banda: 'timba', cambio: '4y', bajo: 'timbero', estilo: 'timba', piano: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4' } }
   };
   // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
   const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };
@@ -91,7 +101,9 @@
     salsa: [[6, 6, '5', null], [12, 8, 'R+', null], [22, 6, '5', null], [28, 8, 'R+', null]],
     timbero: [[0, 4, 'R', null], [6, 4, 'R', 12], [10, 2, '5', null], [14, 4, 'R+', null], [20, 4, '5', null], [24, 4, 'R', 12], [28, 2, 'apB', null], [30, 4, 'R+', null]],
     songo: [[6, 4, 'R', 12], [10, 4, '5', null], [14, 4, 'R+', null], [18, 4, 'R', null], [22, 2, 'R', 12], [24, 4, '5', null], [30, 4, 'R+', null]],
-    muela: [[0, 4, 'R', null], [14, 2, '5', null], [16, 4, 'R', null], [24, 2, 'R', null]]
+    muela: [[0, 4, 'R', null], [14, 2, '5', null], [16, 4, 'R', null], [24, 2, 'R', null]],
+    // timba (el bajo de «Ya empezó la fiesta», 1998): la misma nota en el 2& y el 3, la raíz o la 3a en el 4 y la raíz que viene en el 4&
+    timba: [[6, 2, '5', null], [8, 4, '5', null], [12, 2, 'R', null], [14, 4, 'R+', null], [22, 2, 'R', null], [24, 4, 'R', null], [28, 2, '3', null], [30, 4, 'R+', null]]
   };
 
   // ---------- percusión: clave y relleno
@@ -430,7 +442,8 @@
     // =========================== BAJO ===========================
     const bajo = [];
     let bajoFin = previo ? previo.bajo : null;
-    let estiloBajo = k.b_estilo === 'auto' ? mar.bajo : k.b_estilo;
+    // «según el estilo y la marcha»: en cuerpo, coro y mambo el tumbao del estilo; en las demás marchas, el de la marcha
+    let estiloBajo = k.b_estilo !== 'auto' ? k.b_estilo : ['cuerpo', 'marcha', 'mambo'].includes(opc.marcha || 'marcha') && opc.bajoEstilo ? opc.bajoEstilo : mar.bajo;
     if (estiloBajo === 'aprendido' && !M.bajo.ciclos.length) estiloBajo = 'salsa';
     info.bajo = estiloBajo;
     const regB = { grave: [28, 43], medio: [31, 47], agudo: [36, 52] }[k.b_reg] || [31, 47];
@@ -550,5 +563,5 @@
       ...(ctx ? { fin: { linea: lineaFin, bajo: bajoFin, ligaAl1: ligaFin, desborde }, gancho: ganchoFin } : {}) };
   }
 
-  Object.assign(TM, { generar, MARCHAS, PERILLAS, PERILLAS_UI, ONDAS_MOTOR: ONDAS, BAJO_GUIA });
+  Object.assign(TM, { generar, MARCHAS, PERILLAS, PERILLAS_UI, ESTILOS, BAJO_GUIA });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

@@ -54,10 +54,12 @@
     let costura = null;
     secs.forEach((s, i) => {
       const prog = progs[i]; if (!prog.length) throw new Error(`La sección ${i + 1} no tiene acordes`);
-      const on = ons[i], perillas = { ...cancion.perillas, ...s.perillas };
+      // el estilo de la sección (toda la banda) y el del piano, que puede ser otro; sus perillas van debajo de las de la sección
+      const E = TM.ESTILOS[s.estilo] || TM.ESTILOS.pupy, EP = TM.ESTILOS[s.pianoComo] || E;
+      const on = ons[i], perillas = { ...cancion.perillas, ...EP.piano, ...s.perillas };
       for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
       const sig = loop && i === loop.hasta ? progs[loop.desde][0] : progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
-      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null, tipo: s.tipo || null, grupo: s.grupo || null, cambio: s.cambio || (TM.ONDAS_MOTOR[s.onda] || {}).cambio || null, estiloBanda: s.estiloBanda || (TM.ONDAS_MOTOR[s.onda] || {}).banda || null, percusion: s.percusion || null,
+      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: EP.estilo || null, grupo: EP.grupo || null, tipo: s.tipo || null, cambio: s.cambio || E.cambio, estiloBanda: E.banda, bajoEstilo: E.bajo, percusion: s.percusion || null,
         tipoPiano: s.tipoPiano || null, marchaPiano: s.marchaPiano || null, marchaPerc: s.marchaPerc || null, semillas: { piano: s.semillaPiano, bajo: s.semillaBajo, perc: s.semillaPerc },
         contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
       ganchos[s.id != null ? s.id : i] = r.gancho;

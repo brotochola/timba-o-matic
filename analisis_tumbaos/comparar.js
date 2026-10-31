@@ -2,7 +2,7 @@
    Comparar: recrea un pedazo de un tema con el motor y lo compara con el original, instrumento por instrumento
    uso: node analisis_tumbaos/comparar.js "tema.mid" desde cantidad [opciones JSON de la sección] [--ver piano,bajo,perc] [--detalle]
      desde, cantidad: compases del tema (los del analizador: un compás = un lado de la clave)
-     opciones: lo que va en la sección de la canción, p. ej. '{"marcha":"marcha","onda":"salsa","semilla":3,"perillas":{"p_fuente":"clasica"}}'
+     opciones: lo que va en la sección de la canción, p. ej. '{"marcha":"marcha","estilo":"salsabrava","semilla":3,"pianoComo":"pupy"}'
    Para cada instrumento y cada lado de la clave: en qué semicorcheas ataca (probabilidad 0-9 por posición), densidad,
    fuerza de los golpes; en el piano además textura, mano izquierda, registro y anticipos; en el bajo, anticipos y registro.
    Parecido = 1 − diferencia de las probabilidades por posición / su suma (1 = igual, 0 = nada que ver).
@@ -47,9 +47,7 @@ function recrear(ref, opciones, M, ctx) {
   let ult = 'C';
   const prog = ref.bares.map(b => { const a = b.acordes.length ? b.acordes : [ult]; ult = a[a.length - 1]; return a.slice(0, 2).join('+'); }).join(' ');
   const tipo = /rumba/.test(ref.clave || '') ? 'rumba' : 'son', clave = `${tipo} ${ref.bares[0].lado === 'A' ? '3-2' : '2-3'}`;
-  const o = Object.assign({ marcha: 'marcha', onda: 'salsa', semilla: 1, perillas: {} }, opciones);
-  const onda = { ...(TM.ONDAS_MOTOR[o.onda] || {}) }; const estilo = onda.estilo || null, grupo = onda.grupo || null; delete onda.estilo; delete onda.grupo;
-  const sec = { id: 's', nombre: '', prog, vueltas: 1, ...o, perillas: { ...onda, ...o.perillas }, estilo, grupo };
+  const sec = { id: 's', nombre: '', prog, vueltas: 1, marcha: 'marcha', estilo: 'pupy', semilla: 1, perillas: {}, ...opciones };
   const r = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [sec] }, M);
   ctx.__percMotor = { id: 'motor-c', compases: r.perc, extra: r.extra, mix: r.mixes, estilo: r.estilos };
   const { parse, evaluate, buildNotes } = ctx.__api;

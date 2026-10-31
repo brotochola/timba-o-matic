@@ -2,7 +2,7 @@
  "tipo": "timba-o-matic · canción",
  "version": 1,
  "cancion": {
-  "version": 1,
+  "version": 2,
   "titulo": "La guagua de las tres",
   "clave": "rumba 2-3",
   "banda": "timba",
@@ -18,10 +18,13 @@
     "vol": {},
     "transicion": "abanico",
     "entrada": "",
+    "perillas": {
+     "frase": "frase"
+    },
     "nombre": "Intro",
     "tipo": "intro",
     "marcha": "cuerpo",
-    "onda": "sonmontuno",
+    "estilo": "sonmontuno",
     "bars": [
      {
       "a": {
@@ -53,12 +56,7 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 311,
-    "perillas": {
-     "lh": "auto",
-     "b_estilo": "salsa",
-     "frase": "frase"
-    }
+    "semilla": 311
    },
    {
     "id": "g2",
@@ -68,10 +66,11 @@
     "vol": {},
     "transicion": "ninguna",
     "entrada": "",
+    "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
     "marcha": "cuerpo",
-    "onda": "melon",
+    "estilo": "melon",
     "bars": [
      {
       "a": {
@@ -134,15 +133,7 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 1203,
-    "perillas": {
-     "lh": "decima",
-     "semi": 3,
-     "oct": 0.6,
-     "rep": 0.35,
-     "gancho": 0.8,
-     "b_estilo": "timbero"
-    }
+    "semilla": 1203
    },
    {
     "id": "g3",
@@ -152,10 +143,11 @@
     "vol": {},
     "transicion": "cierre",
     "entrada": "",
+    "perillas": {},
     "nombre": "Puente",
     "tipo": "cuerpo",
     "marcha": "cuerpo",
-    "onda": "melon",
+    "estilo": "melon",
     "bars": [
      {
       "a": {
@@ -187,15 +179,7 @@
      }
     ],
     "vueltas": 1,
-    "semilla": 77,
-    "perillas": {
-     "lh": "decima",
-     "semi": 3,
-     "oct": 0.6,
-     "rep": 0.35,
-     "gancho": 0.8,
-     "b_estilo": "timbero"
-    }
+    "semilla": 77
    },
    {
     "id": "g4",
@@ -203,10 +187,11 @@
     "vol": {},
     "transicion": "ninguna",
     "entrada": "plato4y",
+    "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
     "marcha": "marcha",
-    "onda": "pupy",
+    "estilo": "pupy",
     "bars": [
      {
       "a": {
@@ -238,17 +223,7 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 4242,
-    "perillas": {
-     "gancho": 0.9,
-     "var": 0.15,
-     "lh": "contrario",
-     "crom": 1.6,
-     "dim": 0.35,
-     "ten": 1.2,
-     "semi": 1.5,
-     "b_estilo": "motivo"
-    }
+    "semilla": 4242
    },
    {
     "id": "g5",
@@ -256,10 +231,13 @@
     "vol": {},
     "transicion": "cierre",
     "entrada": "plato4y",
+    "perillas": {
+     "frase": "frase"
+    },
     "nombre": "Mambo",
     "tipo": "mambo",
     "marcha": "mambo",
-    "onda": "mambo",
+    "estilo": "mambo",
     "bars": [
      {
       "a": {
@@ -294,13 +272,7 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 906,
-    "perillas": {
-     "lh": "auto",
-     "blq": 1.3,
-     "b_estilo": "aprendido",
-     "frase": "frase"
-    }
+    "semilla": 906
    },
    {
     "id": "g6",
@@ -308,10 +280,11 @@
     "vol": {},
     "transicion": "cierre",
     "entrada": "",
+    "perillas": {},
     "nombre": "Presión",
     "tipo": "presion",
     "marcha": "presion",
-    "onda": "pupy",
+    "estilo": "pupy",
     "bars": [
      {
       "a": {
@@ -343,17 +316,7 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 66,
-    "perillas": {
-     "gancho": 0.9,
-     "var": 0.15,
-     "lh": "contrario",
-     "crom": 1.6,
-     "dim": 0.35,
-     "ten": 1.2,
-     "semi": 1.5,
-     "b_estilo": "auto"
-    }
+    "semilla": 66
    },
    {
     "id": "g7",
@@ -361,11 +324,12 @@
     "vol": {},
     "transicion": "ninguna",
     "entrada": "plato4y",
+    "perillas": {},
     "nombre": "Coro bomba",
     "tipo": "coro",
     "marcha": "despelote",
     "marchaPerc": "bomba",
-    "onda": "pupy",
+    "estilo": "pupy",
     "bars": [
      {
       "a": {
@@ -398,16 +362,6 @@
     ],
     "vueltas": 4,
     "semilla": 4243,
-    "perillas": {
-     "gancho": 0.9,
-     "var": 0.15,
-     "lh": "contrario",
-     "crom": 1.6,
-     "dim": 0.35,
-     "ten": 1.2,
-     "semi": 1.5,
-     "b_estilo": "auto"
-    },
     "ganchoDe": "g4"
    },
    {
@@ -416,10 +370,11 @@
     "vol": {},
     "transicion": "corte",
     "entrada": "plato4y",
+    "perillas": {},
     "nombre": "Final",
     "tipo": "final",
     "marcha": "marcha",
-    "onda": "pupy",
+    "estilo": "pupy",
     "bars": [
      {
       "a": {
@@ -451,17 +406,7 @@
      }
     ],
     "vueltas": 1,
-    "semilla": 4244,
-    "perillas": {
-     "gancho": 0.9,
-     "var": 0.15,
-     "lh": "contrario",
-     "crom": 1.6,
-     "dim": 0.35,
-     "ten": 1.2,
-     "semi": 1.5,
-     "b_estilo": "motivo"
-    }
+    "semilla": 4244
    }
   ],
   "letra": {
@@ -498,8 +443,6 @@
   "reg": 0,
   "amb": 7,
   "lh": "auto",
-  "ant": 1,
-  "liga": 1,
   "dim": 0,
   "gancho": 0.75,
   "var": 0.35,
@@ -508,14 +451,11 @@
   "temp": 0.6,
   "acc": 1,
   "b_estilo": "auto",
-  "b_ant": "auto",
   "b_aprox": 0.25,
   "b_dens": 1,
   "b_reg": "medio",
   "b_gliss": 0,
-  "p_fuente": "aprendida",
   "p_int": 0.55,
-  "p_cambio": "8",
   "p_relleno": 0.6,
   "m_clave": 1,
   "m_congas": 1,

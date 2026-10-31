@@ -51,7 +51,7 @@
       campana: { n: 'campana de mambo', f: 'Moore, contracampaneo: lado 2 en 1, 2, 3, 3&, 4, 4&; lado 3 en 1&, 2, 2&, 3, 4, 4&',
         A: { bell: '..6.9.6.9...9.6.' },
         B: { bell: '9...9...9.6.9.6.' } },
-      negras: { n: 'campana en negras (despelote)', f: 'la percusión clásica de la página: campana en los cuatro tiempos, el 1 del lado 2 marcado',
+      negras: { n: 'campana en negras (chachá, despelote)', f: 'la campana en los cuatro tiempos (la del chachá y la charanga; también el despelote), el 1 y el 3 marcados',
         A: { bell: '9...7...9...7...' }, B: { bell: '9...7...9...7...' } },
       songo: { n: 'guagua de songo', f: 'timba.com, Changuito: la guagua (campana o bloque) en 1 y 3, en los dos lados', ...L({ block: '8.......7.......' }) }
     },
@@ -96,6 +96,8 @@
   const DE_ESTILO = {
     son: { congas: { cuerpo: 'tumbao1', marcha: 'tumbao1', mambo: 'tumbao1' }, timbal: { cuerpo: null, marcha: null, mambo: null }, bateria: null },
     mambo: { congas: { cuerpo: 'tumbao2' }, bateria: null },
+    // la charanga (Aragón): timbal y una conga, sin bongó; el timbalero pasa de la cáscara a la campana del chachá
+    charanga: { congas: { cuerpo: 'tumbao1', marcha: 'tumbao1', mambo: 'tumbao1' }, bongo: null, timbal: { marcha: 'negras', mambo: 'negras' }, bateria: null },
     salsa: { bateria: null },
     songo: { congas: { cuerpo: 'songo', marcha: 'songo', mambo: 'songo' }, timbal: { cuerpo: 'songo', marcha: 'songo' }, bateria: { cuerpo: 'songo', marcha: 'songo', mambo: 'songo' } },
     timba: { congas: { marcha: 'marcha3', mambo: 'marcha3' } }
