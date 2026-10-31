@@ -353,6 +353,7 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
       <div class="gen-row sec-head">
         <input id="sc-nombre" class="sc-nombre" type="text" placeholder="Nombre de la sección" aria-label="Nombre de la sección" maxlength="40">
         <span class="sec-tools">
+          <button class="btn ghost" id="sc-fijar" type="button" aria-pressed="false">Fijar</button>
           <button class="btn ghost" id="sc-izq" type="button" title="Mover la sección antes" aria-label="Mover antes">←</button>
           <button class="btn ghost" id="sc-der" type="button" title="Mover la sección después" aria-label="Mover después">→</button>
           <button class="btn ghost" id="sc-add" type="button" title="Agregar una sección después de esta, con los mismos acordes">＋ Sección</button>
@@ -361,11 +362,13 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
         </span>
       </div>
       <div class="sec-flds">
+        <label class="fld"><span>Tipo</span><select id="sc-tipo"><option value="">elegí…</option><option value="intro">Intro</option><option value="cuerpo">Cuerpo (verso)</option><option value="coro">Coro / montuno</option><option value="mambo">Mambo</option><option value="mona">Moña</option><option value="presion">Presión</option><option value="despelote">Despelote</option><option value="muela">Muela</option><option value="bloque">Bloque</option><option value="final">Final</option></select></label>
         <label class="fld"><span>Marcha</span><select id="tb-gear"><option value="cuerpo">Cuerpo</option><option value="marcha" selected>Coro · marcha</option><option value="mambo">Mambo</option><option value="presion">Presión</option><option value="despelote">Despelote</option><option value="muela">Muela</option></select></label>
         <label class="fld"><span>Onda del piano</span><select id="tb-onda"><option value="pupy" selected>Pupy</option><option value="melon">Melón</option><option value="tirso">Tirso / Charanga</option><option value="songo">Songo setentoso</option><option value="salsa">Montuno de salsa</option><option value="libre">Libre</option></select></label>
         <label class="fld"><span>Compases</span><select id="cg-n"><option>2</option><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label>
         <label class="fld"><span>Vueltas</span><select id="sc-vueltas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option><option>8</option></select></label>
         <label class="fld"><span>Al final</span><select id="sc-trans"><option value="ninguna">sigue derecho</option><option value="abanico">abanico (timbal)</option><option value="cierre">cierre (toda la banda)</option><option value="corte">corte</option></select></label>
+        <label class="fld"><span>Gancho del piano</span><select id="sc-gancho"><option value="">propio</option></select></label>
         <label class="fld"><span>Variante n.º</span><span class="sec-var"><input id="tb-seed" type="number" value="7" min="1" max="9999"><button class="btn ghost" id="tb-var" type="button" title="Otro tumbao para esta sección, con los mismos acordes y estilo">Otra</button></span></label>
       </div>
       <p class="desc" id="onda-desc"></p>
@@ -397,6 +400,7 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
       <div class="grp">
         <h3>Estilo</h3>
         <label class="fld"><span>Clave</span><select id="tb-clave"><option>rumba 3-2</option><option>rumba 2-3</option><option>son 3-2</option><option>son 2-3</option></select></label>
+        <label class="fld"><span>Banda</span><select id="cn-banda"><option value="timba">timba (con batería)</option><option value="salsa">salsa (sin batería)</option></select></label>
         <div class="kn-box" data-g="perc"></div>
       </div>
       <div class="grp">
@@ -421,6 +425,8 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
       <span class="gen-more">
         <button class="btn ghost" id="cn-nueva" type="button" title="Empezar una canción nueva de una sola sección">Canción nueva</button>
         <button class="btn ghost" id="fav-add" type="button" title="Guardar la canción entera (secciones, perillas y mezcla) en este navegador">★ Guardar canción</button>
+        <button class="btn ghost" id="cn-exportar" type="button">Exportar canción</button>
+        <label class="btn ghost" for="cn-importar" tabindex="0">Importar canción…</label><input type="file" id="cn-importar" accept=".json,application/json" hidden>
         <button class="btn ghost" id="tb-copy" type="button">Copiar LilyPond</button>
       </span>
       <span class="info" id="tb-info"></span>
@@ -4503,6 +4509,14 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     libre:'Sin ajustes de estilo: las perillas de la canción tal cual.'};
   const PISTAS=[['piano','Piano'],['bajo','Bajo'],['clave','Clave'],['congas','Congas'],['bongo','Bongó'],['campanas','Campana'],['timbales','Timbales'],['guiro','Güiro'],['bateria','Batería']];
   const MARCHA_TXT={cuerpo:'Cuerpo',marcha:'Coro',mambo:'Mambo',presion:'Presión',despelote:'Despelote',muela:'Muela'};
+  // tipos de sección: marcha, cómo termina y qué pistas no tocan. En salsa el bongó y el timbal pasan a las campanas
+  // recién en el coro (en el cuerpo: martillo y cáscara), y el abanico del timbal lleva del cuerpo al coro.
+  const TIPOS={intro:{n:'Intro',marcha:'cuerpo',trans:'abanico',sin:['campanas'],compases:4,vueltas:1},
+    cuerpo:{n:'Cuerpo',marcha:'cuerpo',trans:'abanico',sin:['campanas']},coro:{n:'Coro',marcha:'marcha',trans:'ninguna'},
+    mambo:{n:'Mambo',marcha:'mambo',trans:'cierre'},mona:{n:'Moña',marcha:'mambo',trans:'ninguna'},
+    presion:{n:'Presión',marcha:'presion',trans:'cierre'},despelote:{n:'Despelote',marcha:'despelote',trans:'ninguna'},
+    muela:{n:'Muela',marcha:'muela',trans:'ninguna'},bloque:{n:'Bloque',marcha:'marcha',trans:'cierre',compases:2,vueltas:1},
+    final:{n:'Final',marcha:'marcha',trans:'corte',compases:4,vueltas:1}};
   const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}, load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(_){return d}};
   const parse=t=>{const m=/^([A-G][#b]?)(.*)$/.exec(t);return {r:ROOTS.indexOf(m[1].replace('Db','C#').replace('D#','Eb').replace('Gb','F#').replace('G#','Ab').replace('A#','Bb')),q:m[2]}};
   const name=c=>ROOTS[c.r]+c.q, pretty=c=>ROOTS[c.r].replace('b','♭').replace('#','♯')+(QLBL[c.q]===undefined?c.q:(c.q===''?'':QLBL[c.q]));
@@ -4571,6 +4585,11 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     $('sc-trans').value=s.transicion||'ninguna';$('tb-seed').value=s.semilla;od();
     $('tb-gear').dispatchEvent(new Event('input'));   // la explicación de la marcha (sección 16)
     $('sc-izq').disabled=cur===0;$('sc-der').disabled=cur===song.secciones.length-1;$('sc-del').disabled=song.secciones.length<2;
+    $('sc-tipo').value=TIPOS[s.tipo]?s.tipo:'';
+    $('sc-fijar').setAttribute('aria-pressed',String(!!s.fija));$('sc-fijar').textContent=s.fija?'Fijada':'Fijar';$('tb-var').disabled=!!s.fija;
+    const gs=$('sc-gancho');gs.innerHTML='';gs.appendChild(el('option',null,'propio')).value='';
+    song.secciones.slice(0,cur).forEach(x=>{const o=el('option',null,'igual que «'+nombreDe(x)+'»');o.value=x.id;gs.appendChild(o)});
+    gs.value=s.ganchoDe&&song.secciones.slice(0,cur).some(x=>x.id===s.ganchoDe)?s.ganchoDe:'';
     const box=$('sec-pistas');box.innerHTML='';box.appendChild(el('span','muted','Tocan en esta sección:'));
     for(const [id,t] of PISTAS){const on=s.pistas[id]!==false,b=el('button',null,t);b.type='button';b.setAttribute('aria-pressed',String(on));
       b.title=(on?'Sacar ':'Poner ')+t.toLowerCase()+' en «'+nombreDe(s)+'»';b.onclick=()=>alternar(cur,id);box.appendChild(b)}
@@ -4586,8 +4605,22 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   $('sc-vueltas').onchange=()=>{S().vueltas=+$('sc-vueltas').value;changed()};
   $('tb-gear').onchange=()=>{S().marcha=$('tb-gear').value;changed()};
   $('sc-trans').onchange=()=>{S().transicion=$('sc-trans').value;changed()};
-  // la onda pone sus perillas en la sección (como antes en todo el loop)
-  $('tb-onda').onchange=()=>{const s=S();s.onda=$('tb-onda').value;s.perillas=T2.ondaPerillas(s.onda);changed()};
+  // la onda pone sus perillas en la sección (como antes en todo el loop); una sección fijada guarda también las de la canción
+  $('tb-onda').onchange=()=>{const s=S();s.onda=$('tb-onda').value;s.perillas={...(s.fija?T2.perillas():{}),...T2.ondaPerillas(s.onda)};changed()};
+  // el tipo trae marcha, cómo termina, qué pistas tocan (sin batería si la banda es de salsa) y, si hace falta, el largo
+  $('sc-tipo').onchange=()=>{const s=S(),v=$('sc-tipo').value,t=TIPOS[v];if(!t)return;
+    const nombres=Object.values(TIPOS).map(x=>x.n);if(!s.nombre||nombres.includes(s.nombre))s.nombre=t.n;
+    Object.assign(s,{tipo:v,marcha:t.marcha,transicion:t.trans,pistas:{}});for(const p of t.sin||[])s.pistas[p]=false;
+    if(song.banda==='salsa')s.pistas.bateria=false;
+    if(t.vueltas)s.vueltas=t.vueltas;
+    if(t.compases){const old=s.bars;s.bars=Array.from({length:t.compases},(_,i)=>clon(old[i%old.length]))}
+    sel=null;changed()};
+  $('sc-gancho').onchange=()=>{const v=$('sc-gancho').value;if(v)S().ganchoDe=v;else delete S().ganchoDe;changed()};
+  // fijar: la sección se queda con las perillas de la canción de ahora (y su variante), aunque después cambien
+  $('sc-fijar').onclick=()=>{const s=S(),k=T2.perillas();
+    if(!s.fija){s.perillas={...k,...s.perillas};s.fija=true}
+    else{for(const x in s.perillas)if(String(s.perillas[x])===String(k[x]))delete s.perillas[x];delete s.fija}
+    changed()};
   $('tb-seed').onchange=()=>{S().semilla=Math.max(1,+$('tb-seed').value||1);changed()};
   $('tb-var').onclick=()=>{S().semilla=azar();pintarSeccion();go(true)};
   const insertar=s=>{song.secciones.splice(cur+1,0,s);elegir(cur+1);changed()};
@@ -4605,6 +4638,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     T2.alcance(alc==='seccion'?S():null);
     const n=Object.keys(S().perillas||{}).length,nom='«'+nombreDe(S())+'»';
     $('kn-alc-info').textContent=alc==='seccion'?'Lo que muevas queda solo en '+nom+'; en rojo, lo que la sección cambia.'
+      :S().fija?nom+' está fijada: no la cambian estas perillas.'
       :n?nom+' cambia '+n+(n>1?' perillas':' perilla')+' (por su onda o a mano): elegí «la sección elegida» para verlas.':'';
   }
   document.querySelectorAll('#kn-alcance button').forEach(b=>b.onclick=()=>{alc=b.dataset.a;store('tdt-alcance',alc);alcanceUI()});
@@ -4630,7 +4664,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     rg.b.onclick=e=>{const ms=P.score&&P.score.measures,k=enBarra(e,rg.b);if(ms&&ms[k])seek(ms[k].start)};
     // secciones
     const sc=fila('mt-secs','Secciones');
-    ts.forEach((x,i)=>{const b=el('button','mt-sec'+(i===cur?' sel':''),nombreDe(x.s)+(x.s.vueltas>1?' ×'+x.s.vueltas:''));b.type='button';
+    ts.forEach((x,i)=>{const b=el('button','mt-sec'+(i===cur?' sel':''),(x.s.fija?'🔒 ':'')+nombreDe(x.s)+(x.s.vueltas>1?' ×'+x.s.vueltas:''));b.type='button';
       b.style.left=x.ini*bw+2+'px';b.style.width=Math.max(8,x.n*bw-4)+'px';b.title=nombreDe(x.s)+' · '+x.n+' compases · '+(MARCHA_TXT[x.s.marcha]||x.s.marcha)+' · clic para editarla';
       b.onclick=()=>elegir(i);sc.b.appendChild(b)});
     // acordes
@@ -4700,7 +4734,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     let r; try{r=T2.generarCancion(paraMotor())}catch(e){inf(e.message);return}
     const was=P.playing; if(was)pause();
     if(!window.__setSource(r.src,'cancion.ly'))return;
-    res=r.res;generated=true;window.__lastTumbao=r.src;
+    res=r.res;partitura=P.score;generated=true;window.__lastTumbao=r.src;
     aplicarLoop();pintarPistas();alcanceUI();inf(resumen());save();
     if(play_||was){
       if($('pk-snd').value==='pack'&&!PACK.S.ready){inf('Cargando la banda de samples…');await PACK.load();inf(resumen())}
@@ -4714,14 +4748,44 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   $('tb-go').onclick=()=>go(true);
   $('cn-titulo').onchange=()=>{song.titulo=$('cn-titulo').value.trim();changed()};
   $('tb-clave').onchange=()=>{song.clave=$('tb-clave').value;changed()};
+  // banda de salsa: sin batería en ninguna sección; de timba: con batería
+  $('cn-banda').onchange=()=>{song.banda=$('cn-banda').value;for(const s of song.secciones){if(song.banda==='salsa')s.pistas.bateria=false;else delete s.pistas.bateria}changed()};
   $('tb-copy').onclick=async()=>{const s=window.__lastTumbao||$('src').value;try{await navigator.clipboard.writeText(s);inf('Código LilyPond copiado.')}catch(_){const t=$('src');t.focus();t.select();inf('Seleccioné el código en el editor: copialo con Ctrl+C / Cmd+C.')}};
   function refrescar(){
     song.mezcla=song.mezcla||{};cur=Math.min(cur,song.secciones.length-1);
-    $('cn-titulo').value=song.titulo||'';$('tb-clave').value=song.clave||'son 2-3';
+    $('cn-titulo').value=song.titulo||'';$('tb-clave').value=song.clave||'son 2-3';$('cn-banda').value=song.banda==='salsa'?'salsa':'timba';
     aplicarMezcla();pintarSeccion();draw();pintarPistas();save();
   }
   $('cn-nueva').onclick=()=>{if(!confirm('¿Empezar una canción nueva? La de ahora se pierde si no la guardaste con «★ Guardar canción».'))return;
-    song={version:1,titulo:'',clave:song.clave,mezcla:{},secciones:[seccion({bars:clon(S().bars)})]};cur=0;refrescar();go(false)};
+    song={version:1,titulo:'',clave:song.clave,banda:song.banda,mezcla:{},secciones:[seccion({bars:clon(S().bars),pistas:song.banda==='salsa'?{bateria:false}:{}})]};cur=0;refrescar();go(false)};
+
+  // ---------- exportar / importar la canción (.json) y MIDI multipista
+  const archivo=()=>(song.titulo||'cancion').replace(/[\\/:*?"<>|]+/g,'_').slice(0,60)||'cancion';
+  const bajar=(datos,nombre,tipo)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([datos],{type:tipo}));a.download=nombre;
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)};
+  $('cn-exportar').onclick=()=>{bajar(JSON.stringify({tipo:'timba-o-matic · canción',version:1,cancion:{...song,bpm:P.bpm},perillas:T2.perillas()},null,1),archivo()+'.json','application/json');
+    inf('Canción exportada: con «Importar canción…» se abre en otro navegador.')};
+  $('cn-importar').addEventListener('change',async e=>{
+    const f=e.target.files[0];e.target.value='';if(!f)return;
+    try{const j=JSON.parse(await f.text()),c=j.cancion;
+      if(!c||!Array.isArray(c.secciones)||!c.secciones.length||!c.secciones.every(s=>Array.isArray(s.bars)&&s.bars.length))throw new Error('no es una canción de timba-o-matic');
+      song=c;cur=0;for(const s of song.secciones){s.id=s.id||nid();s.perillas=s.perillas||{};s.pistas=s.pistas||{};s.vueltas=s.vueltas||1;s.semilla=s.semilla||azar()}
+      if(j.perillas)T2.ponerPerillas(j.perillas);if(song.bpm){setTempo(song.bpm);$('tempo').value=song.bpm}
+      refrescar();go(true);inf('Canción importada: '+f.name);
+    }catch(err){inf('No pude abrir '+f.name+': '+err.message)}
+  });
+  // el .mid de la canción: piano y bajo del motor, la percusión tal como suena (aprendida o clásica), una pista por familia
+  // y un marcador por sección. Con otra partitura en el editor, el exportador de siempre.
+  let partitura=null;
+  const midiGeneral=$('midi').onclick;
+  $('midi').onclick=()=>{
+    if(!res||P.score!==partitura)return midiGeneral&&midiGeneral();
+    const ms=P.score.measures,perc=ms.map(()=>[]);
+    for(const n of P.notes){if(!n.drum)continue;let i=0;while(i<ms.length-1&&ms[i+1].start<=n.t)i++;const m=ms[i];
+      perc[i].push({p:Math.max(0,Math.min(15,Math.round((n.t-m.start)/((m.end-m.start)/16)))),d:n.drum,v:n.vel||1})}
+    bajar(TM.aMidi({...res,extra:null},P.bpm,{porFamilia:true,perc}),archivo()+'.mid','audio/midi');
+    inf('MIDI de la canción: piano, bajo y una pista por instrumento de percusión, con las secciones marcadas.');
+  };
 
   // ---------- canciones guardadas (los favoritos de antes eran loops: se abren como canción de una sección)
   let favs=load('tdt-favs',[]);
@@ -4809,7 +4873,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     '#mutes input[data-g="pno"]':{t:'Silenciar o activar el piano'},
     '#mutes input[data-g="bajo"]':{t:'Silenciar o activar el bajo'},
     '#mutes input[data-g="rit"]':{t:'Silenciar o activar la percusión'},
-    '#midi':{t:'Bajar lo que suena como archivo MIDI (piano, bajo y percusión) para abrirlo en otro programa'},
+    '#midi':{t:'Bajar lo que suena como archivo MIDI para abrirlo en el DAW: piano, bajo y una pista por instrumento de percusión, con las secciones marcadas'},
     '#bar':{t:'Tocá la barra para saltar a ese momento'},
     '#cg-n':{t:'Cuántos compases tiene la progresión de esta sección. Se repite según «Vueltas».'},
     '#sc-vueltas':{t:'Cuántas veces se repite la progresión de esta sección'},
@@ -4820,6 +4884,12 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     '#cn-titulo':{t:'Título de la canción (va en la partitura)'},
     '#cn-loop':{t:'Qué se repite: toda la canción o solo la sección que estás editando'},
     '#cn-nueva':{t:'Empezar una canción nueva de una sola sección'},
+    '#sc-tipo':{t:'Qué parte del tema es',e:'Trae la marcha, cómo termina y qué instrumentos tocan: en el cuerpo, martillo de bongó y cáscara sin campanas; en el coro entran las campanas; del cuerpo al coro, abanico. Después se puede cambiar todo.'},
+    '#sc-gancho':{t:'Que el piano repita el gancho de una sección anterior (misma fuente y mismas células), o que arme uno propio'},
+    '#sc-fijar':{t:'Fijada, la sección se queda con las perillas de ahora y su variante aunque cambies las de la canción'},
+    '#cn-banda':{t:'Salsa: sin batería en ninguna sección. Timba: con batería (bombo, caja, charles).'},
+    '#cn-exportar':{t:'Bajar la canción como .json, para abrirla en otro navegador o pasársela a alguien'},
+    'label[for="cn-importar"]':{t:'Abrir una canción exportada con «Exportar canción»'},
     '#kn-alcance [data-a="cancion"]':{t:'Las perillas valen para todas las secciones'},
     '#kn-alcance [data-a="seccion"]':{t:'Lo que muevas queda solo en la sección elegida'},
     '#cg-preset':{t:'Progresiones de ejemplo para empezar'},

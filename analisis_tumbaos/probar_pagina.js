@@ -42,6 +42,14 @@ ok(porBar[pres.inicio].some(n => n.drum === 'clave') && !porBar[pres.inicio].som
 ok(porBar[pres.inicio + pres.compases - 1].every(n => n.t === ms[pres.inicio + pres.compases - 1].start), 'el corte: todo en el 1');
 const coro = r.secciones[1];
 ok(porBar[coro.inicio].some(n => n.drum === 'timbalH' && n.t === ms[coro.inicio].start), 'el golpe del abanico en el 1 del coro');
-console.log(`${perc.length} golpes · ${ms.length} compases · marcas: ${(score.marks || []).map(x => x.text).join(' | ')}`);
+// el .mid de la canción (como el botón de la página): la percusión tal como suena, una pista por familia, marcadores
+const percBar = ms.map(() => []);
+for (const n of perc) { const i = barOf(n.t), m = ms[i]; percBar[i].push({ p: Math.round((n.t - m.start) / ((m.end - m.start) / 16)), d: n.drum, v: n.vel || 1 }); }
+const mid = TM.leerMidi(TM.aMidi({ ...r, extra: null }, 190, { porFamilia: true, perc: percBar }));
+ok(r.secciones.every(s => mid.textos.includes(s.texto)), 'MIDI: un marcador por sección');
+const pistasPerc = mid.pistas.filter(p => p.nombre in TM.FAMILIAS);
+ok(pistasPerc.reduce((a, p) => a + p.notas.length, 0) === perc.filter(n => TM.APP_GM[n.drum]).length, 'MIDI: los mismos golpes que suenan, también los de la percusión clásica');
+ok(pistasPerc.every(p => p.notas.every(x => TM.familiaPerc(Object.keys(TM.APP_GM).find(d => TM.APP_GM[d] === x.alt && TM.familiaPerc(d) === p.nombre) || '') === p.nombre)), 'MIDI: cada golpe en la pista de su familia');
+console.log(`${perc.length} golpes · ${ms.length} compases · marcas: ${(score.marks || []).map(x => x.text).join(' | ')} · MIDI: ${mid.pistas.map(p => p.nombre).join(', ')}`);
 console.log(fallas ? fallas + ' fallas' : 'cadena bien');
 process.exit(fallas ? 1 : 0);
