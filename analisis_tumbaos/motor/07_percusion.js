@@ -40,17 +40,29 @@
     bongo: {
       martillo: { n: 'martillo', f: 'corcheas con el abierto grave en el 4 (corpus: 17%) y los toques del medio suaves',
         ...L({ bongoH: '6...5...6.......', bongoM: '..3...3...3...4.', bongoL: '............7...' }) },
-      campana: { n: 'campana', f: 'Moore, campaneo: boca en 1 y 3; lado 2 talón en el 2, el 4 y el 4&; lado 3 también en el 2&',
+      campana: { n: 'campana', f: 'Moore, campaneo: boca en 1 y 3; lado 2 talón en el 2, el 4 y el 4&; lado 3 también en el 2& (en el corpus, exacto en «El gran varón»)',
         A: { bongoBell: '9.......8.......', bongoBellC: '....6.4.....6.4.' },
-        B: { bongoBell: '9.......8.......', bongoBellC: '....6.......6.4.' } }
+        B: { bongoBell: '9.......8.......', bongoBellC: '....6.......6.4.' } },
+      // variantes de la campana del bongó (investigacion_campana.md, con el corpus de 95 temas)
+      bocas: { n: 'campana: solo bocas', f: 'corpus: boca en 1 y 3 sin talones, el 68% de los compases con campana; para arrancar el coro o bajar la energía',
+        ...L({ bongoBell: '9.......8.......' }) },
+      negrasBoca: { n: 'campana en negras', f: 'corpus: boca en los cuatro tiempos (Lloraras, Mambo All Stars «Perfidia»)', ...L({ bongoBell: '9...7...8...7...' }) },
+      empujes: { n: 'campana con empujes', f: 'corpus, Yumbambe: los talones del 2& y el 4& más fuertes que los del 2 y el 4',
+        A: { bongoBell: '9.......8.......', bongoBellC: '....3.6.....3.6.' },
+        B: { bongoBell: '9.......8.......', bongoBellC: '....4.5.....3.6.' } },
+      corcheas: { n: 'campana en corcheas (mambo)', f: 'boca en los tiempos y talón en los contratiempos, para el mambo (sin verificar en el corpus)',
+        A: { bongoBell: '9...7...8...7...', bongoBellC: '..4...6...4...5.' },
+        B: { bongoBell: '9...7...8...7...', bongoBellC: '..4...4...4...5.' } }
     },
     timbal: {
       cascara: { n: 'cáscara', f: 'Moore: lado 2 en 1, 2, 3, 3& y 4&; lado 3 en 1, 2, 2&, 3& y 4&; la izquierda en el timbal grave hace el bombo (2&) y el ponche (4)',
         A: { cascara: '7...5.7...6...5.', timbalL: '......4.....7...' },
         B: { cascara: '7...7...5.6...5.', timbalL: '......4.....7...' } },
-      campana: { n: 'campana de mambo', f: 'Moore, contracampaneo: lado 2 en 1, 2, 3, 3&, 4, 4&; lado 3 en 1&, 2, 2&, 3, 4, 4&',
-        A: { bell: '..6.9.6.9...9.6.' },
-        B: { bell: '9...9...9.6.9.6.' } },
+      // abierta en los tiempos y talón en los contratiempos: el contracampaneo y el campaneo coinciden en cinco de seis golpes,
+      // así que lo que los separa es el timbre (Moore anota los dos timbres de cada campana; investigacion_campana.md)
+      campana: { n: 'campana de mambo', f: 'Moore, contracampaneo: lado 2 en 1, 2, 3, 3&, 4, 4&; lado 3 en 1&, 2, 2&, 3, 4, 4& (abierta en los tiempos, talón en los contratiempos; en el corpus, exacto en 12 temas)',
+        A: { bell: '....9...9...9...', bellC: '..6...6.......6.' },
+        B: { bell: '9...9...9...9...', bellC: '..........6...6.' } },
       negras: { n: 'campana en negras (chachá, despelote)', f: 'la campana en los cuatro tiempos (la del chachá y la charanga; también el despelote), el 1 y el 3 marcados',
         A: { bell: '9...7...9...7...' }, B: { bell: '9...7...9...7...' } },
       songo: { n: 'guagua de songo', f: 'timba.com, Changuito: la guagua (campana o bloque) en 1 y 3, en los dos lados', ...L({ block: '8.......7.......' }) }
