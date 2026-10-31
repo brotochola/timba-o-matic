@@ -17,7 +17,10 @@ Para armar maquetas de canciones de timba y salsa: ponés las secciones y sus ac
    - De entrada aprende de los 18 temas originales (y de los tuyos).
    - «Todos los MIDIs» suma además la colección de mididb.com: 104 temas más, casi todos de salsa (ver [§11 del análisis](Tumbaos_analisis_midis.md)).
 
-«Generar y escuchar» arma la canción y la toca. «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` para abrirla en otro lado. «Copiar LilyPond» da la partitura (con una marca por sección), que compila tal cual en LilyPond 2.24. El botón `.mid` de arriba baja un MIDI para el DAW: piano, bajo, una pista por instrumento de percusión y un marcador por sección.
+«Generar y escuchar» arma la canción y la toca. «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` para abrirla en otro lado.
+- **Bajar MIDI** (también el botón `.mid` de arriba): para el DAW, con piano, bajo, una pista por instrumento de percusión y un marcador por sección.
+- **Bajar MP3**: la canción grabada con los sonidos elegidos y la mezcla de las pistas. Se arma sin tocarla en tiempo real (unos segundos) y se codifica en el navegador con [lamejs](https://github.com/zhuker/lamejs), que se baja la primera vez; sin internet sale en WAV. Con un dispositivo MIDI externo no se puede grabar.
+- **Copiar LilyPond**: la partitura (con una marca por sección), que compila tal cual en LilyPond 2.24.
 
 En la barra de arriba:
 - **Partitura** muestra la partitura y el código LilyPond. Está oculta de entrada.

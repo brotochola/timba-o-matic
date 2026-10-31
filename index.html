@@ -429,6 +429,8 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
       <span class="gen-more">
         <button class="btn ghost" id="cn-nueva" type="button" title="Empezar una canción nueva de una sola sección">Canción nueva</button>
         <button class="btn ghost" id="fav-add" type="button" title="Guardar la canción entera (secciones, perillas y mezcla) en este navegador">★ Guardar canción</button>
+        <button class="btn ghost" id="cn-midi" type="button">Bajar MIDI</button>
+        <button class="btn ghost" id="cn-mp3" type="button">Bajar MP3</button>
         <button class="btn ghost" id="cn-exportar" type="button">Exportar canción</button>
         <label class="btn ghost" for="cn-importar" tabindex="0">Importar canción…</label><input type="file" id="cn-importar" accept=".json,application/json" hidden>
         <button class="btn ghost" id="tb-copy" type="button">Copiar LilyPond</button>
@@ -1496,22 +1498,24 @@ function renderScore(score,host){
 const Synth={
   ctx:null,bus:null,active:new Set(),waves:{},
   ensure(){
-    if(!this.ctx){
-      const AC=window.AudioContext||window.webkitAudioContext; const c=this.ctx=new AC();
-      const master=c.createGain();master.gain.value=0.47;
-      const comp=c.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=3;
-      const bus=this.bus=c.createGain();
-      const verb=c.createConvolver();verb.buffer=this.impulse(2.4,3.2);
-      const wet=c.createGain();wet.gain.value=0.22;
-      bus.connect(comp);bus.connect(verb);verb.connect(wet);wet.connect(comp);comp.connect(master);master.connect(c.destination);
-      const mk=(amps)=>{const re=new Float32Array(amps.length),im=new Float32Array(amps.length);amps.forEach((a,i)=>im[i]=a);return c.createPeriodicWave(re,im)};
-      this.waves.piano=mk([0,1,.55,.32,.2,.14,.08,.06,.04,.03]);
-      this.waves.organ=mk([0,1,.75,.3,.55,0,.3,0,.25,0,0,0,.12]);
-      const nb=this.noiseBuf=c.createBuffer(1,c.sampleRate,c.sampleRate);const nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
-      const h=[0];for(let i=1;i<28;i++)h.push((i%2?1:.75)/Math.pow(i,.82));this.waves.harpsichord=mk(h);
-    }
+    if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;this.ctx=new AC();this.grafo()}
     if(this.ctx.state==='suspended')this.ctx.resume();
     return this.ctx;
+  },
+  // bus → compresor → master (con reverb) y las formas de onda, sobre this.ctx (también el de renderizarAudio)
+  grafo(){
+    const c=this.ctx;
+    const master=c.createGain();master.gain.value=0.47;
+    const comp=c.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=3;
+    const bus=this.bus=c.createGain();
+    const verb=c.createConvolver();verb.buffer=this.impulse(2.4,3.2);
+    const wet=c.createGain();wet.gain.value=0.22;
+    bus.connect(comp);bus.connect(verb);verb.connect(wet);wet.connect(comp);comp.connect(master);master.connect(c.destination);
+    const mk=(amps)=>{const re=new Float32Array(amps.length),im=new Float32Array(amps.length);amps.forEach((a,i)=>im[i]=a);return c.createPeriodicWave(re,im)};
+    this.waves.piano=mk([0,1,.55,.32,.2,.14,.08,.06,.04,.03]);
+    this.waves.organ=mk([0,1,.75,.3,.55,0,.3,0,.25,0,0,0,.12]);
+    const nb=this.noiseBuf=c.createBuffer(1,c.sampleRate,c.sampleRate);const nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+    const h=[0];for(let i=1;i<28;i++)h.push((i%2?1:.75)/Math.pow(i,.82));this.waves.harpsichord=mk(h);
   },
   impulse(sec,decay){
     const c=this.ctx,len=Math.floor(c.sampleRate*sec),buf=c.createBuffer(2,len,c.sampleRate);
@@ -1691,29 +1695,48 @@ function volDe(n){
 // loop de una región (la sección elegida, solo en la partitura para la que se marcó: P.loopScore) o de todo
 const enRegion=()=>P.loopFin!=null&&P.loopScore===P.score;
 const loopIni=()=>enRegion()?P.loopIni||0:0, loopFin=()=>enRegion()?Math.min(P.loopFin,P.score.total):P.score.total;
+// una nota en el instante «at» (segundos de Synth.ctx): mute y mezcla, los sonidos elegidos y, si no, el sintetizador
+function tocar(n,at){
+  const grp=n.part==='melody'?groupOf(n.staff):'rit';
+  if(P.mute[grp])return;
+  const k=volDe(n); if(k<=0)return; if(k!==1)n={...n,vel:(n.vel||1)*k};
+  if(window.SND&&SND.handle(n,at))return;
+  if(n.drum){Synth.drum(n.drum,at,n.vel||1);return}
+  if(n.part==='melody'){
+    const secs=n.dur/tps(), inst=instOf(n.staff), vel=n.vel||1;
+    const art=n.art==='stacc2'?0.3:n.art==='stacc'?0.45:n.art==='ten'?0.98:null;
+    if(inst==='voice'||inst==='choir')Synth.voice(n.midi,at,Math.max(0.08,secs*(art||0.96)),vel,inst==='choir');
+    else if(inst==='piano')Synth.play(n.midi,at,Math.max(0.06,secs*(art||0.85)),0.26*vel,'piano');
+    else if(inst==='bass')Synth.play(n.midi,at,secs*(art||0.95),0.85*vel,'bass',n.bend);
+    else{const a=art||(n.dur<=480?0.62:n.dur<=960?0.8:0.94);Synth.play(n.midi,at,Math.max(0.06,secs*a),vel,inst)}
+  } else Synth.play(n.midi,at,n.dur/tps(),n.part==='bass'?0.95:0.38,n.part==='bass'?'bass':'piano');
+}
 function schedule(){
   const now=curTick(), horizon=now+0.18*tps(), fin=P.loop?loopFin():Infinity;
   while(P.idx<P.notes.length&&P.notes[P.idx].t<horizon&&P.notes[P.idx].t<fin){
-    let n=P.notes[P.idx++];
+    const n=P.notes[P.idx++];
     if(n.t<P.aTick-1)continue;
-    const when=P.aTime+(n.t-P.aTick)/tps();
-    const grp=n.part==='melody'?groupOf(n.staff):'rit';
-    if(P.mute[grp])continue;
-    const k=volDe(n); if(k<=0)continue; if(k!==1)n={...n,vel:(n.vel||1)*k};
-    const at=Math.max(Synth.ctx.currentTime,when);
-    if(window.SND&&SND.handle(n,at))continue;
-    if(n.drum){Synth.drum(n.drum,at,n.vel||1);continue}
-    if(n.part==='melody'){
-      const secs=n.dur/tps(), inst=instOf(n.staff), vel=n.vel||1;
-      const art=n.art==='stacc2'?0.3:n.art==='stacc'?0.45:n.art==='ten'?0.98:null;
-      if(inst==='voice'||inst==='choir')Synth.voice(n.midi,at,Math.max(0.08,secs*(art||0.96)),vel,inst==='choir');
-      else if(inst==='piano')Synth.play(n.midi,at,Math.max(0.06,secs*(art||0.85)),0.26*vel,'piano');
-      else if(inst==='bass')Synth.play(n.midi,at,secs*(art||0.95),0.85*vel,'bass',n.bend);
-      else{const a=art||(n.dur<=480?0.62:n.dur<=960?0.8:0.94);Synth.play(n.midi,at,Math.max(0.06,secs*a),vel,inst)}
-    } else Synth.play(n.midi,at,n.dur/tps(),n.part==='bass'?0.95:0.38,n.part==='bass'?'bass':'piano');
+    tocar(n,Math.max(Synth.ctx.currentTime,P.aTime+(n.t-P.aTick)/tps()));
   }
   if(P.loop&&now>=fin){const ini=loopIni();P.aTime+=(fin-P.aTick)/tps();P.aTick=ini;P.idx=firstIdx(ini);}
   else if(now>P.score.total+960*1.5){stop();}
+}
+// la partitura entera en un AudioBuffer, sin tocarla en tiempo real (para el MP3): el mismo despacho y la misma mezcla
+// sobre un OfflineAudioContext. Synth apunta a ese contexto solo mientras se crean los nodos; después vuelve al de siempre.
+async function renderizarAudio(sr=44100){
+  if(!P.score)throw new Error('No hay nada para grabar');
+  if(window.SND&&SND.S.mode==='midi')throw new Error('Con un dispositivo MIDI externo no se puede grabar: elegí la banda de samples o GeneralUser GS en «Sonido».');
+  if(P.playing)pause();
+  Synth.ensure();
+  const t0=0.15, off=new OfflineAudioContext(2,Math.ceil((t0+P.score.total/tps()+3.5)*sr),sr);
+  const real={ctx:Synth.ctx,bus:Synth.bus,waves:Synth.waves,noiseBuf:Synth.noiseBuf,active:Synth.active};
+  const pk=window.PACK&&PACK.S, pans=pk&&pk.pans, srcs=pk&&pk.srcs;
+  try{
+    Object.assign(Synth,{ctx:off,waves:{},active:new Set()});Synth.grafo();
+    if(pk){pk.pans={};pk.srcs=new Set()}
+    for(const n of P.notes)tocar(n,t0+n.t/tps());
+  }finally{Object.assign(Synth,real);if(pk){pk.pans=pans;pk.srcs=srcs}}
+  return off.startRendering();
 }
 function play(){
   if(!P.score)return;
@@ -4811,13 +4834,64 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   // y un marcador por sección. Con otra partitura en el editor, el exportador de siempre.
   let partitura=null;
   const midiGeneral=$('midi').onclick;
-  $('midi').onclick=()=>{
+  function bajarMidi(){
     if(!res||P.score!==partitura)return midiGeneral&&midiGeneral();
     const ms=P.score.measures,perc=ms.map(()=>[]);
     for(const n of P.notes){if(!n.drum)continue;let i=0;while(i<ms.length-1&&ms[i+1].start<=n.t)i++;const m=ms[i];
       perc[i].push({p:Math.max(0,Math.min(15,Math.round((n.t-m.start)/((m.end-m.start)/16)))),d:n.drum,v:n.vel||1})}
     bajar(TM.aMidi({...res,extra:null},P.bpm,{porFamilia:true,perc}),archivo()+'.mid','audio/midi');
     inf('MIDI de la canción: piano, bajo y una pista por instrumento de percusión, con las secciones marcadas.');
+  }
+  $('midi').onclick=bajarMidi;$('cn-midi').onclick=bajarMidi;
+
+  // ---------- MP3: la canción grabada con los sonidos elegidos y la mezcla de las pistas (renderizarAudio, sección 7),
+  // codificada acá mismo con lamejs (se baja la primera vez); sin internet, en WAV
+  let lame=null;
+  const cargarLame=()=>lame||(lame=new Promise((ok,mal)=>{
+    const urls=['https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js','https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js'];
+    const probar=i=>{if(i>=urls.length)return mal(new Error('no se pudo bajar el codificador'));
+      const sc=document.createElement('script');sc.src=urls[i];sc.onload=()=>window.lamejs?ok(window.lamejs):probar(i+1);sc.onerror=()=>{sc.remove();probar(i+1)};document.head.appendChild(sc)};
+    probar(0);
+  }).catch(e=>{lame=null;throw e}));
+  // a 16 bits, con el pico normalizado a -0,5 dB
+  function pcm(buf){
+    const L=buf.getChannelData(0),R=buf.numberOfChannels>1?buf.getChannelData(1):L;let pico=0;
+    for(let i=0;i<L.length;i++){const a=Math.abs(L[i]),b=Math.abs(R[i]);if(a>pico)pico=a;if(b>pico)pico=b}
+    const g=pico>0?Math.min(4,.94/pico):1,a16=x=>Math.max(-32768,Math.min(32767,Math.round(x*g*32767)));
+    const l=new Int16Array(L.length),r=new Int16Array(L.length);for(let i=0;i<L.length;i++){l[i]=a16(L[i]);r[i]=a16(R[i])}
+    return {l,r,sr:buf.sampleRate};
+  }
+  async function aMp3(lj,{l,r,sr},avance){
+    const enc=new lj.Mp3Encoder(2,sr,192),N=1152,partes=[];
+    for(let i=0;i<l.length;i+=N){
+      const m=enc.encodeBuffer(l.subarray(i,i+N),r.subarray(i,i+N));if(m.length)partes.push(new Int8Array(m));
+      if(i%(N*400)===0){avance(i/l.length);await new Promise(z=>setTimeout(z))}
+    }
+    const f=enc.flush();if(f.length)partes.push(new Int8Array(f));
+    return new Blob(partes,{type:'audio/mpeg'});
+  }
+  function aWav({l,r,sr}){
+    const n=l.length,v=new DataView(new ArrayBuffer(44+n*4)),txt=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+    txt(0,'RIFF');v.setUint32(4,36+n*4,true);txt(8,'WAVE');txt(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);
+    v.setUint32(24,sr,true);v.setUint32(28,sr*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);txt(36,'data');v.setUint32(40,n*4,true);
+    for(let i=0;i<n;i++){v.setInt16(44+i*4,l[i],true);v.setInt16(46+i*4,r[i],true)}
+    return new Blob([v],{type:'audio/wav'});
+  }
+  let grabando=false;
+  $('cn-mp3').onclick=async()=>{
+    if(grabando)return;grabando=true;$('cn-mp3').disabled=true;
+    try{
+      const snd=$('pk-snd').value;
+      if(snd==='pack'&&!PACK.S.ready){inf('Cargando la banda de samples…');await PACK.load()}
+      else if(snd==='sf2'&&!SF2.ready()){inf('Cargando GeneralUser GS…');await SF2.load()}
+      const lj=cargarLame().catch(()=>null);
+      inf('Grabando la canción…');
+      const datos=pcm(await renderizarAudio()),seg=Math.round(datos.l.length/datos.sr),dur=Math.floor(seg/60)+':'+String(seg%60).padStart(2,'0');
+      const L=await lj;
+      if(L){bajar(await aMp3(L,datos,x=>inf('Pasando a MP3… '+Math.round(x*100)+'%')),archivo()+'.mp3','audio/mpeg');inf('MP3 listo ('+dur+'), con los sonidos y la mezcla de ahora.')}
+      else{bajar(aWav(datos),archivo()+'.wav','audio/wav');inf('No pude bajar el codificador de MP3 (hace falta internet): la canción salió en WAV ('+dur+').')}
+    }catch(e){inf('No pude grabar la canción: '+e.message)}
+    finally{grabando=false;$('cn-mp3').disabled=false}
   };
 
   // ---------- canciones guardadas (los favoritos de antes eran loops: se abren como canción de una sección)
@@ -4923,6 +4997,8 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     '#sc-fijar':{t:'Fijada, la sección se queda con las perillas de ahora y su variante aunque cambies las de la canción'},
     '#cn-banda':{t:'Salsa: sin batería en ninguna sección. Timba: con batería (bombo, caja, charles).'},
     '#cn-exportar':{t:'Bajar la canción como .json, para abrirla en otro navegador o pasársela a alguien'},
+    '#cn-midi':{t:'Bajar la canción en MIDI para el DAW: piano, bajo y una pista por instrumento de percusión, con un marcador por sección'},
+    '#cn-mp3':{t:'Grabar la canción en MP3 con los sonidos elegidos y la mezcla de las pistas (M, S y volumen). Tarda unos segundos; sin internet sale en WAV.'},
     'label[for="cn-importar"]':{t:'Abrir una canción exportada con «Exportar canción»'},
     '#kn-alcance [data-a="cancion"]':{t:'Las perillas valen para todas las secciones'},
     '#kn-alcance [data-a="seccion"]':{t:'Lo que muevas queda solo en la sección elegida'},
