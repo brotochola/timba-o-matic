@@ -241,6 +241,22 @@ for (const [clave, quiere] of [['son 2-3', true], ['rumba 2-3', false]]) {
   ok(todos === quiere, `${clave}: el timbero ${quiere ? 'toca' : 'no está obligado a tocar'} el 4 del lado 3 (${lado3.map(b => bajoEn(rt, b).join(',')).join(' | ')})`);
 }
 
+console.log('17. el bajo de timba camina el lado 2 en negras (pedido del dueño)');
+// en el lado 2: 1, 2, 3 y 4 (raíz, 3a y 5a «caminando»; en el 4 la raíz que viene); al entrar la sección y cada 4 vueltas
+const N12 = r => (b, q) => (r.bajo.find(e => e.p === b * 16 + q) || { ps: [-1] }).ps[0] % 12;
+const timba8 = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 8, semilla: 3, perillas: { b_aprox: 0 } }] }, M), nT = N12(timba8);
+ok(bajoEn(timba8, 0).join() === '0,4,8,12' && [nT(0, 0), nT(0, 4), nT(0, 8), nT(0, 12)].join() === '9,0,4,2', `al entrar (lado 2): raíz, 3a, 5a y la raíz que viene (${bajoEn(timba8, 0).join(',')} · ${[0, 4, 8, 12].map(q => nT(0, q)).join(',')})`);
+ok(bajoEn(timba8, 16).join() === '4,8,12', `a la cuarta vuelta otra vez, sin el 1 (viene ligado): ${bajoEn(timba8, 16).join(',')}`);
+ok([2, 4, 6, 8, 10, 12, 14].every(b => !bajoEn(timba8, b).includes(4)), 'en las otras vueltas, el tumbao de siempre');
+const tres2 = TM.generarCancion({ titulo: '', clave: 'son 3-2', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 2, semilla: 3, perillas: { b_aprox: 0, b_lado2_notas: 'raiz' } }] }, M), n3 = N12(tres2);
+ok(bajoEn(tres2, 1).join() === '4,8,12' && [n3(1, 4), n3(1, 8)].join() === '2,9', `en 3-2 va en el segundo compás (el primero del lado 2), «a la raíz»: ${bajoEn(tres2, 1).join(',')}`);
+for (const [d, est, per] of [['salsa', 'salsa', {}], ['Pupy con el tumbao de salsa elegido', 'pupy', { b_estilo: 'salsa' }], ['nunca', 'pupy', { b_lado2: 'nunca' }]]) {
+  const x = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: est, vueltas: 2, semilla: 3, perillas: { b_aprox: 0, ...per } }] }, M);
+  ok(!bajoEn(x, 0).includes(4), `${d}: sin negras (${bajoEn(x, 0).join(',')})`);
+}
+const pedido = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 2, semilla: 3, perillas: { b_aprox: 0, b_lado2: 'entrada' } }] }, M);
+ok(bajoEn(pedido, 0).join() === '0,4,8,12' && !bajoEn(pedido, 2).includes(4), 'pedidas «al entrar la sección», también en salsa');
+
 if (process.argv[2]) { fs.writeFileSync(process.argv[2], ly); console.log('LilyPond → ' + process.argv[2]); }
 console.log(`\n${pruebas - fallas}/${pruebas} bien`);
 process.exit(fallas ? 1 : 0);

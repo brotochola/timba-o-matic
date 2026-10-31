@@ -79,6 +79,8 @@
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
     { g: 'Bajo', id: 'b_reg', l: 'Registro del bajo', tipo: 'sel', def: 'medio', ops: [['grave', 'grave'], ['medio', 'medio'], ['agudo', 'agudo']], h: 'En qué octava toca el bajo' },
     { g: 'Bajo', id: 'b_gliss', l: 'Deslizamientos', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Glissando hacia abajo en los saltos grandes, en cualquier estilo (el estilo «deslizamientos» ya los trae)' },
+    { g: 'Bajo', id: 'b_lado2', l: 'Negras en el lado 2 (timba)', tipo: 'sel', def: 'auto', ops: [['auto', 'según el estilo (en la timba, con su tumbao: al entrar y cada 4 vueltas)'], ['nunca', 'nunca'], ['entrada', 'al entrar la sección'], ['cada4', 'al entrar y cada 4 vueltas'], ['siempre', 'en todos los compases del lado 2']], h: 'El bajo camina el lado 2 de la clave en negras (1, 2, 3 y 4, con la clave en el 2 y el 3) y en el 4 trae el acorde que viene: lo típico del bajo de timba para marcar la entrada de una sección' },
+    { g: 'Bajo', id: 'b_lado2_notas', l: 'Negras: qué notas', tipo: 'sel', def: 'caminando', ops: [['caminando', 'caminando: raíz, 3a y 5a'], ['raiz', 'a la raíz: raíz, raíz y 5a']], h: 'Las tres primeras negras del lado 2; la cuarta es la raíz que viene' },
     { g: 'Vientos', id: 'v_forma', l: 'Forma del mambo', tipo: 'sel', def: 'auto', ops: [['auto', 'según el estilo'], ['bloque', 'todos el mismo ritmo'], ['pregunta', 'pregunta y respuesta'], ['contrapunto', 'contrapunto (dos riffs a la vez)'], ['champola', 'champola (tres líneas que terminan juntas)'], ['escalonado', 'entradas escalonadas']], h: 'Todos el mismo ritmo (La Charanga Habanera: las cuatro voces juntas). Pregunta y respuesta: las trompetas tiran una clave y los trombones contestan la otra. Contrapunto: trompetas y trombones con dos riffs distintos a la vez, que se llenan los huecos (Issac Delgado, la salsa). Champola: tres líneas distintas que terminan juntas en unísono al final de la frase (NG La Banda). Escalonadas: cada familia entra un compás después' },
     { g: 'Vientos', id: 'v_largo', l: 'Largo de la frase', tipo: 'sel', def: 'auto', ops: [['auto', 'automático'], ['1', 'una clave (2 compases)'], ['2', 'dos claves (4 compases)'], ['4', 'cuatro claves (8 compases)']], h: 'Cada cuánto se repite (o cambia) el material de los vientos. La moña de salsa es de dos claves' },
     { g: 'Vientos', id: 'v_repite', l: 'Repetición', min: 0, max: 1, st: 0.05, def: 0.5, f: '%', h: 'Cuánto repite su frase: 0 = una línea que cambia siempre (el mambo de big band); 100% = un riff que vuelve igual (la moña). Los vientos repiten su material al menos dos veces' },
@@ -510,6 +512,14 @@
       // la célula de bajo está escrita como lado 3 | lado 2: se reparte por el lado de cada compás
       const mitadB = L_ => celula.filter(x => (L_ === 'A') === (x[0] < 16)).map(([p, d, rol, dz]) => ({ pos: p % 16, d, rol, dz }));
       let prev = bajoFin;
+      // negras en el lado 2 (b_lado2): el bajo de timba camina el lado 2 de la clave en el 1, el 2, el 3 y el 4, y en el 4 trae la
+      // raíz que viene. Según el estilo: en la timba, en el primer compás del lado 2 de la sección y cada 4 vueltas (el dueño: «no
+      // es para hacer siempre: para las entradas de las secciones»). El último compás de la sección queda para la unión
+      // (con el tumbao de salsa elegido a mano, solo si se pide)
+      const modoNegras = k.b_lado2 && k.b_lado2 !== 'auto' ? k.b_lado2 : opc.estiloBanda === 'timba' && estiloBajo !== 'salsa' ? 'cada4' : 'nunca';
+      const primeraB = v => { for (let b = v * L; b < Math.min(nb, (v + 1) * L); b++) if (lado(b) === 'B') return b; return -1; };
+      const negrasEn = b => lado(b) === 'B' && (b < nb - 1 || !ctx) && (modoNegras === 'siempre' || (modoNegras === 'entrada' && b === primeraB(0))
+        || (modoNegras === 'cada4' && Math.floor(b / L) % 4 === 0 && b === primeraB(Math.floor(b / L))));
       for (let b = 0; b < nb; b++) {
         let evs = mitadB(lado(b)).map(x => ({ ...x }));
         if (k.b_dens < 1) evs = evs.filter(x => x.rol === 'R+' || x.rol === 'R' || RB() < k.b_dens);
@@ -539,6 +549,12 @@
         // de salsa que toca el 1 es el tresillo (1, 2& y 4)
         if (tipoClave === 'son' && lado(b) === 'A' && CELULA_CON_4.includes(estiloBajo) && !evs.some(x => x.pos === 12)) evs.push({ pos: 12, d: 2, rol: 'R', dz: null });
         if (estiloBajo === 'salsa' && evs.some(x => x.pos === 0)) { if (!evs.some(x => x.pos === 6)) evs.push({ pos: 6, d: 6, rol: '5', dz: null }); if (!evs.some(x => x.pos === 12)) evs.push({ pos: 12, d: 4, rol: 'R', dz: null }); }
+        // las negras del lado 2: raíz, 3a y 5a («caminando», lo más común en la timba) o raíz, raíz y 5a; el 1 no suena si la nota
+        // viene ligada del compás de antes
+        if (negrasEn(b)) {
+          const ligada = b > 0 ? antDe(b - 1) : !!(previo && !previo.entraSolo), roles = k.b_lado2_notas === 'raiz' ? ['R', 'R', '5'] : ['R', '3', '5'];
+          evs = [...(ligada ? [] : [{ pos: 0, d: 4, rol: roles[0], dz: null }]), { pos: 4, d: 4, rol: roles[1], dz: null }, { pos: 8, d: 4, rol: roles[2], dz: null }, { pos: 12, d: 4, rol: antDe(b) ? 'R+' : 'R', dz: null }];
+        }
         evs.sort((a, b2) => a.pos - b2.pos);
         for (const x of evs) {
           const cur = acordeEn(b, x.pos), q = x.pos;
