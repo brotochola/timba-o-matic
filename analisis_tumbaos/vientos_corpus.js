@@ -20,7 +20,8 @@ const INSTR = (prog, nombre) => prog === 56 || prog === 59 ? 'trompeta' : prog =
 const pc = m => ((m % 12) + 12) % 12;
 
 const R = { temas: 0, compases: { 'con campana': 0, 'sin campana': 0 }, activos: { 'con campana': 0, 'sin campana': 0 }, ritmo: {}, celulas: {}, dur: {}, intervalos: {}, unisono: 0, armonizados: 0,
-  registro: { trompeta: [], 'trombón': [], saxo: [], metales: [] }, fun: {}, antic: { cambios: 0, en4y: 0, en4: 0, en1: 0, nada: 0 }, frases: {}, arranque: {}, notasPorAtaque: {}, porTema: [], repite: { n: 0, a2: 0, a4: 0, ninguno: 0 } };
+  registro: { trompeta: [], 'trombón': [], saxo: [], metales: [] }, fun: {}, antic: { cambios: 0, en4y: 0, en4: 0, en1: 0, nada: 0 }, frases: {}, arranque: {}, notasPorAtaque: {}, porTema: [], repite: { n: 0, a2: 0, a4: 0, ninguno: 0 },
+  familias: {}, alternan: 0, pares: 0, alternaBloque: { 2: [0, 0], 4: [0, 0] }, mov: {}, saltos: {}, crece: { n: 0, vel: [0, 0], dens: [0, 0], top: [0, 0] } };
 const inc = (o, k, v = 1) => { o[k] = (o[k] || 0) + v; };
 for (const f of archivos) {
   let s, det;
@@ -36,6 +37,9 @@ for (const f of archivos) {
   }
   if (vientos.length < 60) continue;
   R.temas++;
+  const porCompas = [];   // por compás: { tpt, tbn, sax } ritmos de cada familia, fuerza media, ataques, nota de arriba media
+  let antesT = null;      // el último ataque común de trompetas y trombones (para el movimiento entre ellos)
+  const lineaT = [];      // la voz de arriba de las trompetas, en orden
   const C = det.compases, activoDe = [], ritmoDe = [], tema ={ archivo: path.basename(f), activos: 0, compases: 0 };
   C.forEach((b, i) => {
     if (!b.grillaOK) { activoDe.push(null); return; }
@@ -44,7 +48,25 @@ for (const f of archivos) {
     R.compases[ctx]++; tema.compases++;
     // ataques del compás: notas que empiezan juntas (a la semicorchea), con su duración en semicorcheas
     const ns = vientos.map(n => ({ ...n, q: Math.round(n.u * 2) - 2 * b.x, d: Math.max(1, Math.round((n.uf - n.u) * 2)) })).filter(n => n.q >= 0 && n.q < 16);
-    if (!ns.length) { activoDe.push(false); return; }
+    if (!ns.length) { activoDe.push(false); porCompas[i] = null; return; }
+    // las familias en el compás (la «sección de metales» de General MIDI suele doblar a las trompetas: no cuenta)
+    const FAM = { trompeta: 'tpt', 'trombón': 'tbn', saxo: 'sax' }, fr = { tpt: new Set(), tbn: new Set(), sax: new Set() }, topF = { tpt: {}, tbn: {} };
+    for (const n of ns) { const k = FAM[n.ins]; if (!k) continue; fr[k].add(n.q); if (topF[k]) topF[k][n.q] = Math.max(topF[k][n.q] ?? -1, n.alt); }
+    const activas = ['tpt', 'tbn', 'sax'].filter(k => fr[k].size);
+    if (fr.tpt.size && fr.tbn.size) {
+      const inter = [...fr.tpt].filter(q => fr.tbn.has(q)).length, union = new Set([...fr.tpt, ...fr.tbn]).size;
+      inc(R.familias, inter / union >= 0.75 ? 'trompetas y trombones, el mismo ritmo' : inter / union <= 0.25 ? 'trompetas y trombones, ritmos que se llenan' : 'trompetas y trombones, ritmos mezclados');
+    } else if (activas.length) inc(R.familias, activas.length === 1 ? 'solo ' + { tpt: 'trompetas', tbn: 'trombones', sax: 'saxos' }[activas[0]] : 'saxos con una familia');
+    // movimiento entre la de arriba de las trompetas y la de arriba de los trombones, en los ataques que tocan juntas
+    for (const q of Object.keys(topF.tpt).map(Number).sort((a, b) => a - b)) {
+      if (topF.tbn[q] == null) continue;
+      const a = { t: topF.tpt[q], b: topF.tbn[q] };
+      if (antesT) { const dt = Math.sign(a.t - antesT.t), db = Math.sign(a.b - antesT.b); inc(R.mov, !dt && !db ? 'las dos quietas' : !dt || !db ? 'oblicuo (una quieta)' : dt !== db ? 'contrario' : (a.t - antesT.t) === (a.b - antesT.b) ? 'paralelo (mismo intervalo)' : 'directo (misma dirección)'); }
+      antesT = a;
+    }
+    for (const q of Object.keys(topF.tpt).map(Number).sort((a, b) => a - b)) lineaT.push(topF.tpt[q]);
+    const vs = ns.map(n => n.vel);
+    porCompas[i] = { tpt: fr.tpt.size > 0, tbn: fr.tbn.size > 0, vel: vs.reduce((a, b) => a + b, 0) / vs.length, ataques: new Set(ns.map(n => n.q)).size, top: Math.max(...ns.map(n => n.alt)) };
     R.activos[ctx]++; tema.activos++; activoDe.push(true);
     const porQ = {}; for (const n of ns) (porQ[n.q] = porQ[n.q] || []).push(n);
     const g = Array(16).fill('.'); for (const q in porQ) g[q] = 'x';
@@ -75,6 +97,23 @@ for (const f of archivos) {
       if (porQ[14]) R.antic.en4y++; else if (porQ[12]) R.antic.en4++; else if (sigNs.length) R.antic.en1++; else R.antic.nada++;
     }
   });
+  // alternancia: un compás solo trompetas y el siguiente solo trombones (o al revés): pregunta y respuesta
+  for (let i = 1; i < porCompas.length; i++) { const a = porCompas[i - 1], b = porCompas[i]; if (!a || !b) continue; R.pares++; if ((a.tpt && !a.tbn && b.tbn && !b.tpt) || (a.tbn && !a.tpt && b.tpt && !b.tbn)) R.alternan++; }
+  // alternancia por bloques de una clave (2 compases) y de dos claves (4): un bloque solo trompetas y el siguiente solo trombones
+  for (const L of [2, 4]) {
+    const bloque = k => { const cs = porCompas.slice(k, k + L); if (cs.some(c => !c)) return null; const t = cs.some(c => c.tpt), b = cs.some(c => c.tbn); return t && !b ? 'T' : b && !t ? 'B' : t && b ? 'TB' : null; };
+    for (let k = L; k + L <= porCompas.length; k += L) { const a = bloque(k - L), b = bloque(k); if (!a || !b) continue; R.alternaBloque[L][1]++; if ((a === 'T' && b === 'B') || (a === 'B' && b === 'T')) R.alternaBloque[L][0]++; }
+  }
+  // la voz de arriba de las trompetas: cuánto salta de una nota a la siguiente
+  for (let i = 1; i < lineaT.length; i++) { const d = Math.abs(lineaT[i] - lineaT[i - 1]); inc(R.saltos, d === 0 ? 'repite' : d <= 2 ? 'por grado (1-2)' : d <= 4 ? 'tercera (3-4)' : d <= 7 ? 'cuarta a quinta (5-7)' : 'más de una quinta'); }
+  // los mambos largos (8 compases o más con vientos): el primer tercio contra el último
+  for (let i = 0; i < porCompas.length; i++) {
+    if (!porCompas[i] || (i && porCompas[i - 1])) continue;
+    let j = i; while (j < porCompas.length && porCompas[j]) j++;
+    const n = j - i; if (n < 8) continue;
+    const t = Math.floor(n / 3), A = porCompas.slice(i, i + t), Z = porCompas.slice(j - t, j), m = (a, k) => a.reduce((x, y) => x + y[k], 0) / a.length;
+    R.crece.n++; R.crece.vel[0] += m(A, 'vel'); R.crece.vel[1] += m(Z, 'vel'); R.crece.dens[0] += m(A, 'ataques'); R.crece.dens[1] += m(Z, 'ataques'); R.crece.top[0] += m(A, 'top'); R.crece.top[1] += m(Z, 'top');
+  }
   // frases: tiras de compases seguidos con vientos, y de qué lado de la clave arrancan
   let largo = 0;
   activoDe.forEach((a, i) => {
@@ -112,6 +151,12 @@ const NI = { 0: 'unísono', 1: '2a m', 2: '2a M', 3: '3a m', 4: '3a M', 5: '4a',
 console.log(`  intervalos entre voces vecinas: ${ordenar(R.intervalos).slice(0, 12).map(([k, v]) => (NI[k] || k + ' st') + ' ' + pct(v, tot(R.intervalos))).join(' · ')}`);
 console.log(`\nFUNCIÓN DE LA NOTA DE ARRIBA: ${ordenar(R.fun).map(([k, v]) => k + ' ' + pct(v, tot(R.fun))).join(' · ')}`);
 console.log(`\nANTICIPOS (${R.antic.cambios} cambios de acorde): en el 4& ${pct(R.antic.en4y, R.antic.cambios)} · en el 4 ${pct(R.antic.en4, R.antic.cambios)} · en el 1 ${pct(R.antic.en1, R.antic.cambios)} · callados ${pct(R.antic.nada, R.antic.cambios)}`);
+console.log('\nLAS FAMILIAS ENTRE SÍ (compases con vientos)');
+console.log('  ' + ordenar(R.familias).map(([k, v]) => k + ' ' + pct(v, tot(R.familias))).join(' · '));
+console.log(`  pregunta y respuesta (una familia sola y después la otra): de compás a compás ${pct(R.alternan, R.pares)} · de clave a clave ${pct(R.alternaBloque[2][0], R.alternaBloque[2][1])} · de frase a frase (dos claves) ${pct(R.alternaBloque[4][0], R.alternaBloque[4][1])}`);
+console.log('  movimiento entre la de arriba de las trompetas y la de los trombones: ' + ordenar(R.mov).map(([k, v]) => k + ' ' + pct(v, tot(R.mov))).join(' · '));
+console.log('  la voz de arriba de las trompetas, de una nota a la siguiente: ' + ordenar(R.saltos).map(([k, v]) => k + ' ' + pct(v, tot(R.saltos))).join(' · '));
+if (R.crece.n) { const c = R.crece, k = c.n; console.log(`  los mambos largos (${k} tiras de 8 compases o más), del primer tercio al último: fuerza ${Math.round(c.vel[0] / k)} → ${Math.round(c.vel[1] / k)} · ataques por compás ${(c.dens[0] / k).toFixed(1)} → ${(c.dens[1] / k).toFixed(1)} · nota más aguda ${nm(Math.round(c.top[0] / k))} → ${nm(Math.round(c.top[1] / k))}`); }
 console.log('\nREGISTRO (5% · mediana · 95%)');
 for (const [ins, a] of Object.entries(R.registro)) if (a.length) console.log(`  ${ins.padEnd(9)} ${nm(cuantil(a, 0.05))} · ${nm(cuantil(a, 0.5))} · ${nm(cuantil(a, 0.95))}  (${a.length} notas)`);
 console.log('\nPOR TEMA (compases con vientos)');

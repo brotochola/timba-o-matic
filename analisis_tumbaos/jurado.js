@@ -37,7 +37,7 @@ if (solo !== 'reglas') {
 // ---------- 2. reglas
 if (solo !== 'temas') {
   const PROG = 'Am D7 G E7', MARCHAS = ['cuerpo', 'marcha', 'mambo', 'presion', 'bomba', 'despelote', 'muela'];
-  const fallas = {}, n = { casos: 0 }, stats = { notas: 0, cortas: 0, golpes: 0, distintas: 0, unisono: 0 };
+  const fallas = {}, n = { casos: 0 }, stats = { notas: 0, cortas: 0, golpes: 0, distintas: 0, unisono: 0, saltos: {}, sube: { n: 0, a: 0, z: 0 } };
   const falla = (regla, caso) => { (fallas[regla] = fallas[regla] || []).push(caso); };
   const CLAVE = { son: { A: [0, 6, 12], B: [4, 8] }, rumba: { A: [0, 6, 14], B: [4, 8] } };
   for (const estilo of Object.keys(TM.ESTILOS)) for (const marcha of MARCHAS) for (const clave of ['son 2-3', 'rumba 3-2']) {
@@ -91,6 +91,16 @@ if (solo !== 'temas') {
       const rs = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog: PROG, marcha, estilo, vueltas: 2, semilla: sem }] }, M), g = {};
       for (const f of TM.PISTAS_VIENTOS) for (const e of rs.vientos[f]) { stats.notas++; if (e.L <= 2) stats.cortas++; (g[e.p] = g[e.p] || new Set()); e.ps.forEach(m => g[e.p].add(m % 12)); }
       for (const s of Object.values(g)) { stats.golpes++; stats.distintas += s.size; if (s.size === 1) stats.unisono++; }
+      // la línea de arriba de las trompetas, de una nota a la siguiente
+      const tp = rs.vientos.trompetas;
+      for (let i = 1; i < tp.length; i++) { const d = Math.abs(Math.max(...tp[i].ps) - Math.max(...tp[i - 1].ps)), k = d === 0 ? 'repite' : d <= 2 ? 'grado' : d <= 4 ? 'tercera' : d <= 7 ? '4a-5a' : 'más de 5a'; stats.saltos[k] = (stats.saltos[k] || 0) + 1; }
+    }
+    // un mambo largo (24 compases): la nota más aguda de cada compás, del primer tercio al último (como en vientos_corpus.js)
+    if (marcha === 'mambo' && clave === 'son 2-3') for (let sem = 1; sem <= 8; sem++) {
+      const rs = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog: PROG, marcha, estilo, vueltas: 6, semilla: sem }] }, M), nb = rs.compases, t = Math.floor(nb / 3);
+      const porC = Array.from({ length: nb }, (_, b) => { const e = TM.PISTAS_VIENTOS.flatMap(f => rs.vientos[f]).filter(x => x.p >= b * 16 && x.p < b * 16 + 16); return e.length ? Math.max(...e.flatMap(x => x.ps)) : null; });
+      const med = a => { const v = a.filter(x => x != null); return v.length ? v.reduce((p, q) => p + q, 0) / v.length : null; }, A = med(porC.slice(0, t)), Z = med(porC.slice(nb - t));
+      if (A != null && Z != null) { stats.sube.n++; stats.sube.a += A; stats.sube.z += Z; }
     }
     // registros
     const tops = r.der.map(e => e.ps.at(-1)), bajos = r.bajo.flatMap(e => e.ps);
@@ -105,6 +115,9 @@ if (solo !== 'temas') {
   if (!Object.keys(fallas).length) console.log('  todo bien');
   const pc = (a, b) => b ? Math.round(100 * a / b) + '%' : '-';
   console.log(`  vientos (cuerpo, coro y mambo) contra el corpus: notas cortas ${pc(stats.cortas, stats.notas)} (corpus 71%) · golpes en unísono u octavas ${pc(stats.unisono, stats.golpes)} (corpus 56%) · notas distintas por golpe ${(stats.distintas / Math.max(1, stats.golpes)).toFixed(1)} (corpus 1.7)`);
+  const ts = Object.values(stats.saltos).reduce((a, b) => a + b, 0), sb = stats.sube;
+  console.log(`  la de arriba de las trompetas, de una nota a la siguiente: por grado ${pc(stats.saltos.grado || 0, ts)} (corpus 40%) · tercera ${pc(stats.saltos.tercera || 0, ts)} (22%) · repite ${pc(stats.saltos.repite || 0, ts)} (19%) · 4a-5a ${pc(stats.saltos['4a-5a'] || 0, ts)} (11%) · más de una quinta ${pc(stats.saltos['más de 5a'] || 0, ts)} (7%)`);
+  if (sb.n) console.log(`  los mambos largos suben: la nota más aguda de cada compás, del primer tercio al último, ${((sb.z - sb.a) / sb.n >= 0 ? '+' : '') + ((sb.z - sb.a) / sb.n).toFixed(1)} semitonos (corpus +4: de Si♭4 a Re5)`);
   for (const [k, v] of Object.entries(fallas)) console.log(`  ${k}: ${v.length} — ${v.slice(0, 4).join(' | ')}`);
   process.exitCode = Object.keys(fallas).length ? 1 : 0;
 }
