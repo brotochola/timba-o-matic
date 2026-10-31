@@ -80,8 +80,8 @@
 .gen .btn.primary svg{width:13px;height:13px}
 /* algoritmo nuevo: selector, perillas por columna y base de MIDIs */
 /* canción: multipista, sección elegida y alcance de las perillas */
-:root{--mt-head:196px}
-@media (max-width:620px){:root{--mt-head:112px}}
+:root{--mt-head:212px}
+@media (max-width:620px){:root{--mt-head:128px}}
 .cn-titulo{flex:1 1 160px;min-width:0;max-width:340px;padding:5px 8px;font:600 15px/1.2 Inter,system-ui,sans-serif;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink)}
 .cn-titulo:hover,.cn-titulo:focus{border-color:var(--line);outline:none}
 .mt{border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
@@ -102,7 +102,7 @@
 .mt-sec{position:absolute;top:4px;bottom:4px;border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:0 6px;font:inherit;font-size:12px;line-height:20px;color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;text-align:left}
 .mt-sec.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
 .mt-sec:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.mt-acs .mt-b{height:20px;font-size:11px;color:var(--muted)}
+.mt-acs .mt-b{height:20px;font-size:11px;color:var(--ink);background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:var(--bw,40px) 100%}
 .mt-btn{flex:0 0 auto;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:4px;font:600 10px/1 Inter,system-ui,sans-serif;width:20px;height:18px;padding:0;cursor:pointer}
 .mt-btn[aria-pressed="true"]{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
 .mt-h input[type=range]{width:56px;min-width:0;margin:0 0 0 2px;accent-color:var(--accent)}
@@ -135,11 +135,44 @@
 .kn b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .kn.mod b,.kn.mod .kn-top span{color:var(--accent)}
 .kn-grp .kn-todas{margin-left:0}
-.mt-ant{position:absolute;top:0;font:700 11px/1 Inter,system-ui,sans-serif;color:var(--accent);pointer-events:auto;z-index:1}
-.mt-ant.loop{font-size:12px}
-.mt-union{position:absolute;top:50%;transform:translate(-50%,-50%);z-index:3;height:18px;min-width:26px;padding:0 3px;border:1px solid var(--muted);border-radius:9px;background:var(--bg);color:var(--ink);font:700 10.5px/1 Inter,system-ui,sans-serif;text-align:center;text-align-last:center;cursor:pointer;-webkit-appearance:none;appearance:none}
+/* acordes: el anticipado arranca antes de la raya, con la marca roja donde llega de verdad (--d: cuánto antes, en px) y el
+   pedacito anticipado sombreado. ↺: lo que llega al volver del loop, al final del loop */
+.mt-acs .mt-c{padding:3px 0 0 4px}
+.mt-acs .mt-c.rep{color:var(--muted)}
+.mt-acs .mt-c.ant{border-left:2px solid var(--accent);padding-left:3px;background:linear-gradient(90deg,var(--accent-soft) var(--d),transparent var(--d));background-origin:border-box}
+.mt-vuelta{position:absolute;top:0;bottom:0;border-left:2px solid var(--accent);background:var(--accent-soft)}
+.mt-vuelta::before{content:'↺';position:absolute;top:0;bottom:0;right:100%;margin-right:2px;display:flex;align-items:center;padding:0 2px;background:var(--panel);color:var(--accent);font:700 12px/1 Inter,system-ui,sans-serif}
+/* la unión entre secciones: la píldora dice dónde entra la que sigue y una patita baja hasta el lugar justo (roja si entra
+   anticipada). El select va encima, invisible: abre las opciones explicadas */
+.mt-union{position:absolute;top:50%;transform:translate(-50%,-50%);z-index:1;display:flex;align-items:center;justify-content:center;height:18px;min-width:24px;padding:0 5px;border:1px solid var(--muted);border-radius:9px;background:var(--bg);color:var(--ink);font:700 10.5px/1 Inter,system-ui,sans-serif;white-space:nowrap;cursor:pointer}
+.mt-union::after{content:'';position:absolute;left:50%;top:100%;width:2px;height:6px;margin:1px 0 0 -1px;background:var(--muted);pointer-events:none}
+.mt-union.ant::after{background:var(--accent)}
+.mt-union select{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:9px;opacity:0;cursor:pointer;font:13px Inter,system-ui,sans-serif}
 .mt-union.mod{border-color:var(--accent);color:var(--accent)}
-.mt-union:hover,.mt-union:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px var(--accent-soft)}
+.mt-union:hover,.mt-union:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+/* pistas que se pliegan: clic en el nombre (▾ abierta, ▸ plegada); la percusión y los vientos, también de a grupo */
+.mt-h button.mt-nom{display:block;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.mt-h button.mt-nom::before{content:'▾';display:inline-block;width:11px;font-size:10px;color:var(--muted)}
+.mt-h button.mt-nom[aria-expanded="false"]::before{content:'▸'}
+.mt-h button.mt-nom:hover,.mt-h button.mt-nom:focus-visible{color:var(--accent);outline:none}
+.mt-grupo .mt-h{background:var(--soft)}
+.mt-grupo .mt-nom{font:600 10.5px/1.3 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mt-cuenta{flex:0 0 auto;font-size:10.5px;color:var(--muted)}
+.mt-row.en-grupo .mt-h{padding-left:16px}
+.mt-row.plegada .mt-h{font-size:11px}
+.mt-row.plegada .mt-h input[type=range]{display:none}
+.mt-row.plegada .mt-btn{width:18px;height:14px;font-size:9px}
+.mt-row.plegada .mt-color{margin-top:2px;margin-bottom:2px}
+/* la leyenda del multipista, junto al zoom: las mismas marcas que en las pistas */
+.mt-leyenda{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;font-size:11.5px;color:var(--muted)}
+.mt-leyenda>span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;cursor:help}
+.mt-leyenda i{font-style:normal}
+.ley-ant{display:inline-block;height:16px;padding:2px 4px 0 3px;border-left:2px solid var(--accent);background:linear-gradient(90deg,var(--accent-soft) 5px,var(--line) 5px 6px,transparent 6px);background-origin:border-box;color:var(--ink);font:11px/1.2 Inter,system-ui,sans-serif}
+.ley-vuelta{display:inline-flex;align-items:stretch;height:16px;color:var(--accent);font:700 12px/16px Inter,system-ui,sans-serif}
+.ley-vuelta::after{content:'';width:5px;margin-left:2px;border-left:2px solid var(--accent);background:var(--accent-soft)}
+.ley-union{display:inline-flex;align-items:center;height:16px;padding:0 5px;border:1px solid var(--muted);border-radius:8px;background:var(--bg);color:var(--ink);font:700 10px/1 Inter,system-ui,sans-serif}
+@media (max-width:900px){.mt-leyenda{display:none}}
+@media (max-width:620px){.mt-row.en-grupo .mt-h{padding-left:8px}}
 .gen .fld.mod>span:first-child{color:var(--accent)}
 .perc-instr{margin-top:8px}
 .kn input[type=range]{width:100%;margin:0}
@@ -354,7 +387,7 @@ body{font-size:13px}
 .cn-titulo{font-size:14px;max-width:420px}
 .mt{border-radius:4px;background:var(--panel)}
 .mt-sec{border-radius:3px;color:#151515;font-weight:600}
-.mt-sec.sel{outline:2px solid var(--ink);outline-offset:-1px;color:#151515}
+.mt-sec.sel{outline:2px solid var(--ink);outline-offset:1px;z-index:1;color:#151515}
 .mt-h{gap:5px}
 .mt-color{flex:0 0 4px;align-self:stretch;margin:3px 2px 3px -4px;border-radius:2px}
 .sec-box{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:0;gap:0}
@@ -454,11 +487,16 @@ body.sin-partitura .panel-full{display:none}
     <div class="gen-row gen-head">
       <input id="cn-titulo" class="cn-titulo" type="text" placeholder="Título de la canción" aria-label="Título de la canción" maxlength="80">
       <span class="gen-tools">
+        <span class="mt-leyenda">
+          <span title="El acorde anticipado arranca antes de la raya del compás, donde llega de verdad (la marca roja): en el 4&amp; del compás de antes (piano y bajo, como en la timba) o en el 4 (el bajo de la salsa; el piano en el 4&amp;). Adentro de la sección se elige en «Cambio de acorde»; entre secciones, en la píldora de la unión."><i class="ley-ant">C</i>acorde anticipado</span>
+          <span title="Al final del loop: el primer acorde llega anticipado al volver al principio (lo ligado sigue sonando del otro lado)."><i class="ley-vuelta">↺</i>al volver del loop</span>
+          <span title="La píldora de cada unión entre secciones dice dónde entra la que sigue: 4&amp; (en el 4&amp; del último compás de la de antes, anticipada), 4 (el bajo en el 4 y el piano en el 4&amp;) o 1 (en su 1, sin anticipo). Clic en la píldora para cambiarlo."><i class="ley-union">4&amp;</i>dónde entra la sección</span>
+        </span>
         <label class="ctl">Zoom <select id="mt-zoom"><option value="0">ajustar</option><option value="24">chico</option><option value="36">medio</option><option value="52">grande</option><option value="72">enorme</option></select></label>
       </span>
     </div>
     <div class="mt" id="mt"><div class="mt-in" id="mt-in"></div></div>
-    <p class="ayuda mt-ayuda">Clic en una sección para editarla · clic en una pista adentro de una sección: entra o sale ese instrumento ahí · clic en la regla: tocar desde ese compás</p>
+    <p class="ayuda mt-ayuda">Clic en una sección para editarla · clic en una pista adentro de una sección: entra o sale ese instrumento ahí · clic en el nombre de una pista o de un grupo: se pliega · clic en la regla: tocar desde ese compás · el acorde anticipado arranca antes de la raya, con una marca roja · la píldora de cada unión: dónde entra la sección que sigue</p>
     <div class="sec-box" id="sec-box">
       <div class="det-tirador" id="det-tirador" title="Arrastrá para cambiar el alto del panel"></div>
       <div class="gen-row sec-head">
@@ -5584,90 +5622,139 @@ ${vientosStaff}    \\new PianoStaff <<
   const ALTO={piano:60,bajo:42,trompetas:36,trombones:36,saxos:36};
   const COL_MARCHA={cuerpo:'#8fb4dc',marcha:'#93cf8e',mambo:'#f0b45e',presion:'#e5857a',bomba:'#b897d8',despelote:'#ea94bf',muela:'#a9b7bf'};
   const COL_PISTA={piano:'#e9a43f',bajo:'#5ea2e0',clave:'#cfc65a',congas:'#df7c4f',bongo:'#c973b8',campanas:'#e4c24f',timbales:'#6fc3a3',guiro:'#98bb57',bateria:'#9696e0',trompetas:'#e86a6a',trombones:'#c9925a',saxos:'#7cc0c8'};
+  const MELODICAS=['piano','bajo','trompetas','trombones','saxos'];
+  // la percusión y los vientos van en grupo: se pliegan enteros (plegado, el grupo es una fila con lo que tocan todas)
+  const GRUPOS=[{id:'perc',n:'Percusión',pistas:['clave','congas','bongo','campanas','timbales','guiro','bateria']},{id:'vientos',n:'Vientos',pistas:['trompetas','trombones','saxos']}];
+  // las pistas y los grupos plegados quedan en este navegador: {piano:true, 'g:perc':true…}
+  let plegadas=load('tdt-pistas-plegadas',{});if(!plegadas||typeof plegadas!=='object'||Array.isArray(plegadas))plegadas={};
+  function plegar(id){if(plegadas[id])delete plegadas[id];else plegadas[id]=true;store('tdt-pistas-plegadas',plegadas);pintarPistas();
+    const b=mtIn.querySelector('[data-pleg="'+id+'"]');if(b)b.focus({preventScroll:true})}
   const zoomSel=$('mt-zoom');zoomSel.value=String(load('tdt-zoom',0));if(!zoomSel.value)zoomSel.value='0';
   zoomSel.onchange=()=>{store('tdt-zoom',+zoomSel.value);pintarPistas()};
   function pintarPistas(){
     const ts=tramos(), nb=Math.max(1,ts.reduce((a,x)=>a+x.n,0));
     bw=+zoomSel.value||Math.max(16,Math.min(64,Math.floor((mt.clientWidth-cabezaPx()-16)/nb)));   // «ajustar»: la canción entera a lo ancho
     const W=nb*bw;
-    mtIn.innerHTML='';mtIn.style.width='calc(var(--mt-head) + '+W+'px)';
+    mtIn.innerHTML='';mtIn.style.width='calc(var(--mt-head) + '+W+'px)';mtIn.style.setProperty('--bw',bw+'px');
     // la regla, las secciones y los acordes van en un bloque fijo arriba: al bajar por las pistas siguen a mano
     const fijo=el('div','mt-fijo');mtIn.appendChild(fijo);
-    const fila=(cls,nombre,alto,color,dest)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');
+    // una fila: el nombre y su carril. Con pleg ({id, cerrada}), el nombre es un botón que la pliega (▾ abierta, ▸ plegada)
+    const fila=(cls,nombre,alto,color,dest,pleg)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');
       if(color){const c=el('span','mt-color');c.style.background=color;hd.appendChild(c)}
-      const nm=el('span','mt-nom',nombre);nm.title=nombre;hd.appendChild(nm);
-      b.style.width=W+'px';if(alto)b.style.height=alto+'px';r.append(hd,b);(dest||mtIn).appendChild(r);return {hd,b}};
+      const nm=el(pleg?'button':'span','mt-nom',nombre);nm.title=nombre;
+      if(pleg){nm.type='button';nm.dataset.pleg=pleg.id;nm.setAttribute('aria-expanded',String(!pleg.cerrada));
+        nm.title=(pleg.cerrada?'Desplegar ':'Plegar ')+nombre.toLowerCase();nm.onclick=()=>plegar(pleg.id)}
+      hd.appendChild(nm);
+      b.style.width=W+'px';if(alto)b.style.height=alto+'px';r.append(hd,b);(dest||mtIn).appendChild(r);return {hd,b,nm}};
     const enBarra=(e,b)=>Math.max(0,Math.min(nb-1,Math.floor((e.clientX-b.getBoundingClientRect().left)/bw)));
     const tramoDe=k=>ts.findIndex(x=>k>=x.ini&&k<x.ini+x.n);
     // regla: número de compás, con el lado 3 de la clave sombreado
     const tres=/3-2/.test(song.clave), rg=fila('mt-regla','Compás',0,null,fijo);
+    rg.nm.title='Clic en la regla: tocar desde ese compás. Sombreado: el lado 3 de la clave';
     for(let k=0;k<nb;k++){const c=el('span','mt-c'+(((res&&res.lados[k])||((k+(tres?0:1))%2===0?'A':'B'))==='A'?' l3':''),bw>=26||k%4===0?String(k+1):'');
       c.style.left=k*bw+'px';c.style.width=bw+'px';rg.b.appendChild(c)}
     rg.b.title='Clic: tocar desde ese compás (sombreado: lado 3 de la clave)';
     rg.b.onclick=e=>{const ms=P.score&&P.score.measures,k=enBarra(e,rg.b);if(ms&&ms[k])seek(ms[k].start)};
     // secciones, del color de su marcha
     const sc=fila('mt-secs','Secciones',0,null,fijo);
+    sc.nm.title='Cada bloque es una sección (el color dice la marcha): clic para editarla. La píldora de cada unión dice dónde entra la que sigue (4&, 4 o 1) y se cambia ahí mismo';
     ts.forEach((x,i)=>{const b=el('button','mt-sec'+(i===cur?' sel':''),nombreDe(x.s)+(x.s.vueltas>1?' ×'+x.s.vueltas:''));b.type='button';
       b.style.left=x.ini*bw+1+'px';b.style.width=Math.max(8,x.n*bw-2)+'px';b.style.background=COL_MARCHA[x.s.marcha]||'#c8c8c8';
       b.title=nombreDe(x.s)+' · '+x.n+' compases · '+(MARCHA_TXT[x.s.marcha]||x.s.marcha)+' · clic para editarla';
       b.onclick=()=>elegir(i);sc.b.appendChild(b)});
-    // acordes
-    const ac=fila('mt-acs','Acordes',0,null,fijo);
-    ts.forEach(x=>{for(let j=0;j<x.n;j++){const b=x.s.bars[j%x.s.bars.length],c=el('span','mt-c',pretty(b.a)+(b.b?' '+pretty(b.b):''));
-      c.style.left=(x.ini+j)*bw+'px';c.style.width=bw+'px';c.title=c.textContent;ac.b.appendChild(c)}});
-    ac.b.style.cursor='default';
-    const lp=loopDe(),nom=b=>b?name(b.b||b.a):'',ultimo=x=>x.s.bars[(x.n-1)%x.s.bars.length],primero=x=>x.s.bars[0];
-    // ↱ donde llega el acorde que viene: adentro de la sección, según su cambio de acorde; en el último compás, según dónde entra
-    // la que sigue (↺: la vuelta del loop)
+    // acordes, cada uno donde llega de verdad: el anticipado (en el 4& del compás de antes o, el bajo de la salsa, en el 4)
+    // arranca antes de la raya, con una marca roja en ese lugar. Adentro de la sección, según su cambio de acorde; en el
+    // último compás, según dónde entra la que sigue. Al final del loop, ↺: lo que llega al volver
+    const ac=fila('mt-acs','Acordes',0,null,fijo);ac.b.style.cursor='default';
+    ac.nm.title='Los acordes, cada uno donde llega de verdad. El anticipado arranca antes de la raya del compás, con una marca roja: en el 4& del compás de antes (piano y bajo) o en el 4 (el bajo de la salsa; el piano en el 4&). ↺: lo que llega al volver del loop';
+    const lp=loopDe(),nom=b=>b?name(b.b||b.a):'',primero=x=>x.s.bars[0],ANTES={'4y':2,'4':4};   // semicorcheas antes de la raya
+    const COMO={'4y':'llega en el 4& del compás de antes: piano y bajo lo traen antes del 1 y lo ligan','4':'llega con el bajo en el 4 del compás de antes (el piano en el 4&): el anticipo de la salsa'};
+    const llega=[],delLoop=[];   // por compás: si su acorde llega anticipado; en el último del loop, lo que llega al volver
     ts.forEach((x,i)=>{const ci=cambioDeSec(x.s);
       for(let j=0;j<x.n;j++){const b=x.s.bars[j%x.s.bars.length],fin=j===x.n-1,k=fin?despuesDe(i):null,aLoop=fin&&lp&&i===lp.hasta;
         const c=fin?(k!=null?entraDe(k):'1'):ci;if(c==='1')continue;
         const sig=!fin?x.s.bars[(j+1)%x.s.bars.length]:k!=null?primero(ts[k]):null;
         if(!sig||nom(b)===name(sig.a))continue;
-        const f=el('span','mt-ant'+(aLoop?' loop':''),aLoop?'↺':'↱');f.style.left=((x.ini+j)*bw+bw*(c==='4'?12:14)/16-5)+'px';
-        f.title=(aLoop?'Al volver por el loop, ':'')+(c==='4'?'el bajo trae el acorde que viene en el 4 (el piano en el 4&)':'el acorde que viene llega en el 4&');ac.b.appendChild(f)}});
-    // la unión entre secciones: una píldora donde entra cada una (4&, 4 o 1), que se cambia ahí mismo
+        const d=ANTES[c]*bw/16;
+        if(aLoop)delLoop[x.ini+j]={c,d,a:sig.a,de:ts[k].s};else llega[x.ini+j+1]={c,d}}});
+    let previo='';
+    ts.forEach(x=>{for(let j=0;j<x.n;j++){
+      const k=x.ini+j,b=x.s.bars[j%x.s.bars.length],a=llega[k],v=delLoop[k],d=a?a.d:0,corte=(llega[k+1]?llega[k+1].d:0)+(v?v.d:0);
+      const txt=pretty(b.a)+(b.b?' '+pretty(b.b):''),rep=!a&&!b.b&&previo===name(b.a);
+      const c=el('span','mt-c'+(a?' ant':rep?' rep':''),txt);
+      c.style.left=(k*bw-d)+'px';c.style.width=Math.max(0,bw+d-corte)+'px';if(a)c.style.setProperty('--d',d+'px');
+      c.title='Compás '+(k+1)+': '+txt+(a?' · '+COMO[a.c]:rep?' (sigue el mismo)':'');
+      ac.b.appendChild(c);previo=nom(b);
+      if(v){const m=el('span','mt-vuelta');m.style.left=((k+1)*bw-v.d)+'px';m.style.width=v.d+'px';
+        m.title='Al volver por el loop: '+pretty(v.a)+' (el principio de «'+nombreDe(v.de)+'») '+COMO[v.c].replace('del compás de antes','de este compás');
+        ac.b.appendChild(m)}
+    }});
+    // la unión entre secciones: una píldora donde entra cada una (4&, 4 o 1), con una patita que baja al lugar justo. Se cambia
+    // ahí mismo: encima va el select, invisible, con las opciones explicadas
     const uniones=ts.map((x,i)=>({x,i,a:antesDe(i)})).filter(u=>u.a!=null&&(u.a===u.i-1||(lp&&u.i===lp.desde&&lp.hasta===ts.length-1&&u.i===0)));
     for(const {x,i,a} of uniones){
       const e=entraDe(i),fin=ts[a].ini+ts[a].n,px=fin*bw-(16-LLEGA[e])/16*bw,vuelta=a>=i,tr=GOLPES_TXT[ts[a].s.transicion]||'';
-      const u=el('select','mt-union'+(ENTRA_TXT[x.s.entra]?' mod':'')+(vuelta?' loop':''));u.style.left=px+'px';
-      for(const v of ['4y','4','1'])u.appendChild(el('option',null,(vuelta?'↺ ':'')+ENTRA_CORTO[v])).value=v;u.value=e;
-      u.title=nombreDe(ts[a].s)+' → '+nombreDe(x.s)+(vuelta?' (la vuelta del loop)':'')+': «'+nombreDe(x.s)+'» entra '+ENTRA_TXT[e]+(e==='1'?'':' (el acorde, los golpes y el plato caen ahí)')+(tr?' · al final de «'+nombreDe(ts[a].s)+'»: '+tr:'')+(ENTRA_TXT[x.s.entra]?'':' · como cambia el acorde «'+nombreDe(ts[a].s)+'»');
-      u.setAttribute('aria-label','Dónde entra «'+nombreDe(x.s)+'»');
+      const nA=nombreDe(ts[a].s),nB=nombreDe(x.s),propia=!!ENTRA_TXT[x.s.entra],pre=vuelta?'Al volver del loop, ':'';
+      const DONDE={'4y':'en el 4& de «'+nA+'»: anticipada (piano, bajo y golpes)','4':'en el 4 de «'+nA+'»: el bajo y los golpes (el piano en el 4&)','1':'en el 1 de «'+nB+'»: sin anticipo'};
+      const u=el('span','mt-union'+(propia?' mod':'')+(e!=='1'?' ant':'')+(vuelta?' loop':''),(vuelta?'↺':'')+ENTRA_CORTO[e]);u.style.left=px+'px';
+      const s=el('select');
+      s.appendChild(el('option',null,pre+'como cambia el acorde «'+nA+'» ('+ENTRA_CORTO[cambioDeSec(ts[a].s)]+')')).value='';
+      for(const v of ['4y','4','1'])s.appendChild(el('option',null,pre+DONDE[v])).value=v;
+      s.value=propia?x.s.entra:'';
+      u.title='Dónde entra «'+nB+'»'+(vuelta?' al volver del loop':'')+': '+DONDE[e]+(e==='1'?'':'. Ahí caen el acorde nuevo, los golpes y el plato')+(tr?' · al final de «'+nA+'»: '+tr:'')+(propia?'':' · como cambia el acorde «'+nA+'»')+' · clic para cambiarlo';
+      s.setAttribute('aria-label','Dónde entra «'+nB+'»');
       u.onclick=ev=>ev.stopPropagation();
-      u.onchange=()=>{x.s.entra=u.value;if(i!==cur)elegir(i);changed()};
-      sc.b.appendChild(u);
+      s.onchange=()=>{if(s.value)x.s.entra=s.value;else delete x.s.entra;if(i!==cur)elegir(i);changed()};
+      u.appendChild(s);sc.b.appendChild(u);
     }
     // notas por pista, de lo que suena
     const porPista={};
     if(P.score)for(const n of P.notes){const id=pistaDe(n);if(id)(porPista[id]=porPista[id]||[]).push(n)}
     const ms=P.score?P.score.measures:[];
     xDe=t=>{let lo=0,hi=ms.length-1;if(hi<0)return 0;while(lo<hi){const m=(lo+hi+1)>>1;if(ms[m].start<=t)lo=m;else hi=m-1}const m=ms[lo];return (lo+Math.min(1,(t-m.start)/(m.end-m.start||1)))*bw};
-    const col={soft:tok('--accent-soft'),line:tok('--line'),bg:tok('--bg')};
+    const col={line:tok('--line'),ink:tok('--ink'),muted:tok('--muted')};
+    // una fila por instrumento; la percusión y los vientos, en grupo. Clic en el nombre: se pliega la pista o el grupo entero
     for(const [id,t] of PISTAS){
-      const h=ALTO[id]||28,f=fila('mt-pista',t,h,COL_PISTA[id]);
+      const gr=GRUPOS.find(g=>g.pistas.includes(id));
+      if(gr&&gr.pistas[0]===id){   // la fila del grupo, antes de su primera pista; plegado, lo que tocan todas
+        const gid='g:'+gr.id,cerrado=!!plegadas[gid],h=cerrado?26:18;
+        const f=fila('mt-grupo'+(cerrado?' plegada':''),gr.n,h,null,null,{id:gid,cerrada:cerrado});
+        if(cerrado)f.hd.appendChild(el('span','mt-cuenta',gr.pistas.length+' pistas'));
+        const cv=el('canvas');f.b.appendChild(cv);
+        dibujar(cv,ts,W,h,cerrado?gr.pistas.flatMap(p=>porPista[p]||[]):[],col,{color:col.muted,apagada:x=>gr.pistas.every(p=>x.s.pistas[p]===false),melodica:gr.id==='vientos'});
+        f.b.title='Clic: elegir esa sección';
+        f.b.onclick=e=>{const i=tramoDe(enBarra(e,f.b));if(i>=0&&i!==cur)elegir(i)};
+      }
+      if(gr&&plegadas['g:'+gr.id])continue;
+      const cerrada=!!plegadas[id],h=cerrada?18:ALTO[id]||28;
+      const f=fila('mt-pista'+(gr?' en-grupo':'')+(cerrada?' plegada':''),t,h,COL_PISTA[id],null,{id,cerrada});
       cabeza(f.hd,id,t);
-      const cv=el('canvas');f.b.appendChild(cv);dibujar(cv,id,ts,W,h,porPista[id]||[],col);
+      const cv=el('canvas');f.b.appendChild(cv);
+      dibujar(cv,ts,W,h,porPista[id]||[],col,{color:COL_PISTA[id],apagada:x=>x.s.pistas[id]===false,melodica:MELODICAS.includes(id)});
       f.b.title='Clic: entra o sale '+t.toLowerCase()+' en esa sección';
       f.b.onclick=e=>{const i=tramoDe(enBarra(e,f.b));if(i>=0){if(i!==cur)elegir(i);alternar(i,id)}};
     }
     cursor=el('div','mt-cursor');mtIn.appendChild(cursor);cursorFijo=el('div','mt-cursor');fijo.appendChild(cursorFijo);
   }
-  // cada sección es un «clip»: fondo del color de la pista, más fuerte en la sección elegida, gris donde la pista no toca
-  function dibujar(cv,id,ts,W,h,notas,col){
+  // cada sección es un «clip»: fondo del color de la pista, más fuerte en la sección elegida; rayado donde la pista no toca.
+  // o: {color, apagada(tramo): si no toca ahí, melodica: las notas a su altura (si no, golpes con su fuerza)}
+  function dibujar(cv,ts,W,h,notas,col,o){
     const dpr=window.devicePixelRatio||1;cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.round(h*dpr);cv.style.width=W+'px';cv.style.height=h+'px';
-    const g=cv.getContext('2d');g.scale(dpr,dpr);const c=COL_PISTA[id];
+    const g=cv.getContext('2d');g.scale(dpr,dpr);
     ts.forEach((x,i)=>{
       const x0=x.ini*bw+1,w=x.n*bw-2;
-      if(x.s.pistas[id]===false){g.fillStyle=col.line;g.globalAlpha=.35;g.fillRect(x0,2,w,h-4)}
-      else{g.fillStyle=c;g.globalAlpha=i===cur?.32:.16;g.fillRect(x0,2,w,h-4);g.globalAlpha=i===cur?.9:.45;g.fillRect(x0,2,w,2)}
+      if(o.apagada(x)){g.fillStyle=col.line;g.globalAlpha=.35;g.fillRect(x0,2,w,h-4);
+        g.save();g.beginPath();g.rect(x0,2,w,h-4);g.clip();g.strokeStyle=col.muted;g.globalAlpha=.3;g.lineWidth=1;g.beginPath();
+        for(let s=x0-h;s<x0+w;s+=7){g.moveTo(s,h-2);g.lineTo(s+h-4,2)}g.stroke();g.restore()}
+      else{g.fillStyle=o.color;g.globalAlpha=i===cur?.32:.16;g.fillRect(x0,2,w,h-4);g.globalAlpha=i===cur?.9:.45;g.fillRect(x0,2,w,2)}
       g.globalAlpha=1;
     });
     if(!notas.length)return;
-    g.fillStyle=tok('--ink');
-    if(['piano','bajo','trompetas','trombones','saxos'].includes(id)){
+    g.fillStyle=col.ink;
+    if(o.melodica){
       let lo=127,hi=0;for(const n of notas){if(n.midi<lo)lo=n.midi;if(n.midi>hi)hi=n.midi}
-      for(const n of notas){const x=xDe(n.t),w=Math.max(1.5,xDe(n.t+(n.dur||240))-x-1),y=h-5-(n.midi-lo)/Math.max(1,hi-lo)*(h-11);g.fillRect(x,y-1,w,2.4)}
+      const grueso=h<24?1.6:2.4;   // plegada, rayitas más finas
+      for(const n of notas){const x=xDe(n.t),w=Math.max(1.5,xDe(n.t+(n.dur||240))-x-1),y=h-5-(n.midi-lo)/Math.max(1,hi-lo)*(h-11);g.fillRect(x,y-1,w,grueso)}
     } else {
       for(const n of notas){const v=Math.min(1,(n.vel||1)/1.1),a=(h-8)*(.3+.7*v);g.globalAlpha=.45+.55*v;g.fillRect(xDe(n.t),h-3-a,1.6,a)}
       g.globalAlpha=1;
@@ -5935,7 +6022,7 @@ ${vientosStaff}    \\new PianoStaff <<
   const ayuda=(el,texto)=>{const s=document.createElement('small');s.className='ayuda';s.textContent=texto;
     el.after(s);return s};
   const PANELES={
-    '#gen':'Las pistas de la canción: cada bloque de color es una sección (el color dice la marcha) y cada fila un instrumento. Clic en una sección para editarla en el panel de abajo (estructura, acordes, piano, bajo, percusión y vientos; cada bloque se pliega con su título). Clic en una pista adentro de una sección: ese instrumento entra o sale ahí. M y S valen para toda la canción; el volumen de cada pista es de la sección elegida (con Shift, de todas). Con «Seguir», mientras suena, el panel de abajo muestra la sección que suena.',
+    '#gen':'Las pistas de la canción: cada bloque de color es una sección (el color dice la marcha) y cada fila un instrumento. Clic en una sección para editarla en el panel de abajo (estructura, acordes, piano, bajo, percusión y vientos; cada bloque se pliega con su título). Clic en una pista adentro de una sección: ese instrumento entra o sale ahí. M y S valen para toda la canción; el volumen de cada pista es de la sección elegida (con Shift, de todas). Con «Seguir», mientras suena, el panel de abajo muestra la sección que suena. Clic en el nombre de una pista, o de la percusión y los vientos, para plegarlos. En los acordes, el anticipado arranca antes de la raya del compás, con una marca roja donde llega (en el 4& o en el 4 de antes); ↺ es lo que llega al volver del loop. En cada unión, la píldora dice dónde entra la sección que sigue (4&, 4 o 1) y se cambia ahí mismo.',
     '#gen-arr':'El sonido, las demos, las canciones guardadas y para bajar MIDI o MP3. La clave, la banda, el tempo y el loop están en la barra de arriba.'
   };
   for(const s in PANELES){const h=q(s+' .gen-head');if(h){const p=ayuda(h,PANELES[s]);p.classList.add('ayuda-panel');p.title=PANELES[s]}}
@@ -5972,7 +6059,7 @@ ${vientosStaff}    \\new PianoStaff <<
     '#sc-gancho':{t:'Que el piano repita el gancho de una sección anterior (misma fuente y mismas células), o que arme uno propio'},
     '#cn-banda':{t:'Salsa: sin batería en ninguna sección. Timba: con batería (bombo, caja, charles).'},
     '#cn-exportar':{t:'Bajar la canción como .json, para abrirla en otro navegador o pasársela a alguien'},
-    '#sc-cambio':{t:'Cuándo cambia el acorde adentro de la sección',e:'En el 4&: piano y bajo traen el acorde nuevo en el 4& y lo ligan al 1 (timba). Bajo en el 4: el anticipo de la salsa. En el 1: sin anticipo. La unión con la sección que sigue se elige aparte («Termina»); sin elegir, va como este cambio. ↱ marca cada cambio anticipado y ↺ la vuelta del loop.'},
+    '#sc-cambio':{t:'Cuándo cambia el acorde adentro de la sección',e:'En el 4&: piano y bajo traen el acorde nuevo en el 4& y lo ligan al 1 (timba). Bajo en el 4: el anticipo de la salsa. En el 1: sin anticipo. La unión con la sección que sigue se elige aparte («Termina»); sin elegir, va como este cambio. En el multipista, el acorde anticipado arranca antes de la raya del compás, con una marca roja donde llega de verdad; ↺ es lo que llega al volver del loop.'},
     '#cn-formato':{t:'Los vientos de toda la canción: cuántas trompetas, trombones y saxos. De entrada, el del estilo de la primera sección.'},
     '#sc-v-toca':{t:'Qué tocan los vientos en esta sección',e:'Bloques: golpes con la banda en los anticipos y al final. Respuestas: frases cortas en los huecos del cantante. Moña: un riff de dos claves que se repite. Mambo: una línea que cambia. Fondo: notas largas. Salen de los mambos y moñas de los temas de la base, acomodados a tus acordes.'},
     '#sc-v-armonia':{t:'Cómo se reparten las voces: unísono y octavas (lo más común), terceras y sextas, bloque (acordes cerrados) o cuartas (timba). «Como en el tema de la base» copia los intervalos del original.'},
