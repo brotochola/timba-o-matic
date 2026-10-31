@@ -107,7 +107,11 @@ function meterEnHtml(json) {
   const motorDir = path.join(__dirname, 'motor');
   const codigo = fs.readdirSync(motorDir).filter(f => /^\d\d_.*\.js$/.test(f)).sort().map(f => fs.readFileSync(path.join(motorDir, f), 'utf8')).join('\n');
   const seguro = s => s.replace(/<\/(script)/gi, '<\\/$1');
-  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera analisis_tumbaos/construir.js a partir de analisis_tumbaos/motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(json)}</script>\n${Z}`;
+  // las demos: las canciones de canciones/ (el formato de «Exportar canción»), en el orden de su campo «orden»
+  const DEMOS_D = path.join(RAIZ, 'canciones');
+  const demos = fs.existsSync(DEMOS_D) ? fs.readdirSync(DEMOS_D).filter(f => f.endsWith('.json')).map(f => JSON.parse(fs.readFileSync(path.join(DEMOS_D, f), 'utf8')))
+    .filter(j => j.cancion && j.cancion.secciones).sort((a, b) => (a.cancion.orden ?? 99) - (b.cancion.orden ?? 99)) : [];
+  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera analisis_tumbaos/construir.js a partir de analisis_tumbaos/motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(json)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${Z}`;
   const nuevo = html.slice(0, i0) + bloque + html.slice(i1 + Z.length);
   if (nuevo !== html) { fs.writeFileSync(HTML_F, nuevo); console.log(`index.html actualizado (motor ${(codigo.length / 1024).toFixed(0)} kB + base)`); }
   else console.log('index.html ya estaba al día');
