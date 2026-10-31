@@ -73,5 +73,18 @@ const b0 = sec('b').inicio, bajoB = rc.bajo.filter(e => e.p >= b0 * 16 && e.p < 
 ok(en(b0, 'ride') && bajoB.some(e => /glissando/.test(e.art)), 'bomba: ride en la batería y el bajo deslizándose');
 const p0 = sec('p').inicio, kp = [0, 1, 2, 3].map(i => en(p0 + i, 'kick'));
 ok(kp.slice(0, 3).every(x => !x.split(',').includes('2')), 'presión: el bombo del 2 no va en cada lado 3, solo al final de la frase');
+// la costura del loop: una sección sola anticipada; el final trae el acorde del principio en el 4& y las notas que el motor
+// marca (el 1 que suena solo al arrancar, lo ligado que sigue del otro lado) están en lo que suena
+const sola = { titulo: 'Loop', clave: 'son 2-3', perillas: {}, loop: { desde: 0, hasta: 0 }, secciones: [{ id: 'l', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 2, semilla: 9, cambio: '4y' }] };
+const rl = TM.generarCancion(sola, M), cl = rl.costura;
+ctx.__percMotor = { id: 'motor-3', compases: rl.perc, extra: rl.extra, mix: rl.mixes, estilo: rl.estilos };
+const sl = evaluate(parse(TM.aLilyPond(rl, { clave: 'son 2-3', bpm: 190, percusionId: 'motor-3' }))), nl = buildNotes(sl), msl = sl.measures;
+const tk = p => { const m = msl[Math.floor(p / 16)]; return m.start + Math.round((p % 16) * (m.end - m.start) / 16); };
+const fin = rl.der.filter(e => e.p >= (rl.compases - 1) * 16 + 14);
+ok(cl && fin.length && fin.every(e => e.ch.nombre === 'Am'), 'loop: el último 4& trae el acorde del principio (Am)');
+ok(cl.entrada.length && cl.entrada.every(e => e.ps.every(m => nl.some(n => !n.drum && n.t === tk(e.p) && n.midi === m))), 'loop: el 1 del principio está en lo que suena (para tocarlo solo al arrancar)');
+ok(cl.colas.length && cl.colas.every(e => e.extra > 0 && e.ps.every(m => nl.some(n => !n.drum && n.t === tk(e.p) && n.midi === m))), 'loop: lo ligado del final está en lo que suena y sigue del otro lado');
+const sinLoop = TM.generarCancion({ ...sola, loop: null }, M);
+ok(!sinLoop.costura && sinLoop.der.filter(e => e.p >= (sinLoop.compases - 1) * 16 + 14).every(e => e.ch.nombre !== 'Am'), 'sin loop: el final no anticipa el principio');
 console.log(fallas ? fallas + ' fallas' : 'cadena bien');
 process.exit(fallas ? 1 : 0);

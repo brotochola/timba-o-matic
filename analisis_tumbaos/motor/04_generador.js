@@ -46,8 +46,6 @@
     { g: 'Piano · línea', id: 'reg', l: 'Registro', min: -12, max: 12, st: 1, def: 0, f: '±st', h: 'Corre la línea hacia el grave o el agudo (0 = como la base, alrededor de F5)' },
     { g: 'Piano · línea', id: 'amb', l: 'Ámbito', min: 2, max: 12, st: 0.5, def: 7, f: 'st', h: 'Cuánto se aleja la línea del centro' },
     { g: 'Piano · línea', id: 'lh', l: 'Mano izquierda', tipo: 'sel', def: 'auto', ops: [['auto', 'como la fuente'], ['dobla8', 'dobla a la octava'], ['dobla16', 'dobla a dos octavas'], ['decima', 'décimas'], ['contrario', 'movimiento contrario'], ['ancla', 'ancla en el grave'], ['nada', 'sin mano izquierda']], h: 'Qué hace la izquierda debajo de la línea. «Como la fuente» copia lo que hacía el pianista del tema elegido de la base' },
-    { g: 'Piano · armonía y forma', id: 'ant', l: 'Anticipos en el 4&', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Probabilidad de traer el acorde nuevo una corchea antes (la base: 72% hacia el lado 3, 44% hacia el lado 2)' },
-    { g: 'Piano · armonía y forma', id: 'liga', l: 'Ligar el anticipo al 1', min: 0, max: 1.25, st: 0.05, def: 1, f: 'x', h: 'No volver a atacar el 1 después del anticipo' },
     { g: 'Piano · armonía y forma', id: 'dim', l: 'Disminuido de paso', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'En el 4, un °7 medio tono abajo del acorde que viene (Pupy)' },
     { g: 'Piano · armonía y forma', id: 'gancho', l: 'Gancho fijo', min: 0, max: 1, st: 0.05, def: 0.75, f: '%', h: 'Cuánto repite las mismas notas cuando vuelven los mismos acordes' },
     { g: 'Piano · armonía y forma', id: 'var', l: 'Variación por vuelta', min: 0, max: 1, st: 0.05, def: 0.35, f: '%', h: 'Chance de cambiarle algo al ritmo en cada repetición' },
@@ -56,7 +54,6 @@
     { g: 'Piano · armonía y forma', id: 'temp', l: 'Libertad', min: 0, max: 2, st: 0.05, def: 0.6, f: 'x', h: 'Cuánto se permite salir de lo más probable' },
     { g: 'Piano · armonía y forma', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves' },
     { g: 'Bajo', id: 'b_estilo', l: 'Qué toca', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha de la sección'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
-    { g: 'Bajo', id: 'b_ant', l: 'Anticipo del bajo', tipo: 'sel', def: 'auto', ops: [['auto', 'como la célula'], ['12', 'en el 4'], ['14', 'en el 4&']], h: 'En qué momento el bajo trae la raíz del acorde que viene: en el 4 (salsa) o en el 4& (timba)' },
     { g: 'Bajo', id: 'b_aprox', l: 'Aproximaciones cromáticas', min: 0, max: 1, st: 0.05, def: 0.25, f: '%', h: 'Medio tono antes de la raíz que viene' },
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
     { g: 'Bajo', id: 'b_reg', l: 'Registro del bajo', tipo: 'sel', def: 'medio', ops: [['grave', 'grave'], ['medio', 'medio'], ['agudo', 'agudo']], h: 'En qué octava toca el bajo' },
@@ -77,15 +74,15 @@
   // las ondas de la app como ajustes de perillas (y de qué estilo de la base aprender; grupo: los estilos de una colección,
   // como los de Toontrack, que la onda prefiere cuando están en la base)
   const ONDAS = {
-    pupy: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
-    melon: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
-    tirso: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
-    songo: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
-    sonmontuno: { lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
-    mambo: { lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
-    funk: { lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
-    salsa: { lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
-    libre: {}
+    pupy: { cambio: '4y', gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
+    melon: { cambio: '4y', lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
+    tirso: { cambio: '4y', blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
+    songo: { cambio: '4y', dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
+    sonmontuno: { cambio: '4', lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
+    mambo: { cambio: '4', lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
+    funk: { cambio: '4y', lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
+    salsa: { cambio: '4', lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
+    libre: { cambio: '4y' }
   };
   // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
   const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };
@@ -115,6 +112,9 @@
     const sub = (s, n) => ctx ? rng(s * 2654435761 + 7 + n * 0x9E3779B9) : R;
     const RA = sub(sP, 1), RL = sub(sP, 2), RV = sub(sP, 3), RB = sub(sB, 4), RP = sub(sC, 5);
     const mar = MARCHAS[opc.marcha] || MARCHAS.marcha;
+    // cambio de acorde, de toda la sección (también hacia lo que sigue): '4y' piano y bajo traen el acorde nuevo en el 4& y lo
+    // ligan al 1; '4' el bajo en el 4 y el piano en el 4& (salsa); '1' sin anticipo: el acorde cambia en el 1
+    const cambio = ['4y', '4', '1'].includes(opc.cambio) ? opc.cambio : '4y', anticipa = cambio !== '1', posAnt = cambio === '4' ? 12 : 14;
     // el piano y la percusión pueden ir en otra marcha que la sección (el bajo la sigue con su estilo «según la marcha»)
     const marP = MARCHAS[opc.marchaPiano] || mar, marC = MARCHAS[opc.marchaPerc] || mar;
     const prog = Array.isArray(opc.prog) ? opc.prog : TM.leerProgresion(opc.prog);
@@ -175,7 +175,7 @@
           for (const e of cy.ev) {
             if ((e.p < 16) !== (L_ === 'A')) continue;
             const pos = e.p % 16;
-            const T = !e.antic ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
+            const T = !e.antic || !anticipa ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
             const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 3)))].sort((x, y) => x - y);
             evs.push({ p: b * 16 + pos, d: e.d, ps, v: e.v, ch: T, antic: !!e.antic && T.nombre !== acordeEn(b, pos).nombre });
           }
@@ -271,12 +271,13 @@
         const delCompas = E.filter(e => e.b === b);
         if (sigCh.nombre !== ult.nombre) {
           let cand = delCompas.find(e => e.pos === 14);
-          const pA = Math.min(0.97, P.pAnticipo[lado(b + 1)] * k.ant);
-          // sin 4& en la célula: la mitad de las veces se agrega el ataque para anticipar (el 4& se toca en el 84% de los compases)
-          if (!cand && RA() < pA * 0.5 && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
-          if (cand && RA() < pA) {
-            cand.ch = sigCh; cand.antic = true;
-            if (RA() < Math.min(1, P.pAnticipo.liga * k.liga)) { const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno) quitar.add(uno); cand.liga = true; if (b === nb - 1) ligaFin = true; }
+          // la sección anticipa: el acorde nuevo llega en el 4& (si la célula no ataca ahí, se agrega el golpe) y queda ligado al 1
+          if (anticipa) {
+            if (!cand && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
+            if (cand) {
+              cand.ch = sigCh; cand.antic = true; cand.liga = true; if (b === nb - 1) ligaFin = true;
+              const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno) quitar.add(uno);
+            }
           }
           if (k.dim > 0 && RA() < k.dim) {
             const cuatro = delCompas.find(e => e.pos === 12 && !e.antic);
@@ -285,7 +286,7 @@
         }
         if (cs.length > 1 && cs[1].nombre !== cs[0].nombre) {
           const m = delCompas.find(e => e.pos === 6);
-          if (m && RA() < Math.min(0.97, P.pAnticipo.mitad * k.ant)) { m.ch = cs[1]; m.antic = true; }
+          if (m && anticipa) { m.ch = cs[1]; m.antic = true; }
         }
       }
       // la sección anterior terminó anticipando ligado: no se vuelve a atacar el 1
@@ -452,7 +453,7 @@
       // deslizamientos (Feliciano Arango, NG La Banda): deja el tumbao. Golpes cortos y acentuados, como de tambor, y la mano que
       // se desliza por la cuerda grave desde la octava hasta la raíz; en el 4& llega la raíz que viene
       for (let b = 0; b < nb; b++) {
-        const o = b * 16, sig = acordesDe(b + 1)[0], fin = { p: o + 14, L: 2, ps: [grave(sig)], v: 104, art: '->', ch: sig };
+        const o = b * 16, sig = anticipa ? acordesDe(b + 1)[0] : acordeEn(b, 14), fin = { p: o + posAnt, L: 16 - posAnt, ps: [grave(sig)], v: 104, art: '->', ch: sig };
         if (lado(b) === 'A') { const ch = acordeEn(b, 0), r = grave(ch); bajo.push({ p: o, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 6, L: 6, ps: [r + 12], v: 94, art: '\\glissando', ch }, { p: o + 12, L: 2, ps: [r], v: 98, art: '', ch }, fin); }
         else { const ch = acordeEn(b, 4), r = grave(ch), c2 = acordeEn(b, 10); bajo.push({ p: o + 4, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 8, L: 1, ps: [r], v: 106, art: '->', ch }, { p: o + 10, L: 4, ps: [grave(c2) + 12], v: 92, art: '\\glissando', ch: c2 }, fin); }
       }
@@ -477,12 +478,23 @@
       let prev = bajoFin;
       for (let b = 0; b < nb; b++) {
         let evs = mitadB(lado(b)).map(x => ({ ...x }));
-        if (k.b_ant !== 'auto') for (const x of evs) if (x.rol === 'R+' && (x.pos === 12 || x.pos === 14)) x.pos = +k.b_ant;
         if (k.b_dens < 1) evs = evs.filter(x => x.rol === 'R+' || x.rol === 'R' || RB() < k.b_dens);
         if (k.b_dens > 1 && !evs.some(x => x.pos === 8) && RB() < k.b_dens - 1) evs.push({ pos: 8, d: 2, rol: '5', dz: null });
-        const cs = acordesDe(b), sigCh = acordesDe(b + 1)[0];
-        // si el acorde cambia y la célula termina en la raíz o la quinta de ahora, el bajo anticipa la raíz que viene
-        if (sigCh.nombre !== cs[cs.length - 1].nombre) { const ult = evs.filter(x => x.pos >= 12).pop(); if (ult && ['R', '5', '3', '7'].includes(ult.rol) && RB() < 0.8) ult.rol = 'R+'; }
+        const cs = acordesDe(b), sigCh = acordesDe(b + 1)[0], cambia = sigCh.nombre !== cs[cs.length - 1].nombre;
+        // el anticipo del bajo es el cambio de acorde de la sección: la raíz que viene llega en el 4& (timba) o en el 4 (salsa) y
+        // queda ligada al 1; sin anticipo, el compás sigue en el acorde de ahora y la raíz nueva entra en el 1
+        if (anticipa) {
+          for (const x of evs) if (x.rol === 'R+' && (x.pos === 12 || x.pos === 14)) x.pos = posAnt;
+          if (cambia) {
+            let x = evs.find(e => e.rol === 'R+' && e.pos >= 12) || evs.filter(e => e.pos >= 12).pop();
+            if (!x) { x = { pos: posAnt, d: 4, rol: 'R+', dz: null }; evs.push(x); }
+            Object.assign(x, { rol: 'R+', pos: posAnt });
+            evs = evs.filter(e => e === x || e.pos < 12);
+          }
+        } else {
+          for (const x of evs) if (x.rol === 'R+') x.rol = 'R';
+          if (b > 0 && acordesDe(b - 1).at(-1).nombre !== cs[0].nombre && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
+        }
         if (sigCh.nombre !== cs[cs.length - 1].nombre && RB() < k.b_aprox) {
           const rp = evs.find(x => x.rol === 'R+'); if (rp && !evs.some(x => x.pos === rp.pos - 2) && rp.pos >= 12) evs.push({ pos: rp.pos - 2, d: 2, rol: 'apB', dz: null });
         }

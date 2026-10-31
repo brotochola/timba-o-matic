@@ -13,12 +13,14 @@ La app ocupa toda la ventana, a lo Ableton:
 
 1. **Canción.** Arriba, el multipista: la regla (con el lado 3 de la clave sombreado), las secciones, los acordes y una pista por instrumento (piano, bajo, clave, congas, bongó, campana, timbales, güiro, batería).
    - Clic en una sección para editarla. El panel de abajo tiene un bloque por cosa:
-     - **Estructura:** tipo (intro, cuerpo, coro, mambo, moña, presión, despelote, muela, bloque, final), marcha de la banda, compases, vueltas, cómo termina (abanico, cierre o corte), la variante de toda la sección y qué instrumentos tocan.
+     - **Estructura:** tipo (intro, cuerpo, coro, mambo, moña, presión, despelote, muela, bloque, final), marcha de la banda, **cambio de acorde**, compases, vueltas, cómo termina (abanico, cierre o corte), la variante de toda la sección y qué instrumentos tocan.
      - **Acordes:** uno por compás, o dos con «½».
      - **Piano:** onda, marcha propia (o «como la sección»), de qué secciones de la base aprende, gancho, 🎲 otra variante solo del piano, y sus perillas.
      - **Bajo:** el sonido (eléctrico o baby bass, para toda la canción), 🎲 otra variante solo del bajo, y sus perillas («Qué toca» sigue la marcha de la sección o elige otro tumbao).
      - **Percusión:** marcha propia (o «como la sección»), cómo entra (directo, plato del timbalero en el 4& del último compás de antes o en el 1), 🎲 otra variante solo de la percusión, y sus perillas.
    - Clic en una pista adentro de una sección: ese instrumento entra o sale ahí.
+   - **Cambio de acorde** (de toda la sección, también hacia lo que sigue): en el 4& (piano y bajo traen el acorde nuevo en el 4& y lo ligan al 1, la timba), bajo en el 4 y piano en el 4& (la salsa), o en el 1 (sin anticipo). De entrada, el del estilo. En el multipista, ↱ marca cada cambio anticipado.
+   - **El loop es un círculo:** lo que sigue a la última sección del loop es la primera (o la misma, si el loop es la sección). El final anticipa el principio (↺ en el multipista), lo ligado sigue sonando del otro lado y el 1 del principio suena solo al arrancar: una sección sola anticipada loopea sin costura. «Bajar como»: tema (con principio y final) o loop (para pegar en el DAW).
    - M y S valen para toda la canción; el volumen de cada pista es de cada sección (moviéndolo con Shift, de todas). Todo se aplica al tocar, sin cambiar las notas.
    - Loop de toda la canción o de la sección que estás editando.
    - Cada sección tiene su variante: cambiar una no cambia las otras. El 🎲 de cada instrumento cambia solo ese instrumento (el bajo que aprende de la base sigue al piano).

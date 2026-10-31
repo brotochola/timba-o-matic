@@ -49,12 +49,15 @@
     const res = { der: [], izq: [], bajo: [], perc: [], extra: [], acordes: [], lados: [], marchas: [], mixes: [], estilos: [], secciones: [] };
     const ganchos = {};
     let previo = null, inicio = 0, pend = [], ligados = null;
+    // el loop es un círculo: lo que sigue a su última sección es su primera (cancion.loop = { desde, hasta }, índices de sección)
+    const loop = cancion.loop && secs[cancion.loop.desde] && secs[cancion.loop.hasta] && cancion.loop.desde <= cancion.loop.hasta ? cancion.loop : null;
+    let costura = null;
     secs.forEach((s, i) => {
       const prog = progs[i]; if (!prog.length) throw new Error(`La sección ${i + 1} no tiene acordes`);
       const on = ons[i], perillas = { ...cancion.perillas, ...s.perillas };
       for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
-      const sig = progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
-      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null, tipo: s.tipo || null, grupo: s.grupo || null,
+      const sig = loop && i === loop.hasta ? progs[loop.desde][0] : progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
+      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null, tipo: s.tipo || null, grupo: s.grupo || null, cambio: s.cambio || null,
         tipoPiano: s.tipoPiano || null, marchaPiano: s.marchaPiano || null, marchaPerc: s.marchaPerc || null, semillas: { piano: s.semillaPiano, bajo: s.semillaBajo, perc: s.semillaPerc },
         contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
       ganchos[s.id != null ? s.id : i] = r.gancho;
@@ -69,7 +72,7 @@
         pend = pend.filter(g => g.d !== 'plato');
         const ult = res.perc.length - 1, dst = res.perc[ult] || res.extra[ult];
         if (suena(ons[i - 1], 'plato') && suena(on, 'plato') && !dst.some(e => e.p === 14 && e.d === 'plato')) dst.push({ p: 14, d: 'plato', v: 0.9 });
-      } else if (s.entrada === 'plato4y') pend.push({ p: 0, d: 'plato', v: 0.85 });
+      }
       for (const g of pend) {
         if (g.quitar && perc[0]) perc[0] = perc[0].filter(e => e.p >= 4 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d)));
         const dst = perc[0] || extra[0];
@@ -121,6 +124,8 @@
       const liga = pasa && fin.ligaAl1 && on.piano && ons[i + 1].piano;
       const fd = nd.filter(e => e.liga && e.p >= off + S), ligDer = liga ? fd.concat(ni.filter(e => fd.some(x => x.p === e.p))) : [];
       ligados = { der: ligDer, bajo: pasa && ons[i + 1].bajo ? nB.filter(e => e.cola) : [] };
+      // la última sección del loop: qué queda ligado hacia el principio y qué golpes caen en su 1 (solo al volver)
+      if (loop && i === loop.hasta) costura = { liga: !!fin.ligaAl1 && on.piano, der: fd.concat(ni.filter(e => fd.some(x => x.p === e.p))), bajo: nB.filter(e => e.cola), pend: pend.map(e => ({ ...e })), ultimo: inicio + nb - 1 };
       for (let b = 0; b < nb; b++) {
         res.perc.push(perc[b]); res.extra.push(extra[b]); res.acordes.push(r.acordes[b]); res.lados.push(r.lados[b]);
         res.marchas.push(marcha); res.mixes.push(r.mix); res.estilos.push(ESTILO[TM.MARCHAS[s.marchaPerc] ? s.marchaPerc : marcha]);
@@ -132,6 +137,30 @@
       inicio += nb;
     });
     for (const k of ['der', 'izq', 'bajo']) res[k].sort((a, b) => a.p - b.p);
+    // ---------- la costura del loop, para el reproductor: la primera vez que se toca el principio suena su 1 (entrada); al
+    // volver por el loop, lo ligado desde el final sigue sonando (colas) y en el 1 caen los golpes que dejó el final (vuelta)
+    if (loop && costura) {
+      const A = res.secciones[loop.desde], t0 = A.inicio * 16, onA = ons[loop.desde];
+      const primero = (evs, desde) => { const e = evs.find(x => x.p > desde); return e ? e.p : t0 + A.compases * 16; };
+      const entrada = [], colas = [];
+      if (costura.liga && onA.piano) {
+        for (const e of res.der.concat(res.izq)) if (e.p === t0) entrada.push({ parte: 'piano', p: e.p, ps: e.ps });
+        const hasta = primero(res.der, t0);
+        for (const e of costura.der) colas.push({ parte: 'piano', p: e.p, ps: e.ps, extra: hasta - t0 });
+      }
+      if (costura.bajo.length && onA.bajo) {
+        for (const e of res.bajo) if (e.p === t0) entrada.push({ parte: 'bajo', p: e.p, ps: e.ps });
+        const hasta = primero(res.bajo, t0);
+        for (const e of costura.bajo) colas.push({ parte: 'bajo', p: e.p, ps: e.ps, extra: Math.min(e.cola - (costura.ultimo * 16 + 16 - e.p), hasta - t0) });
+      }
+      const vuelta = costura.pend.filter(g => suena(onA, g.d)).map(g => ({ p: g.p, d: g.d, v: g.v }));
+      // el plato del timbalero en el 4& de antes, cuando el principio del loop entra así
+      if (secs[loop.desde].entrada === 'plato4y' && suena(onA, 'plato') && suena(ons[loop.hasta], 'plato')) {
+        const u = costura.ultimo, dst = res.perc[u] || res.extra[u];
+        if (!dst.some(e => e.p === 14 && e.d === 'plato')) dst.push({ p: 14, d: 'plato', v: 0.9 });
+      }
+      res.costura = { inicio: A.inicio, fin: costura.ultimo + 1, entrada, colas, vuelta };
+    }
     for (const e of res.bajo) delete e.cola;
     for (const e of res.der) delete e.liga;
     const s0 = res.secciones[0];
