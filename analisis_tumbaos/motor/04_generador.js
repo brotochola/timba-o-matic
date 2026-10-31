@@ -139,6 +139,9 @@
     timba: [[6, 2, '5', null], [8, 4, '5', null], [12, 2, 'R', null], [14, 4, 'R+', null], [22, 2, 'R', null], [24, 4, 'R', null], [28, 2, '3', null], [30, 4, 'R+', null]]
   };
 
+  // los tumbaos escritos por células que con la clave de son tocan el 4 del lado 3 (el tercer golpe de la clave)
+  const CELULA_CON_4 = ['salsa', 'timba', 'timbero', 'motivo', 'aprendido', 'songo'];
+
   // ---------- percusión: clave y relleno
   const RELLENO = [[10, 'timbalH', 0.55], [11, 'timbalH', 0.45], [12, 'timbalH', 0.75], [13, 'timbalL', 0.6], [14, 'timbalL', 0.9], [15, 'timbalL', 0.7]];
 
@@ -146,6 +149,9 @@
   // previo: { linea, bajo, ligaAl1, entraSolo } de la sección anterior, gancho: el de otra sección, transicion }
   function generar(opc, M) {
     const k = Object.assign({}, PERILLAS, opc.perillas || {});
+    // las perillas, dentro de su rango (una canción guardada puede traer cualquier cosa: «deslizamientos 3300%»); una lista con un
+    // valor que no tiene, a su valor de entrada
+    for (const d of PERILLAS_UI) { const v = k[d.id]; if (d.tipo === 'sel') { if (!d.ops.some(([x]) => String(x) === String(v))) k[d.id] = d.def; } else { const n = +v; k[d.id] = Number.isFinite(n) ? Math.max(d.min, Math.min(d.max, n)) : d.def; } }
     const ctx = opc.contexto || null, C = ctx || {}, previo = C.previo || null;
     // cada instrumento puede tener su propia variante (opc.semillas: piano, bajo, perc); si no, la de la sección
     const sem = opc.semillas || {}, sP = sem.piano || opc.semilla || 1, sB = sem.bajo || opc.semilla || 1, sC = sem.perc || opc.semilla || 1;
@@ -510,9 +516,10 @@
         if (k.b_dens > 1 && !evs.some(x => x.pos === 8) && RB() < k.b_dens - 1) evs.push({ pos: 8, d: 2, rol: '5', dz: null });
         const cs = acordesDe(b), sigCh = acordesDe(b + 1)[0], cambia = sigCh.nombre !== cs[cs.length - 1].nombre;
         // el anticipo del bajo es el cambio de acorde de la sección: la raíz que viene llega en el 4& (timba) o en el 4 (salsa) y
-        // queda ligada al 1; sin anticipo, el compás sigue en el acorde de ahora y la raíz nueva entra en el 1
+        // queda ligada al 1; sin anticipo, el compás sigue en el acorde de ahora y la raíz nueva entra en el 1. El tumbao de salsa
+        // (2& y 4) anticipa en el 4 en cualquier estilo; solo el último compás de la sección sigue la unión con la que viene
         if (antDe(b)) {
-          const posAnt = posDe(b);
+          const posAnt = estiloBajo === 'salsa' && (b < nb - 1 || !ctx) ? 12 : posDe(b);
           for (const x of evs) if (x.rol === 'R+' && (x.pos === 12 || x.pos === 14)) x.pos = posAnt;
           if (cambia) {
             let x = evs.find(e => e.rol === 'R+' && e.pos >= 12) || evs.filter(e => e.pos >= 12).pop();
@@ -520,15 +527,18 @@
             Object.assign(x, { rol: 'R+', pos: posAnt });
             evs = evs.filter(e => e === x || e.pos < 12);
           }
-        } else {
-          for (const x of evs) if (x.rol === 'R+') x.rol = 'R';
-          if (b > 0 && acordesDe(b - 1).at(-1).nombre !== cs[0].nombre && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
-        }
+        } else for (const x of evs) if (x.rol === 'R+') x.rol = 'R';
+        // la raíz en el 1: solo si el compás de antes no la trajo ligada (no anticipó) y el acorde cambió
+        if (b > 0 && !antDe(b - 1) && acordesDe(b - 1).at(-1).nombre !== cs[0].nombre && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
         if (sigCh.nombre !== cs[cs.length - 1].nombre && RB() < k.b_aprox) {
           const rp = evs.find(x => x.rol === 'R+'); if (rp && !evs.some(x => x.pos === rp.pos - 2) && rp.pos >= 12) evs.push({ pos: rp.pos - 2, d: 2, rol: 'apB', dz: null });
         }
         // al principio del tema (o después de un corte) el bajo entra con la raíz en el 1; en medio de la canción viene ligado de antes
         if (b === 0 && (!previo || previo.entraSolo) && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
+        // con la clave de son, el bajo toca el tercer golpe del lado 3 (el 4): si la célula no lo trae, la raíz de ahora. Y el tumbao
+        // de salsa que toca el 1 es el tresillo (1, 2& y 4)
+        if (tipoClave === 'son' && lado(b) === 'A' && CELULA_CON_4.includes(estiloBajo) && !evs.some(x => x.pos === 12)) evs.push({ pos: 12, d: 2, rol: 'R', dz: null });
+        if (estiloBajo === 'salsa' && evs.some(x => x.pos === 0)) { if (!evs.some(x => x.pos === 6)) evs.push({ pos: 6, d: 6, rol: '5', dz: null }); if (!evs.some(x => x.pos === 12)) evs.push({ pos: 12, d: 4, rol: 'R', dz: null }); }
         evs.sort((a, b2) => a.pos - b2.pos);
         for (const x of evs) {
           const cur = acordeEn(b, x.pos), q = x.pos;

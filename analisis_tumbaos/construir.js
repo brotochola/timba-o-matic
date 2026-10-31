@@ -87,7 +87,29 @@ datos.forEach((d, i) => {
 });
 const esLocal = f => locales.has(f.coleccion);
 const soloDe = (o, sel) => Object.fromEntries(Object.entries(o).filter(([c]) => sel(c)));
-const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, colecciones: soloDe(colecciones, c => !locales.has(c)), fuentes: fuentes.filter(f => !esLocal(f)) };
+// ---------- la biblioteca de Opus: los montunos de los temas de las colecciones que la página no carga enteras (de mididb,
+// mambos y vientos2 solo van los vientos). De los temas de salsa y de música cubana (TM.estilosPiano: ni merengue, ni cumbia, ni
+// el mambo de big band), los ciclos de piano que sirven para copiar: en su lado de la clave y con el acorde bien leído; hasta 24
+// por tema, de a tramos seguidos (para los ganchos de cuatro compases). Va en la base como una fuente más («b:opus»)
+const biblioteca = (() => {
+  const P0 = TM.construirModelo(fuentes.filter(f => !f.coleccion)).piano.perfil, bib = { fuentes: [], ciclos: [] };
+  for (const f of fuentes) {
+    if (!f.coleccion || esLocal(f) || (colecciones[f.coleccion] || {}).encendida || !f.piano.length || !TM.estilosPiano(f).length) continue;
+    const buenos = f.piano.map(c => ({ c, L: TM.leerCiclo(c) })).filter(x => x.L).map(x => ({ ...x, q: TM.calidadCiclo(x.L.ev, P0) })).filter(x => x.q.clave > 0 && x.q.acorde >= 0.7 && x.q.q >= 0.3).sort((a, b) => a.c.c - b.c.c);
+    if (buenos.length < 2) continue;
+    // tramos seguidos, los mejores primero, hasta 24 ciclos
+    const tramos = []; for (const x of buenos) { const t = tramos[tramos.length - 1]; if (t && t[t.length - 1].c.c === x.c.c - 2) t.push(x); else tramos.push([x]); }
+    tramos.sort((a, b) => b.reduce((s, x) => s + x.q.q, 0) / b.length - a.reduce((s, x) => s + x.q.q, 0) / a.length);
+    const elegidos = []; for (const t of tramos) { if (elegidos.length >= 24) break; elegidos.push(...t.slice(0, 24 - elegidos.length)); }
+    const vs = f.piano.flatMap(c => c.e.map(e => e[3])), mv = vs.reduce((a, b) => a + b, 0) / vs.length, velVaria = Math.sqrt(vs.reduce((a, v) => a + (v - mv) ** 2, 0) / vs.length) > 4;
+    bib.fuentes.push({ id: f.id, titulo: f.titulo, estilo: f.estilo, coleccion: f.coleccion, ...(f.genero ? { genero: f.genero } : {}), ...(velVaria ? { velVaria } : {}) });
+    for (const x of elegidos.sort((a, b) => a.c.c - b.c.c)) bib.ciclos.push({ f: f.id, c: x.c.c, a: x.c.a, s: x.c.s, e: x.c.e, ...(x.c.k ? { k: x.c.k } : {}) });
+  }
+  return bib;
+})();
+console.log(`biblioteca de Opus: ${biblioteca.ciclos.length} ciclos de piano de ${biblioteca.fuentes.length} temas de las colecciones`);
+const libro = { id: 'b:opus', archivo: '', titulo: 'Opus · montunos de las colecciones', estilo: 'salsa', autor: '', analisis: {}, piano: [], bajo: [], perc: [], vientos: [], opus: biblioteca };
+const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, colecciones: soloDe(colecciones, c => !locales.has(c)), fuentes: [...fuentes.filter(f => !esLocal(f)), libro] };
 const json = JSON.stringify(base);
 fs.writeFileSync(BASE_F, json);
 console.log(`\nbase: ${base.fuentes.length} fuentes · ${(json.length / 1024).toFixed(0)} kB → ${path.relative(RAIZ, BASE_F)}`);
