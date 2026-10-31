@@ -96,6 +96,8 @@ node analisis_tumbaos/construir.js               analiza los MIDI y actualiza la
 node analisis_tumbaos/construir.js --solo-html   mete en index.html el motor y la base que ya está, sin volver a analizar
 node analisis_tumbaos/comparar.js "tema.mid" desde cantidad [sección JSON]   recrea un pedazo de un tema y lo compara
 node analisis_tumbaos/patrones_corpus.js         los patrones de percusión y bajo del corpus, por lado de la clave
+node analisis_tumbaos/jurado.js                  los temas recreados y las reglas (clave, anticipos, costura, cromáticas, registros, final) en todos los estilos y marchas
+node analisis_tumbaos/exportar.js cancion.json salida.mid [--loop] [--muestrario]   la canción en .mid como «Bajar MIDI» (--muestrario: un coro por estilo)
 node analisis_tumbaos/informe.js                 estadísticas del corpus (informe.txt)
 node analisis_tumbaos/ver.js "tema.mid"          visor compás por compás
 node analisis_tumbaos/probar_cancion.js          prueba las canciones: costuras, transiciones, estabilidad (x.ly guarda la partitura)
