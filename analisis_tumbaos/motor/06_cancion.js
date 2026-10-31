@@ -15,11 +15,28 @@
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
   const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
   const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
-  // transiciones, en semicorcheas del último compás de la sección.
-  // Abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2.
-  // Cierre: toda la banda junta sobre la clave, el último golpe anticipado al acorde que viene. Corte: golpe en el 1 y silencio.
-  const ABANICO = [[12, 'timbalH', 1], [13, 'timbalH', 0.45], [14, 'timbalH', 0.5], [15, 'timbalH', 0.6]];
+  // transiciones, en semicorcheas del último compás de la sección. Cierre: toda la banda junta sobre la clave, el último golpe
+  // anticipado al acorde que viene. Corte: golpe en el 1 y silencio. Los demás finales con golpes y los rellenos de percusión (el
+  // abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2), abajo
   const CIERRE = { A: [0, 6, 12, 14], B: [4, 8, 14] };
+  // finales con golpes de toda la banda en el último compás (el último, si cae en el 4 o después, trae el acorde que viene):
+  // parada en clave (los golpes de la clave del lado y silencio; John Santos), bloque de contratiempos (Moore: los «pickups»
+  // de la timba, 1&, 2&, 3& y el golpe del 4&), tres contra cuatro (la cruz de la timba, un golpe cada tres semicorcheas),
+  // golpe en el 4& (todos juntos en el anticipo)
+  const GOLPES_FIN = {
+    cierre: (lado, tipo) => CIERRE[lado],
+    parada: (lado, tipo) => lado === 'B' ? [4, 8] : tipo === 'rumba' ? [0, 6, 14] : [0, 6, 12],
+    contratiempos: () => [2, 6, 10, 14],
+    tresxcuatro: () => [0, 3, 6, 9, 12, 15],
+    golpe4y: () => [14]
+  };
+  // rellenos de percusión en el último compás (con la banda que sigue): qué familia se corre, desde dónde, los golpes y lo que cae en el 1 que viene
+  const RELLENOS = {
+    abanico: { fam: ['timbales', 'campanas'], desde: 12, golpes: [[12, 'timbalH', 1], [13, 'timbalH', 0.45], [14, 'timbalH', 0.5], [15, 'timbalH', 0.6]], siguiente: [{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'plato', v: 0.8 }], toca: 'timbales' },
+    redoble: { fam: ['timbales', 'campanas'], desde: 8, golpes: [[8, 'timbalH', 0.5], [9, 'timbalH', 0.42], [10, 'timbalL', 0.58], [11, 'timbalL', 0.5], [12, 'timbalH', 0.68], [13, 'timbalH', 0.6], [14, 'timbalL', 0.85], [15, 'timbalL', 0.8]], siguiente: [{ p: 0, d: 'plato', v: 0.85 }], toca: 'timbales' },
+    floreo: { fam: ['congas'], desde: 8, golpes: [[8, 'quintoS', 0.7], [9, 'quintoO', 0.5], [10, 'quintoO', 0.62], [11, 'quintoS', 0.6], [12, 'quintoS', 0.8], [13, 'quintoO', 0.62], [14, 'congaO', 0.9], [15, 'salidor', 0.85]], siguiente: [{ p: 0, d: 'salidor', v: 1 }], toca: 'congas' },
+    toms: { fam: ['bateria'], desde: 8, golpes: [[8, 'snare', 0.55], [9, 'snare', 0.45], [10, 'tomH', 0.7], [11, 'tomH', 0.6], [12, 'tomH', 0.75], [13, 'tomL', 0.7], [14, 'tomL', 0.85], [15, 'tomL', 0.8]], siguiente: [{ p: 0, d: 'crash', v: 0.85 }, { p: 0, d: 'kick', v: 1 }], toca: 'bateria' }
+  };
   const GOLPE = [['congaS', 0.9], ['timbalH', 0.95], ['kick', 0.9]];
   const CORTE = [['congaS', 0.95], ['timbalH', 1], ['bongoH', 0.8], ['kick', 0.9], ['crash', 0.8]];
 
@@ -124,25 +141,31 @@
         perc[nb - 1] = CORTE.filter(([d]) => suena(on, d)).map(([d, v]) => ({ p: 0, d, v })); extra[nb - 1] = [];
         if (formatoV) { const g = TM.golpeVientos(formatoV, S, 4, chs[0], 108); for (const f of VIENTOS) { cortar(vientos[f], S, S + 4); if (on[f] && !vientos[f].some(e => e.p <= S && e.p + e.L > S)) vientos[f].push(...g[f]); } }
         Object.assign(fin, { ligaAl1: false, entraSolo: true }); pend = [];
-      } else if (tr === 'cierre') {
-        cortar(r.der, S); cortar(r.izq, S); cortar(r.bajo, S);
-        const pos = CIERRE[lado], golpes = [];
+      } else if (GOLPES_FIN[tr]) {
+        // golpes de toda la banda: el resto del compás se calla (en el golpe del 4&, desde el 4&); el último golpe, si cae en el 4 o
+        // después, ya trae el acorde que viene y queda ligado al 1
+        const pos = GOLPES_FIN[tr](lado, /rumba/.test(cancion.clave || '') ? 'rumba' : 'son'), desde = tr === 'golpe4y' ? 14 : 0, golpes = (perc[nb - 1] || []).filter(e => e.p < desde);
+        cortar(r.der, S + desde); cortar(r.izq, S + desde); cortar(r.bajo, S + desde);
+        for (const f of VIENTOS) cortar(vientos[f], S + desde);
+        const ultimoQ = pos[pos.length - 1], anticipaFin = !!sig && ultimoQ >= 12;
         pos.forEach((q, n) => {
-          const ultimo = n === pos.length - 1, ch = ultimo && sig ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
-          if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic: ultimo && !!sig, ch, ...(ultimo && sig ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
-          if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(ultimo && sig ? { cola: L + 4 } : {}) });
-          for (const [d, v] of GOLPE) if (suena(on, d)) golpes.push({ p: q, d, v });
-          if (n === 0 && on.bateria) golpes.push({ p: q, d: 'crash', v: 0.8 });
+          const ultimo = n === pos.length - 1, antic = ultimo && anticipaFin, ch = antic ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
+          if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic, ch, ...(antic ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
+          if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(antic ? { cola: L + 4 } : {}) });
+          if (formatoV) { const gv = TM.golpeVientos(formatoV, S + q, L, ch, 110); for (const f of VIENTOS) if (on[f]) vientos[f].push(...gv[f]); }
+          for (const [d, v] of GOLPE) if (suena(on, d) && (r.mix[TM.familiaPerc(d)] ?? 1) > 0) golpes.push({ p: q, d, v });
+          if (n === 0 && on.bateria && tr !== 'golpe4y') golpes.push({ p: q, d: 'crash', v: 0.8 });
         });
-        perc[nb - 1] = golpes; extra[nb - 1] = [];
-        if (formatoV) for (const f of VIENTOS) { cortar(vientos[f], S); if (on[f]) pos.forEach((q, n) => { const ultimo = n === pos.length - 1, ch = ultimo && sig ? sig[0] : chEn(q); vientos[f].push(...TM.golpeVientos(formatoV, S + q, ultimo ? 16 - q : pos[n + 1] - q, ch, 110)[f]); }); }
-        Object.assign(fin, { ligaAl1: !!sig && on.piano }); pend = [];
-      } else if (tr === 'abanico' && on.timbales) {
-        const ab = ABANICO.map(([p, d, v]) => ({ p, d, v }));
-        if (perc[nb - 1]) perc[nb - 1] = perc[nb - 1].filter(e => e.p < 12 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d))).concat(ab);
-        else extra[nb - 1].push(...ab);
-        // el abanico termina en el plato del timbalero (en vez del platillo de la batería)
-        pend = pend.filter(e => e.d !== 'crash').concat([{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'plato', v: 0.8 }]);
+        perc[nb - 1] = golpes; extra[nb - 1] = (extra[nb - 1] || []).filter(e => e.p < desde);
+        Object.assign(fin, { ligaAl1: anticipaFin && on.piano }); pend = [];
+      }
+      // ---------- relleno de percusión en el último compás (si la banda sigue derecho)
+      const RL = RELLENOS[s.relleno];
+      if (RL && tr === 'ninguna' && on[RL.toca] && (r.mix[RL.toca] ?? 1) > 0) {
+        const quita = e => e.p >= RL.desde && RL.fam.includes(TM.familiaPerc(e.d));
+        perc[nb - 1] = (perc[nb - 1] || []).filter(e => !quita(e)); extra[nb - 1] = (extra[nb - 1] || []).filter(e => !quita(e));
+        for (const [p, d, v] of RL.golpes) perc[nb - 1].push({ p, d, v: +(v * (r.mix[TM.familiaPerc(d)] ?? 1)).toFixed(3) });
+        pend = pend.filter(e => !RL.siguiente.some(x => x.d === e.d) && e.d !== 'crash').concat(RL.siguiente.map(x => ({ ...x })));
       }
       // ---------- concatenar
       const off = inicio * 16;

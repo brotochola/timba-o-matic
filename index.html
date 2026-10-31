@@ -86,6 +86,8 @@
 .cn-titulo:hover,.cn-titulo:focus{border-color:var(--line);outline:none}
 .mt{border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .mt-in{position:relative;min-width:100%}
+.mt-fijo{position:sticky;top:0;z-index:4;background:var(--panel);box-shadow:0 1px 0 var(--line),0 4px 8px -6px rgba(0,0,0,.35)}
+.mt-fijo .mt-row:first-child{border-top:0}
 .mt-row{display:flex;border-top:1px solid var(--line)}
 .mt-row:first-child{border-top:0}
 .mt-h{position:sticky;left:0;z-index:2;flex:0 0 var(--mt-head);width:var(--mt-head);display:flex;align-items:center;gap:4px;padding:0 6px 0 8px;background:var(--panel);border-right:1px solid var(--line);font-size:12px;color:var(--ink);overflow:hidden}
@@ -333,6 +335,7 @@ body{font-size:13px}
 #gen{margin:0;border:0;border-radius:0;padding:6px 10px 0;gap:6px;background:var(--bg)}
 #gen>.gen-head{gap:8px}
 #gen>.ayuda-panel{margin:0}
+#gen>.ayuda-panel,.mt-ayuda{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 0 auto}
 .cn-titulo{font-size:14px;max-width:420px}
 .mt{border-radius:4px;background:var(--panel)}
 .mt-sec{border-radius:3px;color:#151515;font-weight:600}
@@ -465,7 +468,7 @@ body.sin-partitura .panel-full{display:none}
               <label class="fld"><span>Cambio de acorde</span><select id="sc-cambio"></select></label>
               <label class="fld"><span>Compases</span><select id="cg-n"><option>2</option><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label>
               <label class="fld"><span>Vueltas</span><select id="sc-vueltas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option><option>8</option></select></label>
-              <label class="fld"><span>Al final</span><select id="sc-trans"><option value="ninguna">sigue derecho</option><option value="abanico">abanico (timbal)</option><option value="cierre">cierre (toda la banda)</option><option value="corte">corte</option></select></label>
+              <label class="fld"><span>Al final</span><select id="sc-trans"><option value="ninguna">sigue derecho</option><option value="cierre">cierre (toda la banda sobre la clave)</option><option value="parada">parada en clave</option><option value="contratiempos">bloque de contratiempos (hasta el 4&amp;)</option><option value="tresxcuatro">tres contra cuatro</option><option value="golpe4y">golpe en el 4&amp;</option><option value="corte">corte (golpe en el 1 y silencio)</option></select></label>
               <label class="fld"><span>Variante de la sección</span><span class="sec-var"><input id="tb-seed" type="number" value="7" min="1" max="9999"><button class="btn ghost" id="tb-var" type="button" title="Otra variante de todo: piano, bajo y percusión">🎲 Todo</button></span></label>
             </div>
             <p class="desc" id="estilo-desc"></p>
@@ -518,6 +521,7 @@ body.sin-partitura .panel-full{display:none}
             <div class="sec-flds">
               <label class="fld"><span>Marcha</span><select id="sc-marcha-perc" class="sel-marcha"></select></label>
               <label class="fld"><span>Al entrar</span><select id="sc-entra"><option value="">directo</option><option value="plato4y">plato en el 4&amp; de antes</option><option value="plato">plato en el 1</option></select></label>
+              <label class="fld"><span>Relleno al final</span><select id="sc-relleno"><option value="">ninguno</option><option value="abanico">abanico (timbal)</option><option value="redoble">redoble de timbal</option><option value="floreo">floreo del quinto</option><option value="toms">relleno de toms (batería)</option></select></label>
               <span class="fld"><span>Variante</span><button class="btn ghost" id="sc-var-perc" type="button">🎲 Otra</button></span>
             </div>
             <div class="sec-flds perc-instr" id="perc-instr" aria-label="Qué toca cada instrumento"></div>
@@ -4439,11 +4443,28 @@ ${vientosStaff}    \\new PianoStaff <<
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
   const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
   const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
-  // transiciones, en semicorcheas del último compás de la sección.
-  // Abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2.
-  // Cierre: toda la banda junta sobre la clave, el último golpe anticipado al acorde que viene. Corte: golpe en el 1 y silencio.
-  const ABANICO = [[12, 'timbalH', 1], [13, 'timbalH', 0.45], [14, 'timbalH', 0.5], [15, 'timbalH', 0.6]];
+  // transiciones, en semicorcheas del último compás de la sección. Cierre: toda la banda junta sobre la clave, el último golpe
+  // anticipado al acorde que viene. Corte: golpe en el 1 y silencio. Los demás finales con golpes y los rellenos de percusión (el
+  // abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2), abajo
   const CIERRE = { A: [0, 6, 12, 14], B: [4, 8, 14] };
+  // finales con golpes de toda la banda en el último compás (el último, si cae en el 4 o después, trae el acorde que viene):
+  // parada en clave (los golpes de la clave del lado y silencio; John Santos), bloque de contratiempos (Moore: los «pickups»
+  // de la timba, 1&, 2&, 3& y el golpe del 4&), tres contra cuatro (la cruz de la timba, un golpe cada tres semicorcheas),
+  // golpe en el 4& (todos juntos en el anticipo)
+  const GOLPES_FIN = {
+    cierre: (lado, tipo) => CIERRE[lado],
+    parada: (lado, tipo) => lado === 'B' ? [4, 8] : tipo === 'rumba' ? [0, 6, 14] : [0, 6, 12],
+    contratiempos: () => [2, 6, 10, 14],
+    tresxcuatro: () => [0, 3, 6, 9, 12, 15],
+    golpe4y: () => [14]
+  };
+  // rellenos de percusión en el último compás (con la banda que sigue): qué familia se corre, desde dónde, los golpes y lo que cae en el 1 que viene
+  const RELLENOS = {
+    abanico: { fam: ['timbales', 'campanas'], desde: 12, golpes: [[12, 'timbalH', 1], [13, 'timbalH', 0.45], [14, 'timbalH', 0.5], [15, 'timbalH', 0.6]], siguiente: [{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'plato', v: 0.8 }], toca: 'timbales' },
+    redoble: { fam: ['timbales', 'campanas'], desde: 8, golpes: [[8, 'timbalH', 0.5], [9, 'timbalH', 0.42], [10, 'timbalL', 0.58], [11, 'timbalL', 0.5], [12, 'timbalH', 0.68], [13, 'timbalH', 0.6], [14, 'timbalL', 0.85], [15, 'timbalL', 0.8]], siguiente: [{ p: 0, d: 'plato', v: 0.85 }], toca: 'timbales' },
+    floreo: { fam: ['congas'], desde: 8, golpes: [[8, 'quintoS', 0.7], [9, 'quintoO', 0.5], [10, 'quintoO', 0.62], [11, 'quintoS', 0.6], [12, 'quintoS', 0.8], [13, 'quintoO', 0.62], [14, 'congaO', 0.9], [15, 'salidor', 0.85]], siguiente: [{ p: 0, d: 'salidor', v: 1 }], toca: 'congas' },
+    toms: { fam: ['bateria'], desde: 8, golpes: [[8, 'snare', 0.55], [9, 'snare', 0.45], [10, 'tomH', 0.7], [11, 'tomH', 0.6], [12, 'tomH', 0.75], [13, 'tomL', 0.7], [14, 'tomL', 0.85], [15, 'tomL', 0.8]], siguiente: [{ p: 0, d: 'crash', v: 0.85 }, { p: 0, d: 'kick', v: 1 }], toca: 'bateria' }
+  };
   const GOLPE = [['congaS', 0.9], ['timbalH', 0.95], ['kick', 0.9]];
   const CORTE = [['congaS', 0.95], ['timbalH', 1], ['bongoH', 0.8], ['kick', 0.9], ['crash', 0.8]];
 
@@ -4548,25 +4569,31 @@ ${vientosStaff}    \\new PianoStaff <<
         perc[nb - 1] = CORTE.filter(([d]) => suena(on, d)).map(([d, v]) => ({ p: 0, d, v })); extra[nb - 1] = [];
         if (formatoV) { const g = TM.golpeVientos(formatoV, S, 4, chs[0], 108); for (const f of VIENTOS) { cortar(vientos[f], S, S + 4); if (on[f] && !vientos[f].some(e => e.p <= S && e.p + e.L > S)) vientos[f].push(...g[f]); } }
         Object.assign(fin, { ligaAl1: false, entraSolo: true }); pend = [];
-      } else if (tr === 'cierre') {
-        cortar(r.der, S); cortar(r.izq, S); cortar(r.bajo, S);
-        const pos = CIERRE[lado], golpes = [];
+      } else if (GOLPES_FIN[tr]) {
+        // golpes de toda la banda: el resto del compás se calla (en el golpe del 4&, desde el 4&); el último golpe, si cae en el 4 o
+        // después, ya trae el acorde que viene y queda ligado al 1
+        const pos = GOLPES_FIN[tr](lado, /rumba/.test(cancion.clave || '') ? 'rumba' : 'son'), desde = tr === 'golpe4y' ? 14 : 0, golpes = (perc[nb - 1] || []).filter(e => e.p < desde);
+        cortar(r.der, S + desde); cortar(r.izq, S + desde); cortar(r.bajo, S + desde);
+        for (const f of VIENTOS) cortar(vientos[f], S + desde);
+        const ultimoQ = pos[pos.length - 1], anticipaFin = !!sig && ultimoQ >= 12;
         pos.forEach((q, n) => {
-          const ultimo = n === pos.length - 1, ch = ultimo && sig ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
-          if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic: ultimo && !!sig, ch, ...(ultimo && sig ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
-          if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(ultimo && sig ? { cola: L + 4 } : {}) });
-          for (const [d, v] of GOLPE) if (suena(on, d)) golpes.push({ p: q, d, v });
-          if (n === 0 && on.bateria) golpes.push({ p: q, d: 'crash', v: 0.8 });
+          const ultimo = n === pos.length - 1, antic = ultimo && anticipaFin, ch = antic ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
+          if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic, ch, ...(antic ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
+          if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(antic ? { cola: L + 4 } : {}) });
+          if (formatoV) { const gv = TM.golpeVientos(formatoV, S + q, L, ch, 110); for (const f of VIENTOS) if (on[f]) vientos[f].push(...gv[f]); }
+          for (const [d, v] of GOLPE) if (suena(on, d) && (r.mix[TM.familiaPerc(d)] ?? 1) > 0) golpes.push({ p: q, d, v });
+          if (n === 0 && on.bateria && tr !== 'golpe4y') golpes.push({ p: q, d: 'crash', v: 0.8 });
         });
-        perc[nb - 1] = golpes; extra[nb - 1] = [];
-        if (formatoV) for (const f of VIENTOS) { cortar(vientos[f], S); if (on[f]) pos.forEach((q, n) => { const ultimo = n === pos.length - 1, ch = ultimo && sig ? sig[0] : chEn(q); vientos[f].push(...TM.golpeVientos(formatoV, S + q, ultimo ? 16 - q : pos[n + 1] - q, ch, 110)[f]); }); }
-        Object.assign(fin, { ligaAl1: !!sig && on.piano }); pend = [];
-      } else if (tr === 'abanico' && on.timbales) {
-        const ab = ABANICO.map(([p, d, v]) => ({ p, d, v }));
-        if (perc[nb - 1]) perc[nb - 1] = perc[nb - 1].filter(e => e.p < 12 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d))).concat(ab);
-        else extra[nb - 1].push(...ab);
-        // el abanico termina en el plato del timbalero (en vez del platillo de la batería)
-        pend = pend.filter(e => e.d !== 'crash').concat([{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'plato', v: 0.8 }]);
+        perc[nb - 1] = golpes; extra[nb - 1] = (extra[nb - 1] || []).filter(e => e.p < desde);
+        Object.assign(fin, { ligaAl1: anticipaFin && on.piano }); pend = [];
+      }
+      // ---------- relleno de percusión en el último compás (si la banda sigue derecho)
+      const RL = RELLENOS[s.relleno];
+      if (RL && tr === 'ninguna' && on[RL.toca] && (r.mix[RL.toca] ?? 1) > 0) {
+        const quita = e => e.p >= RL.desde && RL.fam.includes(TM.familiaPerc(e.d));
+        perc[nb - 1] = (perc[nb - 1] || []).filter(e => !quita(e)); extra[nb - 1] = (extra[nb - 1] || []).filter(e => !quita(e));
+        for (const [p, d, v] of RL.golpes) perc[nb - 1].push({ p, d, v: +(v * (r.mix[TM.familiaPerc(d)] ?? 1)).toFixed(3) });
+        pend = pend.filter(e => !RL.siguiente.some(x => x.d === e.d) && e.d !== 'crash').concat(RL.siguiente.map(x => ({ ...x })));
       }
       // ---------- concatenar
       const off = inicio * 16;
@@ -5182,11 +5209,11 @@ ${vientosStaff}    \\new PianoStaff <<
   // tipos de sección: marcha, cómo entra, cómo termina y qué pistas no tocan. En salsa el bongó y el timbal pasan a las campanas
   // recién en el coro (en el cuerpo: martillo y cáscara), el abanico del timbal lleva del cuerpo al coro y el plato del
   // timbalero marca la entrada de las partes fuertes. En la presión (pedal) la percusión se cae salvo la clave y el bombo.
-  const TIPOS={intro:{n:'Intro',marcha:'cuerpo',trans:'abanico',sin:['campanas'],compases:4,vueltas:1},
-    cuerpo:{n:'Cuerpo',marcha:'cuerpo',trans:'abanico',sin:['campanas']},coro:{n:'Coro',marcha:'marcha',trans:'ninguna',entrada:'plato'},
+  const TIPOS={intro:{n:'Intro',marcha:'cuerpo',trans:'ninguna',relleno:'abanico',sin:['campanas'],compases:4,vueltas:1},
+    cuerpo:{n:'Cuerpo',marcha:'cuerpo',trans:'ninguna',relleno:'abanico',sin:['campanas']},coro:{n:'Coro',marcha:'marcha',trans:'ninguna',entrada:'plato'},
     mambo:{n:'Mambo',marcha:'mambo',trans:'cierre',entrada:'plato'},mona:{n:'Moña',marcha:'mambo',trans:'ninguna',entrada:'plato'},
     presion:{n:'Presión',marcha:'presion',trans:'cierre'},bomba:{n:'Bomba',marcha:'bomba',trans:'cierre'},despelote:{n:'Despelote',marcha:'despelote',trans:'ninguna',entrada:'plato'},
-    muela:{n:'Muela',marcha:'muela',trans:'ninguna'},bloque:{n:'Bloque',marcha:'marcha',trans:'cierre',compases:2,vueltas:1},
+    muela:{n:'Muela',marcha:'muela',trans:'ninguna'},bloque:{n:'Bloque',marcha:'marcha',trans:'contratiempos',compases:2,vueltas:1},
     final:{n:'Final',marcha:'marcha',trans:'corte',compases:4,vueltas:1}};
   const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}, load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(_){return d}};
   const parse=t=>{const m=/^([A-G][#b]?)(.*)$/.exec(t);return {r:ROOTS.indexOf(m[1].replace('Db','C#').replace('D#','Eb').replace('Gb','F#').replace('G#','Ab').replace('A#','Bb')),q:m[2]}};
@@ -5212,7 +5239,7 @@ ${vientosStaff}    \\new PianoStaff <<
   function tramos(){let ini=0;return song.secciones.map(s=>{const n=s.bars.length*s.vueltas,o={s,ini,n};ini+=n;return o})}
   const loopDe=()=>{const v=$('cn-loop').value,n=song.secciones.length;return v==='cancion'?{desde:0,hasta:n-1}:v==='seccion'?{desde:cur,hasta:cur}:null};
   const paraMotor=()=>({titulo:song.titulo,clave:song.clave,bpm:P.bpm||190,loop:loopDe(),vientos:song.vientos,secciones:song.secciones.map(s=>({id:s.id,nombre:s.nombre,prog:progStr(s.bars),marcha:s.marcha,vueltas:s.vueltas,
-    estilo:s.estilo,pianoComo:s.pianoComo,cambio:s.cambio,semilla:s.semilla,semillaPiano:s.semillaPiano,semillaBajo:s.semillaBajo,semillaPerc:s.semillaPerc,marchaPiano:s.marchaPiano,marchaPerc:s.marchaPerc,percusion:s.percusion,vientos:s.vientos,semillaVientos:s.semillaVientos,perillas:s.perillas,tipo:s.tipo||null,pistas:s.pistas,transicion:s.transicion,entrada:s.entrada,ganchoDe:s.ganchoDe}))});
+    estilo:s.estilo,pianoComo:s.pianoComo,cambio:s.cambio,semilla:s.semilla,semillaPiano:s.semillaPiano,semillaBajo:s.semillaBajo,semillaPerc:s.semillaPerc,marchaPiano:s.marchaPiano,marchaPerc:s.marchaPerc,percusion:s.percusion,vientos:s.vientos,semillaVientos:s.semillaVientos,perillas:s.perillas,tipo:s.tipo||null,pistas:s.pistas,transicion:s.transicion,relleno:s.relleno,entrada:s.entrada,ganchoDe:s.ganchoDe}))});
 
   // ---------- grilla de acordes de la sección elegida
   const grid=$('cg-grid'), pick=$('cg-pick');
@@ -5251,7 +5278,7 @@ ${vientosStaff}    \\new PianoStaff <<
   function pintarSeccion(){
     const s=S();
     $('sc-nombre').value=s.nombre;$('cg-n').value=s.bars.length;$('sc-vueltas').value=s.vueltas;$('tb-gear').value=s.marcha;
-    $('sc-trans').value=s.transicion||'ninguna';$('sc-entra').value=s.entrada||'';$('tb-seed').value=s.semilla;
+    $('sc-trans').value=s.transicion||'ninguna';$('sc-relleno').value=s.relleno||'';$('sc-relleno').disabled=(s.transicion||'ninguna')!=='ninguna';$('sc-entra').value=s.entrada||'';$('tb-seed').value=s.semilla;
     const se=$('sc-estilo');se.innerHTML='';for(const [v,e] of Object.entries(EST))se.appendChild(el('option',null,e.n)).value=v;se.value=s.estilo;
     $('estilo-desc').textContent=(EST[s.estilo]||{}).d||'';
     const pc=$('sc-piano-como');pc.innerHTML='';pc.appendChild(el('option',null,'como el estilo ('+((EST[s.estilo]||{}).n||'')+')')).value='';
@@ -5317,6 +5344,7 @@ ${vientosStaff}    \\new PianoStaff <<
   $('sc-vueltas').onchange=()=>{S().vueltas=+$('sc-vueltas').value;changed()};
   $('tb-gear').onchange=()=>{S().marcha=$('tb-gear').value;changed()};
   $('sc-trans').onchange=()=>{S().transicion=$('sc-trans').value;changed()};
+  $('sc-relleno').onchange=()=>{S().relleno=$('sc-relleno').value;changed()};
   $('sc-entra').onchange=()=>{S().entrada=$('sc-entra').value;changed()};
   // el estilo es de toda la sección (piano, bajo, percusión y cambio de acorde); el piano puede tocar como otro
   $('sc-estilo').onchange=()=>{S().estilo=$('sc-estilo').value;changed()};
@@ -5324,7 +5352,7 @@ ${vientosStaff}    \\new PianoStaff <<
   // el tipo trae marcha, cómo termina, qué pistas tocan (sin batería si la banda es de salsa) y, si hace falta, el largo
   $('sc-tipo').onchange=()=>{const s=S(),v=$('sc-tipo').value,t=TIPOS[v];if(!t)return;
     const nombres=Object.values(TIPOS).map(x=>x.n);if(!s.nombre||nombres.includes(s.nombre))s.nombre=t.n;
-    Object.assign(s,{tipo:v,marcha:t.marcha,transicion:t.trans,entrada:t.entrada||'',pistas:{}});for(const p of t.sin||[])s.pistas[p]=false;
+    Object.assign(s,{tipo:v,marcha:t.marcha,transicion:t.trans,relleno:t.relleno||'',entrada:t.entrada||'',pistas:{}});for(const p of t.sin||[])s.pistas[p]=false;
     if(song.banda==='salsa')s.pistas.bateria=false;
     if(t.vueltas)s.vueltas=t.vueltas;
     if(t.compases){const old=s.bars;s.bars=Array.from({length:t.compases},(_,i)=>clon(old[i%old.length]))}
@@ -5361,7 +5389,7 @@ ${vientosStaff}    \\new PianoStaff <<
 
   // ---------- el multipista: regla, secciones (de colores por marcha), acordes y una pista por instrumento
   const mt=$('mt'), mtIn=$('mt-in');
-  let bw=40, cursor=null, xDe=()=>0;
+  let bw=40, cursor=null, cursorFijo=null, xDe=()=>0;   // cursorFijo: la línea de lo que suena dentro de la regla fija
   const tok=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const cabezaPx=()=>parseFloat(tok('--mt-head'))||136;
   const ALTO={piano:60,bajo:42,trompetas:36,trombones:36,saxos:36};
@@ -5374,26 +5402,28 @@ ${vientosStaff}    \\new PianoStaff <<
     bw=+zoomSel.value||Math.max(16,Math.min(64,Math.floor((mt.clientWidth-cabezaPx()-16)/nb)));   // «ajustar»: la canción entera a lo ancho
     const W=nb*bw;
     mtIn.innerHTML='';mtIn.style.width='calc(var(--mt-head) + '+W+'px)';
-    const fila=(cls,nombre,alto,color)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');
+    // la regla, las secciones y los acordes van en un bloque fijo arriba: al bajar por las pistas siguen a mano
+    const fijo=el('div','mt-fijo');mtIn.appendChild(fijo);
+    const fila=(cls,nombre,alto,color,dest)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');
       if(color){const c=el('span','mt-color');c.style.background=color;hd.appendChild(c)}
       const nm=el('span','mt-nom',nombre);nm.title=nombre;hd.appendChild(nm);
-      b.style.width=W+'px';if(alto)b.style.height=alto+'px';r.append(hd,b);mtIn.appendChild(r);return {hd,b}};
+      b.style.width=W+'px';if(alto)b.style.height=alto+'px';r.append(hd,b);(dest||mtIn).appendChild(r);return {hd,b}};
     const enBarra=(e,b)=>Math.max(0,Math.min(nb-1,Math.floor((e.clientX-b.getBoundingClientRect().left)/bw)));
     const tramoDe=k=>ts.findIndex(x=>k>=x.ini&&k<x.ini+x.n);
     // regla: número de compás, con el lado 3 de la clave sombreado
-    const tres=/3-2/.test(song.clave), rg=fila('mt-regla','Compás');
+    const tres=/3-2/.test(song.clave), rg=fila('mt-regla','Compás',0,null,fijo);
     for(let k=0;k<nb;k++){const c=el('span','mt-c'+(((res&&res.lados[k])||((k+(tres?0:1))%2===0?'A':'B'))==='A'?' l3':''),bw>=26||k%4===0?String(k+1):'');
       c.style.left=k*bw+'px';c.style.width=bw+'px';rg.b.appendChild(c)}
     rg.b.title='Clic: tocar desde ese compás (sombreado: lado 3 de la clave)';
     rg.b.onclick=e=>{const ms=P.score&&P.score.measures,k=enBarra(e,rg.b);if(ms&&ms[k])seek(ms[k].start)};
     // secciones, del color de su marcha
-    const sc=fila('mt-secs','Secciones');
+    const sc=fila('mt-secs','Secciones',0,null,fijo);
     ts.forEach((x,i)=>{const b=el('button','mt-sec'+(i===cur?' sel':''),nombreDe(x.s)+(x.s.vueltas>1?' ×'+x.s.vueltas:''));b.type='button';
       b.style.left=x.ini*bw+1+'px';b.style.width=Math.max(8,x.n*bw-2)+'px';b.style.background=COL_MARCHA[x.s.marcha]||'#c8c8c8';
       b.title=nombreDe(x.s)+' · '+x.n+' compases · '+(MARCHA_TXT[x.s.marcha]||x.s.marcha)+' · clic para editarla';
       b.onclick=()=>elegir(i);sc.b.appendChild(b)});
     // acordes
-    const ac=fila('mt-acs','Acordes');
+    const ac=fila('mt-acs','Acordes',0,null,fijo);
     ts.forEach(x=>{for(let j=0;j<x.n;j++){const b=x.s.bars[j%x.s.bars.length],c=el('span','mt-c',pretty(b.a)+(b.b?' '+pretty(b.b):''));
       c.style.left=(x.ini+j)*bw+'px';c.style.width=bw+'px';c.title=c.textContent;ac.b.appendChild(c)}});
     ac.b.style.cursor='default';
@@ -5417,7 +5447,7 @@ ${vientosStaff}    \\new PianoStaff <<
       f.b.title='Clic: entra o sale '+t.toLowerCase()+' en esa sección';
       f.b.onclick=e=>{const i=tramoDe(enBarra(e,f.b));if(i>=0){if(i!==cur)elegir(i);alternar(i,id)}};
     }
-    cursor=el('div','mt-cursor');mtIn.appendChild(cursor);
+    cursor=el('div','mt-cursor');mtIn.appendChild(cursor);cursorFijo=el('div','mt-cursor');fijo.appendChild(cursorFijo);
   }
   // cada sección es un «clip»: fondo del color de la pista, más fuerte en la sección elegida, gris donde la pista no toca
   function dibujar(cv,id,ts,W,h,notas,col){
@@ -5634,8 +5664,8 @@ ${vientosStaff}    \\new PianoStaff <<
     let idx=-1;
     if(generated&&P.score&&cursor){
       const t=curTick(),ms=P.score.measures,ver=P.playing||t>0;
-      cursor.style.display=ver?'block':'none';
-      if(ver){const x=xDe(t);cursor.style.left='calc(var(--mt-head) + '+x+'px)';
+      cursor.style.display=cursorFijo.style.display=ver?'block':'none';
+      if(ver){const x=xDe(t);cursor.style.left=cursorFijo.style.left='calc(var(--mt-head) + '+x+'px)';
         if(P.playing){const vis=x-mt.scrollLeft,an=mt.clientWidth-cabezaPx();if(vis<0||vis>an-24)mt.scrollLeft=Math.max(0,x-24)}}
       if(P.playing){let k=0;while(k<ms.length-1&&ms[k+1].start<=t)k++;
         if(P.seguir){const i=tramos().findIndex(x=>k>=x.ini&&k<x.ini+x.n);if(i>=0&&i!==cur)mostrar(i)}
@@ -5690,12 +5720,12 @@ ${vientosStaff}    \\new PianoStaff <<
   const ayuda=(el,texto)=>{const s=document.createElement('small');s.className='ayuda';s.textContent=texto;
     el.after(s);return s};
   const PANELES={
-    '#gen':'Las pistas de la canción: cada bloque de color es una sección (el color dice la marcha) y cada fila un instrumento. Clic en una sección para editarla en el panel de abajo (estructura, acordes, piano, bajo y percusión; cada bloque se pliega con su título). Clic en una pista adentro de una sección: ese instrumento entra o sale ahí. M y S valen para toda la canción; el volumen de cada pista es de la sección elegida. Con «Seguir», mientras suena, el panel de abajo muestra la sección que suena.',
-    '#gen-arr':'Timbre del bajo, sonido, canciones guardadas y para bajar MIDI o MP3. La clave, la banda, el tempo y el loop están en la barra de arriba.',
-    '#gen-base':'El algoritmo nuevo aprende de los temas marcados: el ritmo y la textura del piano, los roles del bajo y los juegos de percusión. Desmarcá temas o usá los filtros para cambiar el estilo; sumá tus MIDIs para enseñarle cosas nuevas.'
+    '#gen':'Las pistas de la canción: cada bloque de color es una sección (el color dice la marcha) y cada fila un instrumento. Clic en una sección para editarla en el panel de abajo (estructura, acordes, piano, bajo, percusión y vientos; cada bloque se pliega con su título). Clic en una pista adentro de una sección: ese instrumento entra o sale ahí. M y S valen para toda la canción; el volumen de cada pista es de la sección elegida (con Shift, de todas). Con «Seguir», mientras suena, el panel de abajo muestra la sección que suena.',
+    '#gen-arr':'El sonido, las demos, las canciones guardadas y para bajar MIDI o MP3. La clave, la banda, el tempo y el loop están en la barra de arriba.'
   };
-  for(const s in PANELES){const h=q(s+' .gen-head');if(h){const p=ayuda(h,PANELES[s]);p.classList.add('ayuda-panel')}}
-  const acc=q('.gen-actions');if(acc)acc.appendChild(Object.assign(document.createElement('small'),{className:'ayuda',textContent:'«Generar y escuchar» arma la canción entera con todo lo elegido. Cada sección tiene su «Variante n.º»: el mismo número da siempre el mismo tumbao, y cambiar una sección no cambia las otras.'}));
+  for(const s in PANELES){const h=q(s+' .gen-head');if(h){const p=ayuda(h,PANELES[s]);p.classList.add('ayuda-panel');p.title=PANELES[s]}}
+  const mta=q('.mt-ayuda');if(mta)mta.title=mta.textContent;
+  const acc=q('.gen-actions');if(acc)acc.appendChild(Object.assign(document.createElement('small'),{className:'ayuda',textContent:'La canción se arma sola con cada cambio. Cada sección tiene su «Variante»: el mismo número da siempre lo mismo, y cambiar una sección no cambia las otras.'}));
   // tooltips (t) y explicaciones fijas (e)
   const AY={
     '#tempo':{t:'Velocidad en negras por minuto. La timba suele ir entre 180 y 210; la salsa romántica, más lenta.'},
@@ -5706,7 +5736,8 @@ ${vientosStaff}    \\new PianoStaff <<
     '#bar':{t:'Tocá la barra para saltar a ese momento'},
     '#cg-n':{t:'Cuántos compases tiene la progresión de esta sección. Se repite según «Vueltas».'},
     '#sc-vueltas':{t:'Cuántas veces se repite la progresión de esta sección'},
-    '#sc-trans':{t:'Cómo termina la sección',e:'Abanico: redoble de timbal que lleva a la sección siguiente, que entra en el 2. Cierre: toda la banda junta sobre la clave. Corte: golpe en el 1 y silencio.'},
+    '#sc-trans':{t:'Cómo termina la banda la sección (piano, bajo, vientos y percusión juntos)',e:'Cierre: golpes sobre la clave hasta el 4&. Parada en clave: los golpes de la clave del compás y silencio. Bloque de contratiempos: 1&, 2&, 3& y el golpe del 4& (los «pickups» de la timba). Tres contra cuatro: un golpe cada tres semicorcheas (la cruz de la timba). Golpe en el 4&: todos juntos en el anticipo. Corte: golpe en el 1 y silencio. El último golpe, si cae en el 4 o el 4&, ya trae el acorde que viene.'},
+    '#sc-relleno':{t:'Un relleno de percusión en el último compás, con la banda que sigue derecho',e:'Abanico: redoble de timbal en el 4 y golpe de borde y plato en el 1 que viene. Redoble: timbales en semicorcheas en la segunda mitad del compás. Floreo: el quinto repica y la tumba marca el 1. Toms: relleno de batería con platillo en el 1.'},
     '#sc-nombre':{t:'Nombre de la sección (intro, coro, mambo…): aparece en el multipista, en la partitura y en el MIDI'},
     '#tb-seed':{t:'Cada número da siempre la misma sección (si no pediste otra variante de un instrumento solo)'},
     '#tb-var':{t:'Otra variante de toda la sección: piano, bajo y percusión'},

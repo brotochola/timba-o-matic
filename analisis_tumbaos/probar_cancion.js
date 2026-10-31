@@ -13,10 +13,10 @@ let fallas = 0, pruebas = 0;
 const ok = (c, msg) => { pruebas++; if (!c) { fallas++; console.log('  FALLA: ' + msg); } };
 
 const SECCIONES = [
-  { id: 'intro', nombre: 'Intro', prog: 'Am Dm E7 Am', marcha: 'cuerpo', semilla: 11, transicion: 'abanico' },
+  { id: 'intro', nombre: 'Intro', prog: 'Am Dm E7 Am', marcha: 'cuerpo', semilla: 11, relleno: 'abanico' },
   { id: 'cuerpo', nombre: 'Cuerpo', prog: 'Am Dm G C F Dm E7 E7', marcha: 'cuerpo', vueltas: 2, semilla: 22, perillas: { b_estilo: 'salsa' } },
   { id: 'puente', nombre: 'Puente', prog: 'F G Am', marcha: 'marcha', semilla: 33, transicion: 'cierre' },
-  { id: 'coro', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 4, semilla: 44, transicion: 'abanico' },
+  { id: 'coro', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 4, semilla: 44, relleno: 'abanico' },
   { id: 'mambo', nombre: 'Mambo', prog: 'Am D7 G E7', marcha: 'mambo', vueltas: 2, semilla: 55, ganchoDe: 'coro', entrada: 'plato' },
   { id: 'presion', nombre: 'Presión', prog: 'Am Am E7 E7', marcha: 'presion', vueltas: 2, semilla: 66, transicion: 'corte' },
   { id: 'final', nombre: 'Coro final', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 2, semilla: 77, transicion: 'corte', perillas: { b_estilo: 'salsa' } }
@@ -131,6 +131,27 @@ const larga = { titulo: 'Larga', clave: 'son 3-2', perillas: {}, secciones: Arra
 const t0 = Date.now(), rl = TM.generarCancion(larga, M), ms = Date.now() - t0;
 console.log(`   ${rl.compases} compases en ${ms} ms`);
 ok(ms < 1000, 'una canción de ~100 compases en menos de 1 s');
+
+console.log('13. finales con golpes de toda la banda y rellenos de percusión');
+const POS_FIN = { cierre: { A: [0, 6, 12, 14], B: [4, 8, 14] }, parada: { A: [0, 6, 12], B: [4, 8] }, contratiempos: { A: [2, 6, 10, 14], B: [2, 6, 10, 14] }, tresxcuatro: { A: [0, 3, 6, 9, 12, 15], B: [0, 3, 6, 9, 12, 15] }, golpe4y: { A: [14], B: [14] } };
+for (const [tr, pos] of Object.entries(POS_FIN)) {
+  const c2 = { titulo: '', clave: 'son 2-3', perillas: {}, vientos: { formato: 'timba' }, secciones: [
+    { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 1, semilla: 3, transicion: tr }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4 }] };
+  const rf = TM.generarCancion(c2, M), u = 3, S = u * 16, lado = rf.lados[u], esp = pos[lado], desde = tr === 'golpe4y' ? 14 : 0;
+  const ataques = evs => [...new Set(evs.filter(e => e.p >= S + desde && e.p < S + 16).map(e => e.p - S))].sort((a, b) => a - b).join();
+  ok(ataques(rf.der) === esp.join() && ataques(rf.bajo) === esp.join(), `${tr}: piano y bajo golpean en ${esp.join(',')} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
+  ok(ataques(rf.vientos.trompetas) === esp.join(), `${tr}: los vientos golpean con la banda (${ataques(rf.vientos.trompetas)})`);
+  ok([...new Set(rf.perc[u].filter(e => e.p >= desde).map(e => e.p))].every(q => esp.includes(q)), `${tr}: la percusión solo en los golpes`);
+  const ult = esp[esp.length - 1], e = rf.der.find(x => x.p === S + ult);
+  if (ult >= 12) ok(e && e.ch.nombre === 'Dm', `${tr}: el último golpe (en ${ult}) ya trae el acorde que viene`);
+}
+for (const [rel, d] of [['abanico', 'timbalH'], ['redoble', 'timbalL'], ['floreo', 'quintoS'], ['toms', 'tomL']]) {
+  const c2 = { titulo: '', clave: 'son 2-3', perillas: {}, secciones: [
+    { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 1, semilla: 3, relleno: rel }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4 }] };
+  const rf = TM.generarCancion(c2, M);
+  ok(rf.perc[3].some(e => e.d === d && e.p >= 12), `relleno ${rel}: ${d} al final del último compás`);
+  ok((rf.perc[4] || []).concat(rf.extra[4] || []).some(e => e.p === 0 && ['plato', 'timbalH', 'salidor', 'crash'].includes(e.d)), `relleno ${rel}: un golpe en el 1 de lo que viene`);
+}
 
 if (process.argv[2]) { fs.writeFileSync(process.argv[2], ly); console.log('LilyPond → ' + process.argv[2]); }
 console.log(`\n${pruebas - fallas}/${pruebas} bien`);

@@ -16,7 +16,7 @@
      "campanas": false
     },
     "vol": {},
-    "transicion": "abanico",
+    "transicion": "ninguna",
     "entrada": "",
     "perillas": {
      "frase": "frase"
@@ -56,7 +56,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 311
+    "semilla": 311,
+    "relleno": "abanico"
    },
    {
     "id": "g2",

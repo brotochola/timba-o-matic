@@ -16,7 +16,7 @@ const { parse, evaluate, buildNotes } = ctx.__api;
 const base = JSON.parse(fs.readFileSync(path.join(RAIZ, 'analisis_tumbaos/base_tumbaos.json'), 'utf8'));
 const M = TM.construirModelo(base.fuentes.filter(f => !f.coleccion));
 const cancion = { titulo: 'Cadena', clave: 'son 2-3', perillas: {}, secciones: [
-  { id: 'a', nombre: 'Cuerpo', prog: 'Am Dm E7 Am', marcha: 'cuerpo', vueltas: 2, semilla: 5, transicion: 'abanico', pistas: { bateria: false } },
+  { id: 'a', nombre: 'Cuerpo', prog: 'Am Dm E7 Am', marcha: 'cuerpo', vueltas: 2, semilla: 5, relleno: 'abanico', pistas: { bateria: false } },
   { id: 'b', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 2, semilla: 6, pistas: { bongo: false } },
   { id: 'c', nombre: 'Presión', prog: 'Am Am E7 E7', marcha: 'presion', vueltas: 2, semilla: 7, transicion: 'corte', pistas: { bateria: false } },
   { id: 'd', nombre: 'Muela', prog: 'Am D7 G E7', marcha: 'muela', semilla: 8 } ] };

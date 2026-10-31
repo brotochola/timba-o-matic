@@ -14,7 +14,7 @@
     "id": "s18",
     "pistas": {},
     "vol": {},
-    "transicion": "abanico",
+    "transicion": "ninguna",
     "entrada": "",
     "perillas": {
      "frase": "frase"
@@ -54,7 +54,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 301
+    "semilla": 301,
+    "relleno": "abanico"
    },
    {
     "id": "s19",

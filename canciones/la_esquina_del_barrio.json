@@ -60,7 +60,7 @@
      "campanas": false
     },
     "vol": {},
-    "transicion": "abanico",
+    "transicion": "ninguna",
     "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
@@ -126,7 +126,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 202
+    "semilla": 202,
+    "relleno": "abanico"
    },
    {
     "id": "s13",

@@ -65,7 +65,7 @@
      "campanas": false
     },
     "vol": {},
-    "transicion": "abanico",
+    "transicion": "ninguna",
     "entrada": "",
     "perillas": {},
     "nombre": "Intro",
@@ -104,7 +104,8 @@
     ],
     "vueltas": 2,
     "semilla": 101,
-    "semillaVientos": 1020
+    "semillaVientos": 1020,
+    "relleno": "abanico"
    },
    {
     "id": "s2",
