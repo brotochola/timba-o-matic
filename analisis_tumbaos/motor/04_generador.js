@@ -67,7 +67,7 @@
     { g: 'Mezcla de percusión', id: 'm_bongo', l: 'Bongó', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen del bongó (0 = no suena)' },
     { g: 'Mezcla de percusión', id: 'm_campanas', l: 'Campanas', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen de las campanas: la del bongó y la del timbal (0 = no suenan)' },
     { g: 'Mezcla de percusión', id: 'm_timbales', l: 'Timbales y palitos', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen de timbales, cáscara y palitos (0 = no suenan)' },
-    { g: 'Mezcla de percusión', id: 'm_guiro', l: 'Güiro y maracas', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen de güiro y maracas (0 = no suenan)' },
+    { g: 'Mezcla de percusión', id: 'm_guiro', l: 'Güiro', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen del güiro (0 = no suena)' },
     { g: 'Mezcla de percusión', id: 'm_bateria', l: 'Batería', min: 0, max: 1.5, st: 0.05, def: 0.8, f: 'x', h: 'Volumen de la batería: bombo, caja, charles y platillos (0 = no suena)' }
   ];
   const PERILLAS = Object.fromEntries(PERILLAS_UI.map(k => [k.id, k.def]));
@@ -93,16 +93,23 @@
   const CLAVE16 = { son: { A: [0, 6, 12], B: [4, 8] }, rumba: { A: [0, 6, 14], B: [4, 8] } };
   const RELLENO = [[10, 'timbalH', 0.55], [11, 'timbalH', 0.45], [12, 'timbalH', 0.75], [13, 'timbalL', 0.6], [14, 'timbalL', 0.9], [15, 'timbalL', 0.7]];
 
+  // opc.contexto (una sección de una canción): { inicio: compás global, siguiente: acordes del compás que sigue (null al final),
+  // previo: { linea, bajo, ligaAl1, entraSolo } de la sección anterior, gancho: el de otra sección, transicion }
   function generar(opc, M) {
     const k = Object.assign({}, PERILLAS, opc.perillas || {});
+    const ctx = opc.contexto || null, C = ctx || {}, previo = C.previo || null;
     const R = rng((opc.semilla || 1) * 2654435761 + 7);
+    // en una canción cada etapa sortea aparte: cambiar el final de una sección no corre los sorteos de lo que viene antes
+    const sub = n => ctx ? rng((opc.semilla || 1) * 2654435761 + 7 + n * 0x9E3779B9) : R;
+    const RA = sub(1), RL = sub(2), RV = sub(3), RB = sub(4), RP = sub(5);
     const mar = MARCHAS[opc.marcha] || MARCHAS.marcha;
     const prog = Array.isArray(opc.prog) ? opc.prog : TM.leerProgresion(opc.prog);
     if (!prog.length) throw new Error('Escribí una progresión, por ejemplo: Em C Am B7');
     const L = prog.length, nb = L * (opc.vueltas || 1);
     const tresPrimero = /3-2/.test(opc.clave || 'son 3-2'), tipoClave = /rumba/.test(opc.clave || '') ? 'rumba' : 'son';
-    const lado = b => ((b + (tresPrimero ? 0 : 1)) % 2 === 0 ? 'A' : 'B');
-    const acordesDe = b => prog[((b % L) + L) % L];
+    const lado = b => ((b + (C.inicio || 0) + (tresPrimero ? 0 : 1)) % 2 === 0 ? 'A' : 'B');
+    const ultimo = () => { const cs = prog[(nb - 1) % L]; return [cs[cs.length - 1]]; };
+    const acordesDe = b => ctx && b >= nb ? (C.siguiente || ultimo()) : prog[((b % L) + L) % L];
     const acordeEn = (b, pos) => { const cs = acordesDe(b); return cs.length > 1 && pos >= 8 ? cs[1] : cs[0]; };
     const P = M.piano;
     const info = {};
@@ -111,13 +118,16 @@
     const der = [], izq = [];
     const efect = { dens: k.dens * mar.dens, oct: k.oct * mar.oct, blq: k.blq * mar.blq, semi: k.semi * mar.semi, rep: Math.max(k.rep, mar.rep || 0) };
     let pianoOK = P.ciclos.length > 0;
+    let ganchoFin = null, ligaFin = false, lineaFin = previo ? previo.linea : null;
     if (pianoOK) {
+      // gancho de otra sección: misma fuente, mismas células y la memoria de sus notas
+      const G0 = C.gancho && C.gancho.H <= nb ? C.gancho : null;
       // fuente principal (un tema de la base), con peso por raíz del número de ciclos
       const porF = {}; for (const c of P.ciclos) (porF[c.f] = porF[c.f] || []).push(c);
       const fs = Object.keys(porF);
       const pref = opc.estiloPreferido, cubano = e => e === 'cubano' || e === 'timba';
       const coincide = e => !pref || (pref === 'salsa' ? e === 'salsa' : cubano(pref) ? cubano(e) : e === pref);
-      const F = elegir(R, fs, f => Math.sqrt(porF[f].length) * (coincide(porF[f][0].estilo) ? 1 : 0.15));
+      const F = G0 && porF[G0.F] ? G0.F : elegir(R, fs, f => Math.sqrt(porF[f].length) * (coincide(porF[f][0].estilo) ? 1 : 0.15));
       info.piano = F;
       const meta = (P.densidad.A + P.densidad.B) / 2 * efect.dens;
       const elegirCelula = (parecida) => {
@@ -132,9 +142,10 @@
       // largo del gancho (en compases)
       let H = k.largo === 'auto' ? (L % 4 === 0 ? 4 : 2) : +k.largo;
       if (H > nb) H = nb % 2 === 0 ? nb : 2;
+      if (G0) H = G0.H;
       const nCel = Math.max(1, H / 2);
-      const celulas = [elegirCelula(null)];
-      for (let i = 1; i < nCel; i++) celulas.push(R() < 0.4 ? celulas[0] : elegirCelula(celulas[0]));
+      const celulas = G0 ? G0.celulas : [elegirCelula(null)];
+      if (!G0) for (let i = 1; i < nCel; i++) celulas.push(R() < 0.4 ? celulas[0] : elegirCelula(celulas[0]));
       const desfase = lado(0) === 'B' ? 1 : 0;
       // mitades del gancho: compás j del gancho → la mitad de su lado de la célula que le toca
       const mitad = (cel, L_) => cel.ev.filter(e => (L_ === 'A') === (e.p < 16)).map(e => ({
@@ -166,8 +177,9 @@
         if (efect.oct !== 1 || efect.blq !== 1) for (const e of evs) if (!e.paso) e.t = muestraTextura(L_, e.pos, e.t);
         return evs.sort((a, b) => a.pos - b.pos);
       };
-      const gancho = [];
-      for (let j = 0; j < H; j++) { const L_ = lado(j), cel = celulas[Math.floor((j + desfase) / 2) % nCel]; gancho.push(ajustar(mitad(cel, L_), L_)); }
+      const ef = JSON.stringify(efect);
+      const gancho = G0 && G0.lado0 === lado(0) && G0.ef === ef ? G0.gancho : [];
+      if (!gancho.length) for (let j = 0; j < H; j++) { const L_ = lado(j), cel = celulas[Math.floor((j + desfase) / 2) % nCel]; gancho.push(ajustar(mitad(cel, L_), L_)); }
       info.celulas = celulas.map(c => c.ritmo);
       // variación por vuelta
       const variar = (evs, L_) => {
@@ -195,21 +207,23 @@
           let cand = delCompas.find(e => e.pos === 14);
           const pA = Math.min(0.97, P.pAnticipo[lado(b + 1)] * k.ant);
           // sin 4& en la célula: la mitad de las veces se agrega el ataque para anticipar (el 4& se toca en el 84% de los compases)
-          if (!cand && R() < pA * 0.5 && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
-          if (cand && R() < pA) {
+          if (!cand && RA() < pA * 0.5 && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
+          if (cand && RA() < pA) {
             cand.ch = sigCh; cand.antic = true;
-            if (R() < Math.min(1, P.pAnticipo.liga * k.liga)) { const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno) quitar.add(uno); cand.liga = true; }
+            if (RA() < Math.min(1, P.pAnticipo.liga * k.liga)) { const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno) quitar.add(uno); cand.liga = true; if (b === nb - 1) ligaFin = true; }
           }
-          if (k.dim > 0 && R() < k.dim) {
+          if (k.dim > 0 && RA() < k.dim) {
             const cuatro = delCompas.find(e => e.pos === 12 && !e.antic);
             if (cuatro) { const r0 = (sigCh.raiz + 11) % 12; cuatro.ch = TM.acorde(TM.NOM[r0] + 'dim7'); cuatro.dim = true; }
           }
         }
         if (cs.length > 1 && cs[1].nombre !== cs[0].nombre) {
           const m = delCompas.find(e => e.pos === 6);
-          if (m && R() < Math.min(0.97, P.pAnticipo.mitad * k.ant)) { m.ch = cs[1]; m.antic = true; }
+          if (m && RA() < Math.min(0.97, P.pAnticipo.mitad * k.ant)) { m.ch = cs[1]; m.antic = true; }
         }
       }
+      // la sección anterior terminó anticipando ligado: no se vuelve a atacar el 1
+      if (previo && previo.ligaAl1) { const uno = E.find(e => e.b === 0 && e.pos === 0); if (uno) quitar.add(uno); }
       const EV = E.filter(e => !quitar.has(e)).sort((a, b) => a.p16 - b.p16);
       EV.forEach((e, i) => { e.metrica = e.pos % 2 ? 'semi' : e.pos % 4 === 0 ? 'tiempo' : 'contra'; e.gap = (EV[i + 1] ? EV[i + 1].p16 : nb * 16) - e.p16; });
 
@@ -227,7 +241,7 @@
         const a = P.fun[e.metrica], b = P.fun[e.t === 'o' ? 'oct' : 'sola'];
         const ta = Object.values(a).reduce((x, y) => x + y, 0) || 1, tb = Object.values(b).reduce((x, y) => x + y, 0) || 1;
         const tiene = { R: true, 3: e.ch.fun.t != null, 5: true, 7: e.ch.fun.s != null, T: e.ch.fun.T.length > 0, X: true };
-        return elegir(R, FUNS, f => {
+        return elegir(RL, FUNS, f => {
           if (!tiene[f]) return 0;
           if ((e.antic || e.dim) && (f === 'T' || f === 'X')) return 0;
           if (f === 'X' && (e.pos % 8 === 0 || e.gap > 4)) return 0;   // el cromatismo es corto y de paso: nunca en el 1 ni en el 3
@@ -237,8 +251,8 @@
         });
       };
       const G = 6 * k.gancho;
-      const anterior = new Map();   // compás del gancho + posición → {top, ch, dir}
-      let estado = null;
+      const anterior = new Map(G0 ? G0.anterior : []);   // compás del gancho + posición → {top, ch, dir}
+      let estado = lineaFin;
       const tops = new Map();
       const W = 20;
       for (let r0 = 0; r0 * H < nb; r0++) {
@@ -248,7 +262,7 @@
         const historia = [];
         for (const e of tramo) {
           const ref = anterior.get(e.j + ':' + e.pos);
-          const recuerda = ref && ref.ch === e.ch.nombre && R() < 0.5 + 0.5 * k.gancho;
+          const recuerda = ref && ref.ch === e.ch.nombre && RL() < 0.5 + 0.5 * k.gancho;
           const objetivo = recuerda ? null : sortearFuncion(e);
           const cands = [];
           for (let m = lo; m <= hi; m++) {
@@ -278,7 +292,7 @@
                   else if (ref.dir != null && mm) s += Math.sign(mm) === ref.dir ? 0.9 * k.gancho : -0.3 * k.gancho;
                 }
               } else if (recuerda && c.m === ref.top) s += G;
-              s += k.temp * 0.8 * gumbel(R);
+              s += k.temp * 0.8 * gumbel(RL);
               const d = st.m != null ? c.m - st.m : 0, mm = d % 12 === 0 ? 0 : d;
               sig.push({ m: c.m, pd: mm ? mm : st.pd, ch: e.ch.nombre, f: c.f, paso: !!e.paso, rep: d === 0 ? st.rep + 1 : 0, s, atras: si });
             }
@@ -299,6 +313,8 @@
         });
         const u = elegidos[elegidos.length - 1]; estado = { m: u.m, pd: u.pd, ch: u.ch, f: u.f };
       }
+      lineaFin = estado;
+      if (ctx) ganchoFin = { F, H, celulas, gancho, lado0: lado(0), ef, anterior };
 
       // ---------- voicing y duraciones
       const tonos = ch => ch.pcs;
@@ -311,7 +327,7 @@
         if (e.t === 'o') {
           ps = [m - 12, m];
           const pInt = Math.min(0.95, P.tasaInterior * k.int * (e.inner != null ? 2.2 : 0.7));
-          if (R() < pInt) { const inn = debajo(m, ch, 2, 5, e.inner || 3.5); if (inn != null && inn > m - 12) ps.splice(1, 0, inn); }
+          if (RV() < pInt) { const inn = debajo(m, ch, 2, 5, e.inner || 3.5); if (inn != null && inn > m - 12) ps.splice(1, 0, inn); }
         } else if (e.t === 'd') { const s = debajo(m, ch, 3, 5, 3.5) ?? debajo(m, ch, 8, 9, 8.5); ps = s != null ? [s, m] : [m]; }
         else if (e.t === 'a') { const s1 = debajo(m, ch, 3, 5, 3.5), s2 = s1 != null ? debajo(s1, ch, 3, 5, 3.5) : null; ps = [s2, s1, m].filter(x => x != null); }
         else ps = [m];
@@ -332,7 +348,7 @@
         const fv = (P.vel[lado(e.b)] || [])[e.pos] || 1;
         const vel = Math.round(Math.max(30, Math.min(127, 86 * velMedia[e.metrica] * Math.pow(fv, 2 * k.acc) * (e.paso ? 0.85 : 1) * (e.t === 'o' ? 1.04 : 1))));
         const acento = k.acc > 0.3 && !e.paso && (e.antic || fv >= 1.03 || e.t === 'o' && e.metrica === 'contra');
-        der.push({ p: e.p16, L: L_, ps, v: vel, art: acento ? '->' : '', antic: !!e.antic, ch });
+        der.push({ p: e.p16, L: L_, ps, v: vel, art: acento ? '->' : '', antic: !!e.antic, ch, ...(e.liga ? { liga: true } : {}) });
         if (mi.length) izq.push({ p: e.p16, L: L_, ps: mi, v: Math.round(vel * 0.9), art: acento ? '->' : '', ch });
       });
       // ancla en el grave: notas propias de la izquierda
@@ -348,6 +364,7 @@
 
     // =========================== BAJO ===========================
     const bajo = [];
+    let bajoFin = previo ? previo.bajo : null;
     let estiloBajo = k.b_estilo === 'auto' ? mar.bajo : k.b_estilo;
     if (estiloBajo === 'aprendido' && !M.bajo.ciclos.length) estiloBajo = 'salsa';
     info.bajo = estiloBajo;
@@ -363,7 +380,7 @@
         const claros = M.bajo.ciclos.filter(c => c.calidad >= 0.85);
         const pool = claros.filter(c => c.f === info.piano); const usar = pool.length >= 6 ? pool : (claros.length ? claros : M.bajo.ciclos);
         const nMedio = usar.reduce((a, c) => a + c.n, 0) / usar.length;
-        const c = elegir(R, usar, c => Math.pow(M.bajo.popularidad[c.ritmo] || 1, 0.5) * (Math.abs(k.b_dens - 1) < 0.02 ? 1 : Math.exp(-(((c.n - nMedio * k.b_dens) / 2) ** 2))));
+        const c = elegir(RB, usar, c => Math.pow(M.bajo.popularidad[c.ritmo] || 1, 0.5) * (Math.abs(k.b_dens - 1) < 0.02 ? 1 : Math.exp(-(((c.n - nMedio * k.b_dens) / 2) ** 2))));
         celula = c.ev.map(e => [e.p, e.d, e.rol, e.dz]); info.bajoFuente = c.f;
       } else if (estiloBajo === 'motivo') {
         celula = [];
@@ -374,19 +391,20 @@
       } else celula = BAJO_GUIA[estiloBajo] || BAJO_GUIA.salsa;
       // la célula de bajo está escrita como lado 3 | lado 2: se reparte por el lado de cada compás
       const mitadB = L_ => celula.filter(x => (L_ === 'A') === (x[0] < 16)).map(([p, d, rol, dz]) => ({ pos: p % 16, d, rol, dz }));
-      let prev = null;
+      let prev = bajoFin;
       for (let b = 0; b < nb; b++) {
         let evs = mitadB(lado(b)).map(x => ({ ...x }));
         if (k.b_ant !== 'auto') for (const x of evs) if (x.rol === 'R+' && (x.pos === 12 || x.pos === 14)) x.pos = +k.b_ant;
-        if (k.b_dens < 1) evs = evs.filter(x => x.rol === 'R+' || x.rol === 'R' || R() < k.b_dens);
-        if (k.b_dens > 1 && !evs.some(x => x.pos === 8) && R() < k.b_dens - 1) evs.push({ pos: 8, d: 2, rol: '5', dz: null });
+        if (k.b_dens < 1) evs = evs.filter(x => x.rol === 'R+' || x.rol === 'R' || RB() < k.b_dens);
+        if (k.b_dens > 1 && !evs.some(x => x.pos === 8) && RB() < k.b_dens - 1) evs.push({ pos: 8, d: 2, rol: '5', dz: null });
         const cs = acordesDe(b), sigCh = acordesDe(b + 1)[0];
         // si el acorde cambia y la célula termina en la raíz o la quinta de ahora, el bajo anticipa la raíz que viene
-        if (sigCh.nombre !== cs[cs.length - 1].nombre) { const ult = evs.filter(x => x.pos >= 12).pop(); if (ult && ['R', '5', '3', '7'].includes(ult.rol) && R() < 0.8) ult.rol = 'R+'; }
-        if (sigCh.nombre !== cs[cs.length - 1].nombre && R() < k.b_aprox) {
+        if (sigCh.nombre !== cs[cs.length - 1].nombre) { const ult = evs.filter(x => x.pos >= 12).pop(); if (ult && ['R', '5', '3', '7'].includes(ult.rol) && RB() < 0.8) ult.rol = 'R+'; }
+        if (sigCh.nombre !== cs[cs.length - 1].nombre && RB() < k.b_aprox) {
           const rp = evs.find(x => x.rol === 'R+'); if (rp && !evs.some(x => x.pos === rp.pos - 2) && rp.pos >= 12) evs.push({ pos: rp.pos - 2, d: 2, rol: 'apB', dz: null });
         }
-        if (b === 0 && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
+        // al principio del tema (o después de un corte) el bajo entra con la raíz en el 1; en medio de la canción viene ligado de antes
+        if (b === 0 && (!previo || previo.entraSolo) && !evs.some(x => x.pos === 0)) evs.push({ pos: 0, d: 4, rol: 'R', dz: null });
         evs.sort((a, b2) => a.pos - b2.pos);
         for (const x of evs) {
           const cur = acordeEn(b, x.pos), q = x.pos;
@@ -406,14 +424,18 @@
       }
       bajo.sort((a, b) => a.p - b.p);
       for (let i = 0; i < bajo.length; i++) {
-        const nx = bajo[i + 1], gap = (nx ? nx.p : nb * 16) - bajo[i].p;
+        const nx = bajo[i + 1], gap = (nx ? nx.p : nb * 16) - bajo[i].p, L0 = bajo[i].L;
         bajo[i].L = Math.max(1, Math.min(bajo[i].L, gap));
-        if (k.b_gliss > 0 && nx && nx.ps[0] <= bajo[i].ps[0] - 5 && bajo[i].L >= 3 && R() < k.b_gliss) bajo[i].art = '\\glissando';
+        if (ctx && !nx && L0 > bajo[i].L) bajo[i].cola = L0;   // la última nota sigue sonando en la sección que viene
+        if (k.b_gliss > 0 && nx && nx.ps[0] <= bajo[i].ps[0] - 5 && bajo[i].L >= 3 && RB() < k.b_gliss) bajo[i].art = '\\glissando';
       }
+      bajoFin = prev;
     }
+    if (estiloBajo === 'pedal' && bajo.length) bajoFin = bajo[bajo.length - 1].ps[0];
 
     // =========================== PERCUSIÓN ===========================
     let perc = null;
+    const desborde = [];
     const mix = { clave: k.m_clave, congas: k.m_congas, bongo: k.m_bongo, campanas: k.m_campanas, timbales: k.m_timbales, guiro: k.m_guiro, bateria: k.m_bateria };
     const usarAprendida = k.p_fuente === 'aprendida' && ['cuerpo', 'marcha', 'mambo'].includes(mar.perc) && M.perc.juegos.length;
     info.percusion = usarAprendida ? 'aprendida' : 'clásica';
@@ -424,32 +446,34 @@
       const orden = pool.slice().sort((a, b) => a.densidad - b.densidad);
       const rango = new Map(orden.map((j, i) => [j, orden.length > 1 ? i / (orden.length - 1) : 0.5]));
       const peso = j => Math.sqrt(j.n) * Math.exp(-((rango.get(j) - k.p_int) ** 2) / 0.04) * (j.f === info.piano ? 3 : 1) * (j.lado === 'sin' ? 0.5 : 1);
-      let juego = elegir(R, pool, peso);
+      let juego = elegir(RP, pool, peso);
       info.percFuente = juego.f;
       perc = [];
       const cada = +k.p_cambio;
       for (let b = 0; b < nb; b++) {
-        if (cada && b > 0 && b % cada === 0 && R() < 0.6) { const actual = juego; juego = elegir(R, pool, j => peso(j) * (j.f === actual.f ? 3 : 1) * Math.exp(-((rango.get(j) - rango.get(actual)) ** 2) / 0.02)); }
+        if (cada && b > 0 && b % cada === 0 && RP() < 0.6) { const actual = juego; juego = elegir(RP, pool, j => peso(j) * (j.f === actual.f ? 3 : 1) * Math.exp(-((rango.get(j) - rango.get(actual)) ** 2) / 0.02)); }
         const L_ = lado(b), base = L_ === 'A' ? 0 : 16, out = [];
         for (const d in juego.k) {
+          if (d === 'maraca') continue;   // sin maracas: el raspado es solo el güiro
           const pat = juego.k[d], fam = TM.familiaPerc(d), mx = mix[fam] ?? 1; if (mx <= 0) continue;
           for (let q = 0; q < 16; q++) { const c = pat[base + q]; if (c && c !== '.') out.push({ p: q, d, v: +(0.25 + 0.1 * +c).toFixed(2) * mx }); }
         }
         if (mix.clave > 0) for (const q of CLAVE16[tipoClave][L_]) out.push({ p: q, d: 'clave', v: 0.95 * mix.clave });
         // relleno de timbal al final de cada vuelta de la progresión
         const finVuelta = b % L === L - 1;
-        if (finVuelta && R() < k.p_relleno && mix.timbales > 0) {
+        if (finVuelta && RP() < k.p_relleno && mix.timbales > 0) {
           for (let i = out.length - 1; i >= 0; i--) if (out[i].p >= 10 && ['timbales', 'campanas'].includes(TM.familiaPerc(out[i].d))) out.splice(i, 1);
           for (const [q, d, v] of RELLENO) out.push({ p: q, d, v: v * mix.timbales });
-          if (b + 1 < nb && mix.bateria > 0) out.push({ p: 16, d: 'crash', v: 0.7 * mix.bateria });
+          if ((b + 1 < nb || ctx) && mix.bateria > 0) out.push({ p: 16, d: 'crash', v: 0.7 * mix.bateria });
         }
         perc.push(out);
       }
-      // el platillo del relleno cae en el 1 del compás siguiente
-      for (let b = 0; b < perc.length; b++) for (let i = perc[b].length - 1; i >= 0; i--) if (perc[b][i].p >= 16) { const e = perc[b].splice(i, 1)[0]; if (perc[b + 1]) perc[b + 1].push({ ...e, p: e.p - 16 }); }
+      // el platillo del relleno cae en el 1 del compás siguiente (en una canción, puede ser el de la sección que viene)
+      for (let b = 0; b < perc.length; b++) for (let i = perc[b].length - 1; i >= 0; i--) if (perc[b][i].p >= 16) { const e = perc[b].splice(i, 1)[0]; if (perc[b + 1]) perc[b + 1].push({ ...e, p: e.p - 16 }); else if (ctx) desborde.push({ ...e, p: e.p - 16 }); }
     }
 
-    return { compases: nb, prog, acordes: Array.from({ length: nb }, (_, b) => acordesDe(b)), der, izq, bajo, perc, mix, info, marcha: opc.marcha || 'marcha', marca: mar.marca, clave: opc.clave, lados: Array.from({ length: nb }, (_, b) => lado(b)) };
+    return { compases: nb, prog, acordes: Array.from({ length: nb }, (_, b) => acordesDe(b)), der, izq, bajo, perc, mix, info, marcha: opc.marcha || 'marcha', marca: mar.marca, clave: opc.clave, lados: Array.from({ length: nb }, (_, b) => lado(b)),
+      ...(ctx ? { fin: { linea: lineaFin, bajo: bajoFin, ligaAl1: ligaFin, desborde }, gancho: ganchoFin } : {}) };
   }
 
   Object.assign(TM, { generar, MARCHAS, PERILLAS, PERILLAS_UI, ONDAS_MOTOR: ONDAS, BAJO_GUIA });

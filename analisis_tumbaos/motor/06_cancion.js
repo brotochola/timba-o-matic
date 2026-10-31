@@ -1,0 +1,132 @@
+/* =====================================================================
+   MOTOR DE TUMBAOS · 6. CANCIÓN
+   Una canción es una lista de secciones (intro, cuerpo, coro, mambo…), cada una con sus acordes, marcha, perillas,
+   pistas que tocan y transición al final. Se genera sección por sección con generar() y su propia semilla
+   (editar una sección no vuelve a sortear las otras), pasándole la costura con la anterior: lado de la clave,
+   acorde que sigue, última nota de la línea y del bajo, ligadura al 1.
+   ===================================================================== */
+(function (TM) {
+  'use strict';
+  const pc = m => ((m % 12) + 12) % 12;
+  const PERC = ['clave', 'congas', 'bongo', 'campanas', 'timbales', 'guiro', 'bateria'];
+  const PISTAS = ['piano', 'bajo', ...PERC];
+  // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
+  const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', despelote: 'despelote', muela: 'muela' };
+  const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', despelote: 'despelote', muela: 'muela' };
+  // transiciones, en semicorcheas del último compás de la sección.
+  // Abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2.
+  // Cierre: toda la banda junta sobre la clave, el último golpe anticipado al acorde que viene. Corte: golpe en el 1 y silencio.
+  const ABANICO = [[12, 'timbalH', 1], [13, 'timbalH', 0.45], [14, 'timbalH', 0.5], [15, 'timbalH', 0.6]];
+  const CIERRE = { A: [0, 6, 12, 14], B: [4, 8, 14] };
+  const GOLPE = [['congaS', 0.9], ['timbalH', 0.95], ['kick', 0.9]];
+  const CORTE = [['congaS', 0.95], ['timbalH', 1], ['bongoH', 0.8], ['kick', 0.9], ['crash', 0.8]];
+
+  const pistasDe = s => Object.fromEntries(PISTAS.map(x => [x, !s.pistas || s.pistas[x] !== false]));
+  const suena = (on, d) => on[TM.familiaPerc(d)] !== false;
+  // termina todo lo que suena en t (sin ligaduras ni colas hacia afuera)
+  function cortar(evs, t, hasta) {
+    for (let i = evs.length - 1; i >= 0; i--) {
+      const e = evs[i];
+      if (e.p >= t) { if (e.p > t || hasta == null) evs.splice(i, 1); else e.L = Math.min(e.L, hasta - t); continue; }
+      if (e.p + e.L > t) { e.L = (hasta == null ? t : hasta) - e.p; delete e.liga; delete e.cola; }
+    }
+  }
+  // voicing de un golpe: octava con una nota adentro, la de arriba cerca de la referencia
+  function golpePiano(ch, ref) {
+    let top = null; for (let m = ref - 6; m <= ref + 6; m++) if ([ch.raiz, (ch.raiz + ch.fun.f) % 12, ch.fun.t != null ? (ch.raiz + ch.fun.t) % 12 : -1].includes(pc(m)) && (top == null || Math.abs(m - ref) < Math.abs(top - ref))) top = m;
+    if (top == null) top = ref;
+    let inn = null; for (let m = top - 5; m <= top - 3; m++) if (ch.pcs.includes(pc(m))) inn = m;
+    let iz = 36 + pc(ch.raiz); if (iz < 41) iz += 12;
+    return { der: inn != null ? [top - 12, inn, top] : [top - 12, top], izq: [iz] };
+  }
+  const raizCerca = (ch, ref) => { let best = null; for (let m = 28; m <= 50; m++) if (pc(m) === ch.raiz && (best == null || Math.abs(m - ref) < Math.abs(best - ref))) best = m; return best; };
+
+  function generarCancion(cancion, M) {
+    const secs = cancion.secciones || [];
+    if (!secs.length) throw new Error('La canción no tiene secciones');
+    const progs = secs.map(s => Array.isArray(s.prog) ? s.prog : TM.leerProgresion(s.prog || ''));
+    const ons = secs.map(pistasDe);
+    const res = { der: [], izq: [], bajo: [], perc: [], extra: [], acordes: [], lados: [], marchas: [], mixes: [], estilos: [], secciones: [] };
+    const ganchos = {};
+    let previo = null, inicio = 0, pend = [], ligados = null;
+    secs.forEach((s, i) => {
+      const prog = progs[i]; if (!prog.length) throw new Error(`La sección ${i + 1} no tiene acordes`);
+      const on = ons[i], perillas = { ...cancion.perillas, ...s.perillas };
+      for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
+      const sig = progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
+      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null,
+        contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
+      ganchos[s.id != null ? s.id : i] = r.gancho;
+      const nb = r.compases, S = (nb - 1) * 16, fin = { ...r.fin, entraSolo: false };
+      if (!on.piano) { r.der.length = 0; r.izq.length = 0; }
+      if (!on.bajo) r.bajo.length = 0;
+      const perc = r.perc || new Array(nb).fill(null), extra = Array.from({ length: nb }, () => []);
+      // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico)
+      for (const g of pend) {
+        if (g.quitar && perc[0]) perc[0] = perc[0].filter(e => e.p >= 4 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d)));
+        if (suena(on, g.d) && on[TM.familiaPerc(g.d)] !== false && (r.mix[TM.familiaPerc(g.d)] ?? 1) > 0) (perc[0] || extra[0]).push({ p: g.p, d: g.d, v: g.v });
+      }
+      pend = r.fin.desborde.map(e => ({ ...e }));
+      // costura: lo que la sección anterior dejó ligado (piano) o sonando (bajo) llega hasta el primer ataque de esta
+      if (ligados) {
+        const d0 = r.der.length ? r.der[0].p + inicio * 16 : null, b0 = r.bajo.length ? r.bajo[0].p + inicio * 16 : null;
+        for (const e of ligados.der) if (d0 != null) e.L = d0 - e.p;
+        for (const e of ligados.bajo) if (b0 != null) e.L = Math.min(e.cola, b0 - e.p);
+      }
+      // ---------- transición al final de la sección
+      const lado = r.lados[nb - 1], chs = r.acordes[nb - 1], chEn = q => chs.length > 1 && q >= 8 ? chs[1] : chs[0];
+      const refTop = (() => { const e = r.der.filter(x => x.p < S).pop(); return e ? e.ps[e.ps.length - 1] : (M.piano.registro || {}).p50 || 74; })();
+      const refBajo = (() => { const e = r.bajo.filter(x => x.p < S).pop(); return e ? e.ps[0] : 38; })();
+      const tr = s.transicion || 'ninguna';
+      if (tr === 'corte') {
+        cortar(r.der, S, S + 4); cortar(r.izq, S, S + 4); cortar(r.bajo, S, S + 4);
+        const tapa = evs => evs.some(e => e.p <= S && e.p + e.L > S);
+        if (on.piano && !tapa(r.der)) { const g = golpePiano(chs[0], refTop); r.der.push({ p: S, L: 4, ps: g.der, v: 104, art: '->', antic: false, ch: chs[0] }); r.izq.push({ p: S, L: 4, ps: g.izq, v: 94, art: '->', ch: chs[0] }); }
+        if (on.bajo && !tapa(r.bajo)) r.bajo.push({ p: S, L: 4, ps: [raizCerca(chs[0], refBajo)], v: 104, art: '->', ch: chs[0] });
+        perc[nb - 1] = CORTE.filter(([d]) => suena(on, d)).map(([d, v]) => ({ p: 0, d, v })); extra[nb - 1] = [];
+        Object.assign(fin, { ligaAl1: false, entraSolo: true }); pend = [];
+      } else if (tr === 'cierre') {
+        cortar(r.der, S); cortar(r.izq, S); cortar(r.bajo, S);
+        const pos = CIERRE[lado], golpes = [];
+        pos.forEach((q, n) => {
+          const ultimo = n === pos.length - 1, ch = ultimo && sig ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
+          if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic: ultimo && !!sig, ch, ...(ultimo && sig ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
+          if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(ultimo && sig ? { cola: L + 4 } : {}) });
+          for (const [d, v] of GOLPE) if (suena(on, d)) golpes.push({ p: q, d, v });
+          if (n === 0 && on.bateria) golpes.push({ p: q, d: 'crash', v: 0.8 });
+        });
+        perc[nb - 1] = golpes; extra[nb - 1] = [];
+        Object.assign(fin, { ligaAl1: !!sig && on.piano }); pend = [];
+      } else if (tr === 'abanico' && on.timbales) {
+        const ab = ABANICO.map(([p, d, v]) => ({ p, d, v }));
+        if (perc[nb - 1]) perc[nb - 1] = perc[nb - 1].filter(e => e.p < 12 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d))).concat(ab);
+        else extra[nb - 1].push(...ab);
+        pend = pend.filter(e => e.d !== 'crash').concat([{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'crash', v: 0.75 }]);
+      }
+      // ---------- concatenar
+      const off = inicio * 16;
+      const mover = (evs, dst) => { const nuevos = evs.map(e => ({ ...e, p: e.p + off })); dst.push(...nuevos); return nuevos; };
+      const nd = mover(r.der, res.der), ni = mover(r.izq, res.izq), nB = mover(r.bajo, res.bajo);
+      const pasa = i + 1 < secs.length;
+      const liga = pasa && fin.ligaAl1 && on.piano && ons[i + 1].piano;
+      const fd = nd.filter(e => e.liga && e.p >= off + S), ligDer = liga ? fd.concat(ni.filter(e => fd.some(x => x.p === e.p))) : [];
+      ligados = { der: ligDer, bajo: pasa && ons[i + 1].bajo ? nB.filter(e => e.cola) : [] };
+      for (let b = 0; b < nb; b++) {
+        res.perc.push(perc[b]); res.extra.push(extra[b]); res.acordes.push(r.acordes[b]); res.lados.push(r.lados[b]);
+        res.marchas.push(marcha); res.mixes.push(r.mix); res.estilos.push(ESTILO[marcha]);
+      }
+      const nombre = String(s.nombre || '').replace(/["\\]/g, '').trim(), palabra = PALABRA[marcha];
+      const texto = !nombre ? r.marca : nombre.toLowerCase().includes(palabra) ? nombre : `${nombre} · ${palabra}`;
+      res.secciones.push({ id: s.id != null ? s.id : i, nombre, inicio, largo: prog.length, vueltas: s.vueltas || 1, compases: nb, marcha, marca: r.marca, texto, semilla: s.semilla || (i + 1) * 7919, transicion: tr, info: r.info });
+      previo = { linea: on.piano ? fin.linea : null, bajo: on.bajo ? fin.bajo : null, ligaAl1: liga, entraSolo: fin.entraSolo || !on.bajo };
+      inicio += nb;
+    });
+    for (const k of ['der', 'izq', 'bajo']) res[k].sort((a, b) => a.p - b.p);
+    for (const e of res.bajo) delete e.cola;
+    for (const e of res.der) delete e.liga;
+    const s0 = res.secciones[0];
+    return { compases: inicio, prog: res.acordes, ...res, mix: res.mixes[0], info: s0.info, marcha: s0.marcha, marca: s0.marca, clave: cancion.clave, titulo: cancion.titulo || '' };
+  }
+
+  Object.assign(TM, { generarCancion, PISTAS, PISTAS_PERC: PERC });
+})(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

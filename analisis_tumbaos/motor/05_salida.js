@@ -59,33 +59,44 @@
     };
     const nb = res.compases;
     const cif = res.acordes.map(cs => cs.map(c => RAICES[c.raiz] + (cs.length > 1 ? '2' : '1') + (LYQ[c.q] ?? '')).join(' ')).join(' | ');
-    const dyn = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', despelote: '\\ff', muela: '\\p' }[res.marcha] || '\\mf';
-    const conDin = a => { const i = a.findIndex(x => /[a-g][a-z]*[',]*\d|<[^>]+>\d/.test(x)); if (i >= 0) a[i] = a[i].replace(/((?:<[^>]+>|[a-g](?:is|es)?[',]*)\d+\.*)/, '$1' + dyn); return a; };
+    const DIN = { cuerpo: '\\mp', marcha: '\\mf', mambo: '\\f', presion: '\\f', despelote: '\\ff', muela: '\\p' };
+    // secciones de una canción: cada una con su marca, su doble barra y su dinámica (si cambia)
+    const secs = res.secciones || [{ inicio: 0, compases: nb, marcha: res.marcha, texto: res.marca }];
+    const conDin = a => {
+      let antes = null;
+      for (const s of secs) {
+        const dyn = DIN[s.marcha] || '\\mf'; if (dyn === antes) continue; antes = dyn;
+        for (let i = s.inicio; i < s.inicio + s.compases; i++) if (/[a-g][a-z]*[',]*\d|<[^>]+>\d/.test(a[i])) { a[i] = a[i].replace(/((?:<[^>]+>|[a-g](?:is|es)?[',]*)\d+\.*)/, '$1' + dyn); break; }
+      }
+      return a;
+    };
+    const marcar = (a, conMarca) => { for (const s of secs.slice(1)) a[s.inicio] = `\\bar "||" ${conMarca ? `\\mark "${s.texto}" ` : ''}` + a[s.inicio]; return a; };
     const lineas = a => { const out = []; for (let i = 0; i < a.length; i += 4) out.push('  ' + a.slice(i, i + 4).join(' | ') + ' |'); return out.join('\n'); };
     const D = compases(res.der, nb, ly), I = compases(res.izq, nb, ly), B = compases(res.bajo, nb, ly);
-    const progTxt = res.prog.map(cs => cs.map(c => c.nombre).join('+')).join(' | ');
+    const progTxt = res.secciones ? res.secciones.map(s => (s.nombre || s.marca) + (s.vueltas > 1 ? ' ×' + s.vueltas : '')).join(' · ') : res.prog.map(cs => cs.map(c => c.nombre).join('+')).join(' | ');
     const fuentes = o.fuentesTxt ? ` · ${o.fuentesTxt}` : '';
+    const titulo = res.secciones ? (res.titulo || 'Canción').replace(/["\\]/g, '') : `Tumbao ${o.etiqueta ? o.etiqueta + " " : ""}(nuevo) · ${res.marca}`;
     return `\\version "2.24.0"
 \\header {
-  title    = "Tumbao ${o.etiqueta ? o.etiqueta + " " : ""}(nuevo) · ${res.marca}"
-  subtitle = "${progTxt} · clave de ${o.clave} · variante ${o.semilla}${fuentes}"
+  title    = "${titulo}"
+  subtitle = "${progTxt} · clave de ${o.clave}${res.secciones ? '' : ' · variante ' + o.semilla}${fuentes}"
   clave    = "${o.clave}"
   percusion = "${o.percusionId || 'clasica'}"
 }
 global = { \\key ${nombre} ${menor ? '\\minor' : '\\major'} \\time 4/4 \\tempo 4 = ${o.bpm || 190} }
 cifrado = \\chordmode { ${cif} }
 pianoDer = {
-  \\global \\clef treble \\mark "${res.marca}"
-${lineas(conDin(D))}
+  \\global \\clef treble \\mark "${secs[0].texto}"
+${lineas(marcar(conDin(D), true))}
   \\bar "|."
 }
 pianoIzq = {
   \\global \\clef bass
-${lineas(res.izq.length ? conDin(I) : I.map(() => 'R1'))}
+${lineas(marcar(res.izq.length ? conDin(I) : I.map(() => 'R1')))}
 }
 bajo = {
   \\global \\clef bass
-${lineas(res.bajo.length ? conDin(B) : B.map(() => 'R1'))}
+${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
 }
 \\score {
   <<
@@ -106,15 +117,21 @@ ${lineas(res.bajo.length ? conDin(B) : B.map(() => 'R1'))}
   const APP_GM = { clave: 75, palito: 76, block: 77, cascara: 37, congaO: 63, congaS: 62, congaH: 62, muff: 62, salidor: 64, tresdos: 63, quintoO: 63, quintoS: 62,
     bongoH: 60, bongoL: 61, bongoM: 60, bell: 56, bellC: 56, bongoBell: 67, bongoBellC: 67, campana: 56, maraca: 70, guiroS: 73, guiroL: 74, timbalH: 65, timbalL: 66,
     kick: 36, bombo: 36, snare: 38, rim: 37, hhC: 42, hhP: 44, hhO: 46, ride: 51, rideBell: 53, crash: 49, tomH: 50, tomL: 45 };
-  function aMidi(res, bpm) {
+  // o.porFamilia: una pista de percusión por familia (para el DAW); o.perc: golpes por compás que reemplazan a res.perc
+  // (por ejemplo, los que tocó la página). Las secciones de una canción van como marcadores.
+  function aMidi(res, bpm, o = {}) {
     const T = 120;   // ticks por semicorchea (480 por negra)
     const notas = evs => evs.flatMap(e => e.ps.map(m => ({ t: e.p * T, d: e.L * T - 6, m, v: e.v || 90 })));
     const pistas = [
       { nombre: 'piano', canal: 0, programa: 0, notas: [...notas(res.der), ...notas(res.izq)] },
       { nombre: 'bajo', canal: 1, programa: 32, notas: notas(res.bajo) }
     ];
-    if (res.perc) pistas.push({ nombre: 'percusión', canal: 9, programa: null, notas: res.perc.flatMap((evs, b) => evs.filter(e => APP_GM[e.d]).map(e => ({ t: (b * 16 + e.p) * T, d: T, m: APP_GM[e.d], v: Math.round(Math.min(127, 100 * e.v)) }))) });
-    return TM.escribirMidi({ ppq: 480, bpm: bpm || 190, pistas });
+    const golpes = (o.perc || res.perc || []).flatMap((evs, b) => (evs || []).concat((res.extra || [])[b] || []).filter(e => APP_GM[e.d]).map(e => ({ t: (b * 16 + e.p) * T, d: T, m: APP_GM[e.d], v: Math.round(Math.min(127, 100 * e.v)), d0: e.d })));
+    if (golpes.length && o.porFamilia) {
+      for (const f of Object.keys(TM.FAMILIAS)) { const n = golpes.filter(g => TM.familiaPerc(g.d0) === f); if (n.length) pistas.push({ nombre: f, canal: 9, programa: null, notas: n }); }
+    } else if (golpes.length) pistas.push({ nombre: 'percusión', canal: 9, programa: null, notas: golpes });
+    const marcas = res.secciones && res.secciones.length > 1 ? res.secciones.map(s => ({ t: s.inicio * 16 * T, texto: s.texto })) : null;
+    return TM.escribirMidi({ ppq: 480, bpm: bpm || 190, pistas, marcas });
   }
 
   Object.assign(TM, { aLilyPond, aMidi, APP_GM });

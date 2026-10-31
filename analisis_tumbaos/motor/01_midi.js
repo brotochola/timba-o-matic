@@ -65,7 +65,8 @@
 
   // ---------- escritura: formato 1, una pista por instrumento
   // pistas: [{nombre, canal, programa, notas:[{t, d, m, v}]}]  (t y d en ticks; v 1..127)
-  function escribirMidi({ ppq = 480, bpm = 190, pistas }) {
+  // marcas: [{t, texto}] → marcadores de sección en la pista 0
+  function escribirMidi({ ppq = 480, bpm = 190, pistas, marcas }) {
     const bytes = [];
     const u32 = (a, v) => a.push((v >>> 24) & 255, (v >>> 16) & 255, (v >>> 8) & 255, v & 255);
     const u16 = (a, v) => a.push((v >>> 8) & 255, v & 255);
@@ -76,6 +77,8 @@
     const t0 = []; const us = Math.round(60e6 / bpm);
     vlq(t0, 0); t0.push(0xff, 0x51, 3, (us >> 16) & 255, (us >> 8) & 255, us & 255);
     vlq(t0, 0); t0.push(0xff, 0x58, 4, 4, 2, 24, 8);
+    let tm = 0;
+    for (const mk of (marcas || []).slice().sort((x, y) => x.t - y.t)) { const s = str(mk.texto || ''); vlq(t0, mk.t - tm); tm = mk.t; t0.push(0xff, 0x06); vlq(t0, s.length); t0.push(...s); }
     vlq(t0, 0); t0.push(0xff, 0x2f, 0); chunk('MTrk', t0);
     for (const pi of pistas) {
       const ev = [];
