@@ -1,0 +1,932 @@
+{
+ "_titulo": "Vientos latinos (más fuentes)",
+ "_ayuda": "MIDIs bajados para estudiar los arreglos de vientos de la música latina. fuente = página de origen.",
+ "El Gran Combo - Aguacero.kar": {
+  "titulo": "El Gran Combo · Aguacero",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, 2 secciones de metales (1 pista, vientos por canal)"
+ },
+ "El Gran Combo - No hago mas na.kar": {
+  "titulo": "El Gran Combo · No hago más ná",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, sección de metales"
+ },
+ "Frankie Ruiz - Mujer.kar": {
+  "titulo": "Frankie Ruiz · Mujer",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, trombón"
+ },
+ "Frankie Ruiz - Tu me vuelves loco.kar": {
+  "titulo": "Frankie Ruiz · Tú me vuelves loco",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales"
+ },
+ "Frankie Ruiz - Mi libertad.kar": {
+  "titulo": "Frankie Ruiz · Mi libertad",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones, tuba, sección de metales"
+ },
+ "Gilberto Santa Rosa - Dejame sentirte.kar": {
+  "titulo": "Gilberto Santa Rosa · Déjame sentirte",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 3 trompetas con sordina, 2 trombones (1 pista, vientos por canal)"
+ },
+ "Gilberto Santa Rosa - La agarro bajando.kar": {
+  "titulo": "Gilberto Santa Rosa · La agarro bajando",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 2 trombones, sección de metales (1 pista, vientos por canal)"
+ },
+ "Gilberto Santa Rosa - Perdoname.kar": {
+  "titulo": "Gilberto Santa Rosa · Perdóname",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones"
+ },
+ "Gilberto Santa Rosa - Me quiere enamorar.kar": {
+  "titulo": "Gilberto Santa Rosa · Me quiere enamorar",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, saxo barítono"
+ },
+ "Gilberto Santa Rosa - Cuando, cuando, cuando.kar": {
+  "titulo": "Gilberto Santa Rosa · Cuando, cuando, cuando",
+  "estilo": "salsa",
+  "genero": "salsa (versión de bolero)",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto, saxo barítono"
+ },
+ "Hector Lavoe - Rompe saraguey.kar": {
+  "titulo": "Héctor Lavoe · Rompe saragüey",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Ismael Rivera - Las caras lindas.kar": {
+  "titulo": "Ismael Rivera · Las caras lindas",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto (1 pista, vientos por canal)"
+ },
+ "Jerry Rivera - Amores como el nuestro.kar": {
+  "titulo": "Jerry Rivera · Amores como el nuestro",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones"
+ },
+ "Jerry Rivera - La oportunidad.kar": {
+  "titulo": "Jerry Rivera · La oportunidad",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones (1 pista, vientos por canal)"
+ },
+ "Willie Colon - Idilio.kar": {
+  "titulo": "Willie Colón · Idilio",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta con sordina, trombón, saxo soprano"
+ },
+ "Willie Colon - El gran varon.kar": {
+  "titulo": "Willie Colón · El gran varón",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón"
+ },
+ "Bobby Valentin - La boda de ella.kar": {
+  "titulo": "Bobby Valentín · La boda de ella",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones, saxo tenor, saxo barítono (1 pista, vientos por canal)"
+ },
+ "Tito Rodriguez - El que se fue.kar": {
+  "titulo": "Tito Rodríguez · El que se fue",
+  "estilo": "salsa",
+  "genero": "salsa clásica de Nueva York",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, saxo alto, saxo barítono (1 pista, vientos por canal)"
+ },
+ "La India - Dicen que soy.kar": {
+  "titulo": "La India · Dicen que soy",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trombón, sección de metales, saxo tenor"
+ },
+ "La India - Seduceme.kar": {
+  "titulo": "La India · Sedúceme",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 3 trombones, tuba, sección de metales (1 pista, vientos por canal)"
+ },
+ "Marc Anthony - Y hubo alguien.kar": {
+  "titulo": "Marc Anthony · Y hubo alguien",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales (1 pista, vientos por canal)"
+ },
+ "Marc Anthony - Que precio tiene el cielo.kar": {
+  "titulo": "Marc Anthony · Qué precio tiene el cielo",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, sección de metales"
+ },
+ "Marc Anthony - Te conozco bien.kar": {
+  "titulo": "Marc Anthony · Te conozco bien",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, 2 secciones de metales, saxo tenor, saxo"
+ },
+ "Marc Anthony - Hasta ayer.mid": {
+  "titulo": "Marc Anthony · Hasta ayer",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://www.midiworld.com/download/618",
+  "vientos": "trompeta, trombón, tuba, sección de metales"
+ },
+ "Cheo Feliciano - Los entierros.kar": {
+  "titulo": "Cheo Feliciano · Los entierros",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, tuba, sección de metales (1 pista, vientos por canal)"
+ },
+ "Willie Gonzalez - Quiero morir en tu piel.kar": {
+  "titulo": "Willie González · Quiero morir en tu piel",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trombones (1 pista, vientos por canal)"
+ },
+ "Ruben Blades - Buscando guayaba.kar": {
+  "titulo": "Rubén Blades · Buscando guayaba",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Panamá",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trombones"
+ },
+ "Ruben Blades y Willie Colon - Ligia Elena.kar": {
+  "titulo": "Rubén Blades y Willie Colón · Ligia Elena",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Panamá",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trombones (identificados por nombre de pista)"
+ },
+ "Oscar D'Leon - Bonito y sabroso.kar": {
+  "titulo": "Oscar D'León · Bonito y sabroso",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, saxo tenor (1 pista, vientos por canal)"
+ },
+ "Oscar D'Leon - Mi bajo y yo.kar": {
+  "titulo": "Oscar D'León · Mi bajo y yo",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, 2 secciones de metales"
+ },
+ "Oscar D'Leon - Detalles.kar": {
+  "titulo": "Oscar D'León · Detalles",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 2 trombones, sección de metales"
+ },
+ "Oscar D'Leon - La mazucamba.kar": {
+  "titulo": "Oscar D'León · La mazucamba",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trombones (1 pista, vientos por canal)"
+ },
+ "Dimension Latina - Parampampan.kar": {
+  "titulo": "Dimensión Latina · Parampampán",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trombones, tuba, sección de metales (1 pista, vientos por canal)"
+ },
+ "Joe Arroyo - La noche.kar": {
+  "titulo": "Joe Arroyo · La noche",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Colombia",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, metales sintéticos, saxo tenor"
+ },
+ "Celia Cruz - La negra tiene tumbao.kar": {
+  "titulo": "Celia Cruz · La negra tiene tumbao",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo tenor"
+ },
+ "Celia Cruz - La vida es un carnaval.mid": {
+  "titulo": "Celia Cruz · La vida es un carnaval",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto (1 pista, vientos por canal)"
+ },
+ "Celia Cruz - Que le den candela.mid": {
+  "titulo": "Celia Cruz · Que le den candela",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trombón, sección de metales"
+ },
+ "Celia Cruz - Rie y llora.kar": {
+  "titulo": "Celia Cruz · Ríe y llora",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales"
+ },
+ "Albita - Que culpa tengo yo.kar": {
+  "titulo": "Albita · ¿Qué culpa tengo yo?",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Rey Ruiz - Mi media mitad.kar": {
+  "titulo": "Rey Ruiz · Mi media mitad",
+  "estilo": "salsa",
+  "genero": "salsa romántica",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 2 trombones, corno francés, sección de metales"
+ },
+ "Gloria Estefan - Cuba libre.mid": {
+  "titulo": "Gloria Estefan · Cuba libre",
+  "estilo": "salsa",
+  "genero": "salsa pop",
+  "pais": "Cuba",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto, saxo barítono (1 pista, vientos por canal)"
+ },
+ "Varios - El toro y la luna (salsa).kar": {
+  "titulo": "Varios · El toro y la luna (salsa)",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trombón, sección de metales"
+ },
+ "Alex Bueno - Me muero por ella.kar": {
+  "titulo": "Alex Bueno · Me muero por ella",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 saxos tenor (1 pista, vientos por canal)"
+ },
+ "Chichi Peralta - Procura.mid": {
+  "titulo": "Chichi Peralta · Procura",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta con sordina, trombón, saxo tenor (1 pista, vientos por canal)"
+ },
+ "Eddy Herrera - Si tu amor no vuelve.kar": {
+  "titulo": "Eddy Herrera · Si tu amor no vuelve",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, sección de metales, saxo alto, saxo tenor"
+ },
+ "Elvis Crespo - Pintame.mid": {
+  "titulo": "Elvis Crespo · Píntame",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, saxo alto, saxo tenor (1 pista, vientos por canal)"
+ },
+ "Elvis Crespo - Por el caminito.kar": {
+  "titulo": "Elvis Crespo · Por el caminito",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trompeta con sordina, 2 secciones de metales, 2 saxos alto (1 pista, vientos por canal)"
+ },
+ "Fernando Villalona - Te amo demasiado.kar": {
+  "titulo": "Fernando Villalona · Te amo demasiado",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, corno francés, saxo alto (1 pista, vientos por canal)"
+ },
+ "Fernando Villalona - Necesito tenerla.kar": {
+  "titulo": "Fernando Villalona · Necesito tenerla",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trombón, sección de metales, 3 saxos alto"
+ },
+ "Los Hermanos Rosario - Morena.kar": {
+  "titulo": "Los Hermanos Rosario · Morena",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales, saxo alto"
+ },
+ "Milly y los Vecinos - La guacherna.kar": {
+  "titulo": "Milly y los Vecinos · La guacherna",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, saxo alto, saxo tenor (1 pista, vientos por canal)"
+ },
+ "Sergio Vargas - Si algun dia la ves.kar": {
+  "titulo": "Sergio Vargas · Si algún día la ves",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales, 2 saxos tenor (1 pista, vientos por canal)"
+ },
+ "Tono Rosario - Ultima copa.kar": {
+  "titulo": "Toño Rosario · Última copa",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, saxo alto"
+ },
+ "Wilfrido Vargas - Abusadora.kar": {
+  "titulo": "Wilfrido Vargas · Abusadora",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales, saxo tenor"
+ },
+ "Wilfrido Vargas - El africano.kar": {
+  "titulo": "Wilfrido Vargas · El africano",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 saxos (identificados por nombre de pista)"
+ },
+ "Juan Luis Guerra - La bilirrubina.kar": {
+  "titulo": "Juan Luis Guerra · La bilirrubina",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Juan Luis Guerra - Mal de amor.kar": {
+  "titulo": "Juan Luis Guerra · Mal de amor",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, saxo alto"
+ },
+ "Juan Luis Guerra - De tu boca.kar": {
+  "titulo": "Juan Luis Guerra · De tu boca",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Varios - Perfidia (version merengue).kar": {
+  "titulo": "Varios · Perfidia (versión merengue)",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo tenor"
+ },
+ "La Sonora Dinamita - Mil horas.kar": {
+  "titulo": "La Sonora Dinamita · Mil horas",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "Colombia",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 2 secciones de metales, 2 saxos alto"
+ },
+ "La Sonora Dinamita - La suavecita.kar": {
+  "titulo": "La Sonora Dinamita · La suavecita",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "Colombia",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales"
+ },
+ "La Sonora Santanera - La boa.kar": {
+  "titulo": "La Sonora Santanera · La boa",
+  "estilo": "otro",
+  "genero": "guaracha tropical",
+  "pais": "México",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "4 trompetas"
+ },
+ "La Sonora Santanera - Luces de Nueva York.kar": {
+  "titulo": "La Sonora Santanera · Luces de Nueva York",
+  "estilo": "otro",
+  "genero": "bolero tropical",
+  "pais": "México",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas"
+ },
+ "Los Angeles Azules - El liston de tu pelo.kar": {
+  "titulo": "Los Ángeles Azules · El listón de tu pelo",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "México",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón (1 pista, vientos por canal)"
+ },
+ "Agua Marina - Si tu dices quererme.kar": {
+  "titulo": "Agua Marina · Si tú dices quererme",
+  "estilo": "otro",
+  "genero": "cumbia peruana",
+  "pais": "Perú",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 secciones de metales"
+ },
+ "Pastor Lopez - Las Calenias.kar": {
+  "titulo": "Pastor López · Las Calenias",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, sección de metales"
+ },
+ "Rodolfo y su Tipica RA7 - La colegiala.mid": {
+  "titulo": "Rodolfo y su Típica RA7 · La colegiala",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "México",
+  "fuente": "https://midis101.com/free-midi/51715-latino-colegial",
+  "vientos": "2 trompetas, sección de metales, saxo alto"
+ },
+ "Varios - Mosaico de cumbias.mid": {
+  "titulo": "Varios · Mosaico de cumbias",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "Varios",
+  "fuente": "https://midis101.com/free-midi/51745-latino-mosaico2",
+  "vientos": "trompeta, trombón, saxo alto, saxo barítono"
+ },
+ "Billo's Caracas Boys - Boquita salada.kar": {
+  "titulo": "Billo's Caracas Boys · Boquita salada",
+  "estilo": "otro",
+  "genero": "guaracha",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trombones, sección de metales, 2 saxos alto, saxo barítono (1 pista, vientos por canal)"
+ },
+ "Billo's Caracas Boys - Los cadetes.kar": {
+  "titulo": "Billo's Caracas Boys · Los cadetes",
+  "estilo": "otro",
+  "genero": "merengue venezolano",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, saxo alto, saxo tenor"
+ },
+ "Billo's Caracas Boys - Sigan bailando.kar": {
+  "titulo": "Billo's Caracas Boys · Sigan bailando",
+  "estilo": "otro",
+  "genero": "merengue venezolano",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, 2 saxos alto, saxo tenor, saxo barítono"
+ },
+ "Billo's Caracas Boys - Bella Caracas.kar": {
+  "titulo": "Billo's Caracas Boys · Bella Caracas",
+  "estilo": "otro",
+  "genero": "guaracha",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, trombón, 2 saxos alto, saxo tenor, saxo barítono"
+ },
+ "Billo's Caracas Boys - Caminito de Guarenas.kar": {
+  "titulo": "Billo's Caracas Boys · Caminito de Guarenas",
+  "estilo": "otro",
+  "genero": "guaracha",
+  "pais": "Venezuela",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, sección de metales, 2 saxos alto, saxo tenor, saxo barítono"
+ },
+ "Varios - Moliendo cafe.kar": {
+  "titulo": "Varios · Moliendo café",
+  "estilo": "otro",
+  "genero": "cumbia",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, metales sintéticos, saxo alto"
+ },
+ "Varios - Asi baila mi trujillana.kar": {
+  "titulo": "Varios · Así baila mi trujillana",
+  "estilo": "otro",
+  "genero": "marinera norteña",
+  "pais": "Perú",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, 4 tubas, 2 saxos alto, saxo tenor, saxo barítono"
+ },
+ "La Sonora Matancera - Tu voz.kar": {
+  "titulo": "La Sonora Matancera · Tu voz",
+  "estilo": "cubano",
+  "genero": "guaracha-bolero",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales"
+ },
+ "La Sonora Matancera - Aunque me cueste la vida.kar": {
+  "titulo": "La Sonora Matancera · Aunque me cueste la vida",
+  "estilo": "cubano",
+  "genero": "bolero",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, sección de metales (1 pista, vientos por canal)"
+ },
+ "La Sonora Matancera - Cantando.kar": {
+  "titulo": "La Sonora Matancera · Cantando",
+  "estilo": "cubano",
+  "genero": "guaracha",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, sección de metales (1 pista, vientos por canal)"
+ },
+ "Trio Matamoros - Lagrimas negras.kar": {
+  "titulo": "Trío Matamoros · Lágrimas negras",
+  "estilo": "cubano",
+  "genero": "son",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Antonio Machin - Corazon loco.kar": {
+  "titulo": "Antonio Machín · Corazón loco",
+  "estilo": "cubano",
+  "genero": "bolero",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto, saxo tenor, saxo barítono"
+ },
+ "Antonio Machin - Tengo una debilidad.kar": {
+  "titulo": "Antonio Machín · Tengo una debilidad",
+  "estilo": "cubano",
+  "genero": "bolero",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo tenor, saxo barítono"
+ },
+ "Buena Vista Social Club - Candela.mid": {
+  "titulo": "Buena Vista Social Club · Candela",
+  "estilo": "cubano",
+  "genero": "son",
+  "pais": "Cuba",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "trompeta, saxo soprano (1 pista, vientos por canal)"
+ },
+ "Varios - El bodeguero.kar": {
+  "titulo": "Varios · El bodeguero",
+  "estilo": "cubano",
+  "genero": "chachachá",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trombones"
+ },
+ "Varios - Mix de mambos.kar": {
+  "titulo": "Varios · Mix de mambos",
+  "estilo": "cubano",
+  "genero": "mambo",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo soprano, saxo tenor, saxo barítono"
+ },
+ "Varios - Piensa en mi (chachacha).kar": {
+  "titulo": "Varios · Piensa en mí (chachachá)",
+  "estilo": "cubano",
+  "genero": "chachachá",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, 2 metales sintéticos, saxo alto, saxo tenor, saxo barítono"
+ },
+ "Varios - El cumbanchero.kar": {
+  "titulo": "Varios · El cumbanchero",
+  "estilo": "otro",
+  "genero": "guaracha",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trombón, sección de metales"
+ },
+ "Varios - Mambo Inn.mid": {
+  "titulo": "Varios · Mambo Inn",
+  "estilo": "cubano",
+  "genero": "mambo / latin jazz",
+  "pais": "Varios",
+  "fuente": "https://midis101.com/free-midi/91245-mambo-inn",
+  "vientos": "trompeta, trombón, saxo alto, saxo tenor, saxo barítono"
+ },
+ "Perez Prado - Mambo Jambo (Que rico el mambo).mid": {
+  "titulo": "Pérez Prado · Mambo Jambo (Qué rico el mambo)",
+  "estilo": "cubano",
+  "genero": "mambo",
+  "pais": "Cuba",
+  "fuente": "https://midis101.com/free-midi/91564-mambojam",
+  "vientos": "trompeta, sección de metales, 2 saxos tenor, saxo barítono"
+ },
+ "Leonard Bernstein - Mambo (West Side Story).mid": {
+  "titulo": "Leonard Bernstein · Mambo! (West Side Story)",
+  "estilo": "cubano",
+  "genero": "mambo",
+  "pais": "Estados Unidos",
+  "fuente": "https://bitmidi.com/mambo-from-the-west-side-story-mid",
+  "vientos": "trompeta, trompeta con sordina, trombón, corno francés, saxo alto, saxo tenor"
+ },
+ "Varios - Medley de chachachas.mid": {
+  "titulo": "Varios · Medley de chachachás",
+  "estilo": "cubano",
+  "genero": "chachachá",
+  "pais": "Varios",
+  "fuente": "https://bitmidi.com/cha-cha-medley-mid",
+  "vientos": "trompeta, trombón, saxo alto, saxo tenor, saxo barítono (1 pista, vientos por canal)"
+ },
+ "Varios - Mambo 3.mid": {
+  "titulo": "Varios · Mambo 3",
+  "estilo": "cubano",
+  "genero": "mambo",
+  "pais": "Varios",
+  "fuente": "https://bitmidi.com/mambo-3-mid",
+  "vientos": "2 trompetas, trombón, sección de metales, saxo tenor, saxo barítono"
+ },
+ "Varios - Aquellos boleros (popurri).kar": {
+  "titulo": "Varios · Aquellos boleros (popurrí)",
+  "estilo": "otro",
+  "genero": "bolero",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo alto, saxo tenor, saxo barítono"
+ },
+ "Varios - Vereda tropical.kar": {
+  "titulo": "Varios · Vereda tropical",
+  "estilo": "otro",
+  "genero": "bolero",
+  "pais": "Varios",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, saxo tenor"
+ },
+ "Luis Miguel - Cuando calienta el sol.kar": {
+  "titulo": "Luis Miguel · Cuando calienta el sol",
+  "estilo": "otro",
+  "genero": "pop latino",
+  "pais": "México",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 trombones, saxo alto, saxo tenor, saxo barítono"
+ },
+ "Xavier Cugat - Begin the Beguine.mid": {
+  "titulo": "Xavier Cugat · Begin the Beguine",
+  "estilo": "otro",
+  "genero": "big band latino",
+  "pais": "España",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "trompeta, trombón, corno francés, sección de metales, saxo alto, saxo tenor (1 pista, vientos por canal)"
+ },
+ "Zequinha de Abreu - Tico-tico no fuba.mid": {
+  "titulo": "Zequinha de Abreu · Tico-tico no fubá",
+  "estilo": "otro",
+  "genero": "latin jazz",
+  "pais": "Brasil",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "4 trompetas, 4 trombones, 2 saxos alto, 2 saxos tenor, saxo barítono"
+ },
+ "Big Bad Voodoo Daddy - Mambo Swing.mid": {
+  "titulo": "Big Bad Voodoo Daddy · Mambo Swing",
+  "estilo": "otro",
+  "genero": "mambo swing",
+  "pais": "Estados Unidos",
+  "fuente": "https://midis101.com/free-midi/51738-latino-maboswin",
+  "vientos": "3 saxos alto, saxo tenor, saxo barítono"
+ },
+ "Miami Sound Machine - Conga.mid": {
+  "titulo": "Miami Sound Machine · Conga",
+  "estilo": "otro",
+  "genero": "conga (pop latino)",
+  "pais": "Estados Unidos",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "trompeta, saxo alto"
+ },
+ "Gloria Estefan - Mi tierra.mid": {
+  "titulo": "Gloria Estefan · Mi tierra",
+  "estilo": "cubano",
+  "genero": "son-guajira (pop)",
+  "pais": "Cuba",
+  "fuente": "https://colinraffel.com/projects/lmd/",
+  "vientos": "trompeta, trombón"
+ },
+ "Santana - Smooth.mid": {
+  "titulo": "Santana · Smooth",
+  "estilo": "otro",
+  "genero": "latin rock",
+  "pais": "Estados Unidos",
+  "fuente": "https://www.midiworld.com/download/3601",
+  "vientos": "2 trompetas, 3 secciones de metales, metales sintéticos"
+ },
+ "Chayanne - Boom Boom.kar": {
+  "titulo": "Chayanne · Boom Boom",
+  "estilo": "otro",
+  "genero": "pop latino",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, 2 secciones de metales, saxo alto"
+ },
+ "Thalia - Arrasando.mid": {
+  "titulo": "Thalía · Arrasando",
+  "estilo": "otro",
+  "genero": "pop latino",
+  "pais": "México",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, 2 trombones, sección de metales, 2 saxos tenor"
+ },
+ "Selena - Baila mi son.kar": {
+  "titulo": "Selena · Baila mi son",
+  "estilo": "otro",
+  "genero": "cumbia-pop",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales"
+ },
+ "Los Autenticos Decadentes - El murguero.mid": {
+  "titulo": "Los Auténticos Decadentes · El murguero",
+  "estilo": "otro",
+  "genero": "murga-ska",
+  "pais": "Argentina",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, trombón, 2 secciones de metales, saxo alto"
+ },
+ "Los Fabulosos Cadillacs - Matador.mid": {
+  "titulo": "Los Fabulosos Cadillacs · Matador",
+  "estilo": "otro",
+  "genero": "ska-rock latino",
+  "pais": "Argentina",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, sección de metales (1 pista, vientos por canal)"
+ },
+ "Grupo Mania - Ojitos bellos.kar": {
+  "titulo": "Grupo Manía · Ojitos bellos",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, sección de metales, saxo alto, saxo tenor"
+ },
+ "Ramon Orlando - Te compro tu novia.kar": {
+  "titulo": "Ramón Orlando · Te compro tu novia",
+  "estilo": "otro",
+  "genero": "merengue",
+  "pais": "República Dominicana",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trombón, sección de metales, saxo tenor"
+ },
+ "Rafaga - Mentirosa.kar": {
+  "titulo": "Ráfaga · Mentirosa",
+  "estilo": "otro",
+  "genero": "cumbia argentina (bailanta)",
+  "pais": "Argentina",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, sección de metales, saxo alto"
+ },
+ "Lucho Gatica - Amor perdido.kar": {
+  "titulo": "Lucho Gatica · Amor perdido",
+  "estilo": "otro",
+  "genero": "bolero con orquesta",
+  "pais": "Chile",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "trompeta, trompeta con sordina, 2 trombones, sección de metales, saxo tenor"
+ },
+ "Lucho Gatica - Son golpes que da la vida.kar": {
+  "titulo": "Lucho Gatica · Son golpes que da la vida",
+  "estilo": "otro",
+  "genero": "bolero con orquesta",
+  "pais": "Chile",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, trombón, sección de metales, saxo tenor"
+ },
+ "Trio Matamoros - Son de la loma.mid": {
+  "titulo": "Trío Matamoros · Son de la loma",
+  "estilo": "cubano",
+  "genero": "son",
+  "pais": "Cuba",
+  "fuente": "https://midis101.com/free-midi/87830-cuba-son",
+  "vientos": "trompeta, trombón (1 pista, vientos por canal)"
+ },
+ "Grupo 5 - Y te vas.kar": {
+  "titulo": "Grupo 5 · Y te vas",
+  "estilo": "otro",
+  "genero": "cumbia peruana (norteña)",
+  "pais": "Perú",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 3 trombones (1 pista, vientos por canal)"
+ },
+ "Antonio Cartagena - Nadie quien te quiera como yo.kar": {
+  "titulo": "Antonio Cartagena · Nadie quien te quiera como yo",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trompetas con sordina, 2 trombones, saxo barítono"
+ },
+ "Antonio Cartagena - Si tu no estas.kar": {
+  "titulo": "Antonio Cartagena · Si tú no estás",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trombones"
+ },
+ "Huey Dunbar - A cambio de que.kar": {
+  "titulo": "Huey Dunbar · A cambio de qué",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "3 trompetas, 2 saxos alto"
+ },
+ "DLG (Dark Latin Groove) - Juliana.kar": {
+  "titulo": "DLG (Dark Latin Groove) · Juliana",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/details/karaokes-7959-midi-kar-collection",
+  "vientos": "2 trompetas, 2 trombones, sección de metales"
+ }
+}

@@ -111,7 +111,11 @@ function meterEnHtml(json) {
   const DEMOS_D = path.join(RAIZ, 'canciones');
   const demos = fs.existsSync(DEMOS_D) ? fs.readdirSync(DEMOS_D).filter(f => f.endsWith('.json')).map(f => JSON.parse(fs.readFileSync(path.join(DEMOS_D, f), 'utf8')))
     .filter(j => j.cancion && j.cancion.secciones).sort((a, b) => (a.cancion.orden ?? 99) - (b.cancion.orden ?? 99)) : [];
-  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera analisis_tumbaos/construir.js a partir de analisis_tumbaos/motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(json)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${Z}`;
+  // la página aprende el piano, el bajo y la percusión de la base original y de las colecciones encendidas; de las demás solo usa
+  // los vientos, así que de esas va nada más eso (el resto queda en base_tumbaos.json, para los análisis)
+  const B = JSON.parse(json), encendida = c => !c || !!((B.colecciones || {})[c] || {}).encendida;
+  const pagina = JSON.stringify({ ...B, fuentes: B.fuentes.map(f => encendida(f.coleccion) ? f : f.vientos && f.vientos.length ? { id: f.id, archivo: f.archivo, titulo: f.titulo, estilo: f.estilo, coleccion: f.coleccion, vientos: f.vientos } : null).filter(Boolean) });
+  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera analisis_tumbaos/construir.js a partir de analisis_tumbaos/motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(pagina)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${Z}`;
   const nuevo = html.slice(0, i0) + bloque + html.slice(i1 + Z.length);
   if (nuevo !== html) { fs.writeFileSync(HTML_F, nuevo); console.log(`index.html actualizado (motor ${(codigo.length / 1024).toFixed(0)} kB + base)`); }
   else console.log('index.html ya estaba al día');

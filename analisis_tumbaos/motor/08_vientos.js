@@ -4,9 +4,10 @@
    que son: moña (un riff que se repite clave tras clave), mambo (una línea que cambia), respuesta (corta, deja huecos para
    el cantante) o fondo (notas largas). La sección toca uno de esos, o bloques (golpes con la banda en los anticipos y al
    final), y la armonía y el formato de la orquesta deciden las voces.
-   Del corpus (vientos_corpus.js, 60 temas con la clave tocada): 71% de notas cortas; 56% de los ataques en unísono u octavas,
-   entre voces octavas, terceras y cuartas; en los cambios de acorde atacan en el 4& (48%) o en el 4 (24%); trompeta
-   Si♭3-Si♭5 (mediana Do5), trombón Re3-Do5 (Re4), saxo tenor Mi2-Re5 (Si♭3). De la bibliografía (investigación de timba,
+   Del corpus (vientos_corpus.js, 90 temas con la clave tocada): 65% de notas cortas; 52% de los ataques en unísono u octavas,
+   entre voces octavas, terceras y cuartas; en los cambios de acorde atacan en el 4& (44%) o en el 4 (23%); trompeta
+   Si♭3-Si♭5 (mediana Do5), trombón Re3-Si4 (Do#4), saxo Fa2-Mi♭5 (Re4); la línea de la trompeta va por grado el 40% de
+   las veces y salta más de una quinta el 7%; en los mambos largos la nota más aguda sube de Do5 a Re5. De la bibliografía (investigación de timba,
    Moore, Páez): en el cuerpo, solo respuestas en los huecos del cantante; en la timba los coros sin metales y un mambo
    después de cada coro; bloques con el último golpe en el 4& y la sección siguiente en el 1.
    ===================================================================== */
@@ -227,12 +228,13 @@
       return listo();
     }
     // del corpus: ciclos del tipo pedido, prefiriendo la tradición (salsa o cubano), la campana si la sección la tiene y la densidad pedida
-    const cub = e => e === 'cubano' || e === 'timba';
+    // la tradición de cada tema: salsa, cubano (y timba) u otros géneros (merengue, cumbia, bolero, pop: casi no entran)
+    const trad = e => e === 'cubano' || e === 'timba' ? 'cubano' : e === 'otro' ? 'otro' : 'salsa';
     const fuente = kv('v_fuente', 'estilo'), tradicion = fuente === 'estilo' ? opc.estilo : fuente === 'todo' ? null : fuente;
     const pool = (V.porTipo[opc.toca] || []).filter(x => x.n <= 24);
     if (!pool.length) return listo();
     const nMed = pool.map(x => x.n).sort((a, b) => a - b)[pool.length >> 1], meta = nMed * dens;
-    const peso = x => (tradicion ? (cub(tradicion) === cub(x.estilo) ? 1 : 0.25) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4)
+    const peso = x => (tradicion ? (trad(tradicion) === trad(x.estilo) ? 1 : trad(x.estilo) === 'otro' ? 0.08 : 0.25) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4)
       * (x.voces >= 2 || modo !== 'fuente' ? 1 : 0.5) * (Math.abs(dens - 1) < 0.02 ? 1 : Math.exp(-(((x.n - meta) / (meta * 0.45 + 1)) ** 2)));
     // un ciclo (dos compases: lado 3 | lado 2) en los compases b0 y b0+1, para todas las familias o un grupo
     const SUBE = 6;        // semitonos que sube la línea en el último tercio con el crescendo al máximo

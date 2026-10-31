@@ -24,7 +24,11 @@ function modeloDeEntrada() {
   const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'base_tumbaos.json'), 'utf8'));
   const LOCAL = path.join(__dirname, 'base_local.js');
   let loc = []; if (fs.existsSync(LOCAL)) { require(LOCAL); loc = (globalThis.BASE_TUMBAOS_LOCAL || {}).fuentes || []; }
-  return { base, M: TM.construirModelo(base.fuentes.filter(f => !f.coleccion).concat(loc)) };
+  // como la página: el modelo aprende de la base original y de las colecciones encendidas; los vientos, de todos los temas
+  const todas = base.fuentes.concat(loc), cols = { ...base.colecciones, ...((globalThis.BASE_TUMBAOS_LOCAL || {}).colecciones || {}) };
+  const M = TM.construirModelo(todas.filter(f => !f.coleccion || !!(cols[f.coleccion] || {}).encendida));
+  M.vientos = TM.construirVientos(todas);
+  return { base, M };
 }
 
 // ---------- el original: compás por compás, lo de cada instrumento en semicorcheas desde el 1

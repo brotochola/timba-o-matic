@@ -79,7 +79,7 @@ for (const f of archivos) {
     for (const [q, grupo] of Object.entries(porQ)) {
       const d = Math.max(...grupo.map(n => n.d)); inc(R.dur, d >= 8 ? '8+' : d >= 4 ? '4-7' : String(d));
       const alts = [...new Set(grupo.map(n => n.alt))].sort((x, y) => y - x);
-      inc(R.notasPorAtaque, Math.min(5, alts.length));
+      inc(R.notasPorAtaque, Math.min(5, alts.length)); R.clases = (R.clases || 0) + new Set(alts.map(pc)).size; R.ataques = (R.ataques || 0) + 1;
       for (const n of grupo) if (R.registro[n.ins]) R.registro[n.ins].push(n.alt);
       if (alts.length >= 2) {
         if (new Set(alts.map(pc)).size === 1) R.unisono++; else R.armonizados++;
@@ -146,7 +146,7 @@ for (const ctx of ['sin campana', 'con campana']) for (const L of ['A', 'B']) {
 }
 console.log(`  en las tiras de vientos, el ritmo repite el de una clave antes: ${pct(R.repite.a2, R.repite.n)} · el de dos claves antes: ${pct(R.repite.a4, R.repite.n)} · no repite: ${pct(R.repite.ninguno, R.repite.n)}`);
 console.log(`\nDURACIÓN DE LAS NOTAS (semicorcheas): ${['1', '2', '3', '4-7', '8+'].map(k => k + ': ' + pct(R.dur[k] || 0, tot(R.dur))).join(' · ')}`);
-console.log(`\nARMONÍA: ${pct(R.unisono, R.unisono + R.armonizados)} de los ataques en unísono u octavas; notas distintas por ataque: ${ordenar(R.notasPorAtaque).map(([k, v]) => k + ': ' + pct(v, tot(R.notasPorAtaque))).join(' · ')}`);
+console.log(`\nARMONÍA: ${pct(R.unisono, R.unisono + R.armonizados)} de los ataques en unísono u octavas; notas distintas sin contar octavas: ${(R.clases / R.ataques).toFixed(1)} por ataque; contando octavas: ${ordenar(R.notasPorAtaque).map(([k, v]) => k + ': ' + pct(v, tot(R.notasPorAtaque))).join(' · ')}`);
 const NI = { 0: 'unísono', 1: '2a m', 2: '2a M', 3: '3a m', 4: '3a M', 5: '4a', 6: 'tritono', 7: '5a', 8: '6a m', 9: '6a M', 10: '7a m', 11: '7a M', 12: 'octava' };
 console.log(`  intervalos entre voces vecinas: ${ordenar(R.intervalos).slice(0, 12).map(([k, v]) => (NI[k] || k + ' st') + ' ' + pct(v, tot(R.intervalos))).join(' · ')}`);
 console.log(`\nFUNCIÓN DE LA NOTA DE ARRIBA: ${ordenar(R.fun).map(([k, v]) => k + ' ' + pct(v, tot(R.fun))).join(' · ')}`);

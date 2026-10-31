@@ -114,10 +114,10 @@ if (solo !== 'temas') {
   console.log(`\nREGLAS (${n.casos} casos: ${Object.keys(TM.ESTILOS).length} estilos × ${MARCHAS.length} marchas × 2 claves)`);
   if (!Object.keys(fallas).length) console.log('  todo bien');
   const pc = (a, b) => b ? Math.round(100 * a / b) + '%' : '-';
-  console.log(`  vientos (cuerpo, coro y mambo) contra el corpus: notas cortas ${pc(stats.cortas, stats.notas)} (corpus 71%) · golpes en unísono u octavas ${pc(stats.unisono, stats.golpes)} (corpus 56%) · notas distintas por golpe ${(stats.distintas / Math.max(1, stats.golpes)).toFixed(1)} (corpus 1.7)`);
+  console.log(`  vientos (cuerpo, coro y mambo) contra el corpus: notas cortas ${pc(stats.cortas, stats.notas)} (corpus 65%) · golpes en unísono u octavas ${pc(stats.unisono, stats.golpes)} (corpus 52%) · notas distintas por golpe ${(stats.distintas / Math.max(1, stats.golpes)).toFixed(1)} (corpus 1.8)`);
   const ts = Object.values(stats.saltos).reduce((a, b) => a + b, 0), sb = stats.sube;
-  console.log(`  la de arriba de las trompetas, de una nota a la siguiente: por grado ${pc(stats.saltos.grado || 0, ts)} (corpus 40%) · tercera ${pc(stats.saltos.tercera || 0, ts)} (22%) · repite ${pc(stats.saltos.repite || 0, ts)} (19%) · 4a-5a ${pc(stats.saltos['4a-5a'] || 0, ts)} (11%) · más de una quinta ${pc(stats.saltos['más de 5a'] || 0, ts)} (7%)`);
-  if (sb.n) console.log(`  los mambos largos suben: la nota más aguda de cada compás, del primer tercio al último, ${((sb.z - sb.a) / sb.n >= 0 ? '+' : '') + ((sb.z - sb.a) / sb.n).toFixed(1)} semitonos (corpus +4: de Si♭4 a Re5)`);
+  console.log(`  la de arriba de las trompetas, de una nota a la siguiente: por grado ${pc(stats.saltos.grado || 0, ts)} (corpus 40%) · tercera ${pc(stats.saltos.tercera || 0, ts)} (20%) · repite ${pc(stats.saltos.repite || 0, ts)} (21%) · 4a-5a ${pc(stats.saltos['4a-5a'] || 0, ts)} (11%) · más de una quinta ${pc(stats.saltos['más de 5a'] || 0, ts)} (7%)`);
+  if (sb.n) console.log(`  los mambos largos suben: la nota más aguda de cada compás, del primer tercio al último, ${((sb.z - sb.a) / sb.n >= 0 ? '+' : '') + ((sb.z - sb.a) / sb.n).toFixed(1)} semitonos (corpus +2: de Do5 a Re5)`);
   for (const [k, v] of Object.entries(fallas)) console.log(`  ${k}: ${v.length} — ${v.slice(0, 4).join(' | ')}`);
   process.exitCode = Object.keys(fallas).length ? 1 : 0;
 }
