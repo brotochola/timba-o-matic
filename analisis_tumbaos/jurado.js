@@ -55,7 +55,9 @@ if (solo !== 'temas' && solo !== 'piano') {
       const sig = r.acordes[(b + 1) % nb][0], ult = r.acordes[b].at(-1); if (sig.nombre === ult.nombre) continue;
       const p14 = r.der.find(e => e.p === b * 16 + 14);
       if (!p14 || p14.ch.nombre !== sig.nombre) falla('el piano no anticipa en el 4&', `${caso} c${b + 1}`);
-      const pb = r.bajo.find(e => e.p === b * 16 + (cambio === '4' ? 12 : 14));
+      // las negras del lado 2 (el bajo de timba camina 1, 2, 3 y 4) traen el acorde que viene en el 4, también en la timba
+      const negras = r.lados[b] === 'B' && [4, 8, 12].every(q => r.bajo.some(e => e.p === b * 16 + q)) && !r.bajo.some(e => e.p > b * 16 + 12 && e.p < b * 16 + 16);
+      const pb = r.bajo.find(e => e.p === b * 16 + (cambio === '4' || negras ? 12 : 14));
       if (!pb || ((pb.ps[0] - sig.raiz) % 12 + 12) % 12) falla(`el bajo no anticipa en el ${cambio === '4' ? '4' : '4&'}`, `${caso} c${b + 1}`);
     }
     // la costura del loop: el final trae el acorde del principio y avisa qué golpes van solo al arrancar
