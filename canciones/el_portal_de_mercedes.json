@@ -4,6 +4,8 @@
  "cancion": {
   "version": 2,
   "titulo": "El portal de Mercedes",
+  "orden": 4,
+  "descripcion": "son montuno con mambo",
   "clave": "son 2-3",
   "banda": "timba",
   "bajoSonido": "acbass",

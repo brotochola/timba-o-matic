@@ -66,15 +66,15 @@
         }).sort((a, b) => a.p - b.p);
         if (ev.length < 2) continue;
         // la línea es la del instrumento que más toca en el ciclo: un ataque donde ese no está (el trombón solo, mientras la
-        // trompeta descansa) va a la octava más cerca de la nota anterior. Así la de arriba no salta de un instrumento a otro
-        // (diag: más de una quinta en el 6% de los pasos dentro de un instrumento y en el 19% entre instrumentos distintos)
+        // trompeta descansa) va a la octava más cerca de la nota vecina (la anterior; si el ciclo arranca sin ese instrumento,
+        // la siguiente). Así la de arriba no salta de un instrumento a otro (diag: más de una quinta en el 6% de los pasos
+        // dentro de un instrumento y en el 19% entre instrumentos distintos)
         const cuantos = {}; for (const e of ev) for (const i of e.ins) cuantos[i] = (cuantos[i] || 0) + 1;
         const lider = Object.keys(cuantos).sort((a, b) => cuantos[b] - cuantos[a])[0];
-        for (let i = 1; i < ev.length; i++) {
-          const e = ev[i]; if (e.ins.includes(lider)) continue;
-          while (e.top - ev[i - 1].top > 6) e.top -= 12;
-          while (ev[i - 1].top - e.top > 6) e.top += 12;
-        }
+        const cerca = (e, v) => { while (e.top - v.top > 6) e.top -= 12; while (v.top - e.top > 6) e.top += 12; };
+        const k0 = ev.findIndex(e => e.ins.includes(lider));
+        for (let i = k0 - 1; i >= 0; i--) cerca(ev[i], ev[i + 1]);
+        for (let i = k0 + 1; i < ev.length; i++) if (!ev[i].ins.includes(lider)) cerca(ev[i], ev[i - 1]);
         const ritmo = Array.from({ length: 32 }, (_, q) => ev.some(e => e.p === q) ? 'x' : '.').join('');
         const durMedia = ev.reduce((a, e) => a + e.d, 0) / ev.length;
         const x = { f: f.id, estilo: f.estilo, c: c.c, campana: !!c.campana, ev, ritmo, n: ev.length, durMedia,
@@ -147,7 +147,7 @@
     };
     const vel = (x, p) => Math.max(36, Math.min(122, Math.round(x * (1 - 0.3 * cresc + 0.4 * cresc * (p / total)))));
     // voces de un ataque repartidas por familia (o solo por las de un grupo): la de arriba para la primera, las de abajo para las demás
-    const poner = (p, L, top, ch, modoPedido, debajo, v, art_, solo, fijo) => {
+    const poner = (p, L, top, ch, modoPedido, debajo, v, art_, solo, fijo, vecino) => {
       // cada golpe va como en el riff del tema de la base: si ahí era unísono u octavas, así; si era armonizado, con la
       // armonía elegida (corpus: 56% de los ataques en unísono u octavas; investigación de salsa, regla 9). Bloques y cierres: acordes
       const unis = debajo && debajo.every(d => d % 12 === 0);
@@ -158,7 +158,12 @@
       // en los riffs, no más de 3 notas distintas por golpe; 4 en las notas largas y los cierres (investigación de salsa, regla 10)
       const nTot = Math.min(L >= 6 ? 4 : 3, fs_.reduce((a, f) => a + F[f], 0));
       const alto = subir && p >= total * 2 / 3 && cabeza === 'trompetas' ? 12 : 0;
-      const pila = apilar(fijo ? dentro(top + alto, cabeza, REG[cabeza].centro - PISO_LINEA) : aRegistro(top, cabeza, regOff + alto), ch, modo, nTot, debajo);
+      const arriba = fijo ? dentro(top + alto, cabeza, REG[cabeza].centro - PISO_LINEA) : aRegistro(top, cabeza, regOff + alto);
+      let pila = apilar(arriba, ch, modo, nTot, debajo);
+      // una nota de paso armonizada en paralelo: el acorde de la nota del acorde a la que va (o de la que sale), corrido lo
+      // mismo que la melodía (la aproximación cromática y diatónica de los arregladores): las voces de abajo se mueven con
+      // la de arriba en vez de quedarse quietas en una nota del acorde
+      if (vecino && modo !== 'unisono' && pila.length > 1) { const v0 = dentro(vecino.top + alto, cabeza, REG[cabeza].centro - PISO_LINEA), pv = apilar(v0, vecino.ch, modo, nTot, debajo); pila = pv.map(m => m + arriba - v0); }
       const Lf = Math.max(1, Math.round(L * art));
       fs_.forEach((fam, i) => {
         let ps;
@@ -166,7 +171,13 @@
         const llevar = dobla => m => fijo ? dentro(m + (dobla ? octavaDe(fam, cabeza) : 0), fam) : aRegistro(m, fam, regOff);
         if (modo === 'unisono' || pila.length === 1) ps = [i === 0 ? pila[0] : llevar(true)(pila[0])];
         else if (i === 0) ps = pila.slice(0, Math.min(F[fam], pila.length));
-        else { const resto = pila.slice(Math.min(F[cabeza], pila.length)); ps = resto.length ? resto.slice(0, F[fam]).map(llevar(false)) : pila.slice(0, F[fam]).map(llevar(true)); }
+        else {
+          // el papel de cada familia queda fijo en la sección: si la de arriba ya cubre las tres voces de un golpe corto, las
+          // demás la doblan una octava abajo (también en las notas largas, para que su línea no salte); si no, toman las de abajo
+          const resto = pila.slice(Math.min(F[cabeza], pila.length));
+          const dobla = !resto.length || (fijo && F[cabeza] >= Math.min(3, fs_.reduce((a, f) => a + F[f], 0)));
+          ps = dobla ? pila.slice(0, F[fam]).map(llevar(true)) : resto.slice(0, F[fam]).map(llevar(false));
+        }
         ps = [...new Set(ps)].sort((a, b) => a - b);
         if (fijo) {
           // una voz de abajo que no le da al instrumento se cae (la de arriba queda)
@@ -260,16 +271,17 @@
       const octavar = (m, quiere) => { if (antS == null) return m; while (m - antT - quiere > 6) m -= 12; while (quiere - (m - antT) > 6) m += 12; return m; };
       va.forEach(({ e, b, pos, T }, i) => {
         const sig = va[i + 1], ant = va[i - 1], sola = e.debajo.every(d => d % 12 === 0);
-        const paso = !ancla(e) && sola && R() < crom;
-        let top;
-        if (paso && sig && ancla(sig.e) && Math.abs(sig.e.top - e.top) <= 2) top = octavar(mapearNota(sig.e.top, sig.e.ch, sig.T, false), sig.e.top - antS) - (sig.e.top - e.top);
-        else if (paso && ant && ancla(ant.e) && Math.abs(e.top - antS) <= 2) top = antT + (e.top - antS);
+        // de paso: corta (hasta una corchea); una nota larga fuera del acorde va a la nota del acorde más cercana
+        const paso = !ancla(e) && sola && e.d <= 2 && R() < crom;
+        let top, vecino = null;   // vecino: la nota del acorde a la que va o de la que sale (para armonizarla en paralelo)
+        if (paso && sig && ancla(sig.e) && Math.abs(sig.e.top - e.top) <= 2) { const ms = octavar(mapearNota(sig.e.top, sig.e.ch, sig.T, false), sig.e.top - antS); top = ms - (sig.e.top - e.top); vecino = { top: ms, ch: sig.T }; }
+        else if (paso && ant && ancla(ant.e) && Math.abs(e.top - antS) <= 2) { top = antT + (e.top - antS); vecino = { top: antT, ch: ant.T }; }
         else top = mapearNota(e.top, e.ch, T, e.d >= 2 || !sola || R() > crom);
         // al cambiar de acorde la nota se corre distinto que la anterior: la octava que deja el salto más parecido al del tema
-        top = octavar(top, e.top - antS);
+        const antes = top; top = octavar(top, e.top - antS);
         antS = e.top; antT = top; ultimo[cab] = top + oct;
         const L = Math.max(1, Math.min(e.d, 16 - pos + (e.antic ? 4 : 0)));
-        poner(b * 16 + pos, L, top + oct, T, unisono ? 'unisono' : modo, unisono ? [] : e.debajo, e.v, '', solo, true);
+        poner(b * 16 + pos, L, top + oct, T, unisono ? 'unisono' : modo, unisono ? [] : e.debajo, e.v, '', solo, true, vecino && { top: vecino.top + top - antes + oct, ch: vecino.ch });
       });
     };
     const desfase = lado(0) === 'B' ? 1 : 0;   // el ciclo arranca en el lado 3

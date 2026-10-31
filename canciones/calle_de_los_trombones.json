@@ -1,0 +1,459 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 2,
+ "cancion": {
+  "version": 2,
+  "titulo": "Calle de los trombones",
+  "orden": 5,
+  "descripcion": "trombanga de salsa brava: dos trombones al frente",
+  "clave": "son 2-3",
+  "banda": "timba",
+  "bajoSonido": "acbass",
+  "mezcla": {},
+  "bpm": 184,
+  "vientos": {
+   "formato": "trombanga"
+  },
+  "secciones": [
+   {
+    "id": "s1",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "",
+    "perillas": {
+     "v_repite": 1,
+     "v_largo": "2"
+    },
+    "nombre": "Intro",
+    "tipo": "intro",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 501,
+    "vientos": {
+     "toca": "moña",
+     "armonia": "unisono",
+     "entrada": "juntos"
+    }
+   },
+   {
+    "id": "s2",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Cuerpo",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 3,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m7b5"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "relleno": "abanico",
+    "semilla": 502,
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    }
+   },
+   {
+    "id": "s3",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Coro",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 503,
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    }
+   },
+   {
+    "id": "s4",
+    "pistas": {},
+    "vol": {},
+    "transicion": "contratiempos",
+    "entrada": "plato",
+    "perillas": {
+     "frase": "frase",
+     "v_cresc": 0.8,
+     "v_repite": 0.35,
+     "v_remate": "golpe"
+    },
+    "nombre": "Mambo",
+    "tipo": "mambo",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 504,
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "terceras"
+    }
+   },
+   {
+    "id": "s5",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Coro y soneos",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 505,
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "unisono"
+    }
+   },
+   {
+    "id": "s6",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {
+     "v_repite": 0.9
+    },
+    "nombre": "Moña",
+    "tipo": "mona",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 3,
+    "semilla": 506,
+    "vientos": {
+     "toca": "moña",
+     "armonia": "terceras"
+    }
+   },
+   {
+    "id": "s7",
+    "pistas": {},
+    "vol": {},
+    "transicion": "corte",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Final",
+    "tipo": "final",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "semilla": 507,
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    }
+   }
+  ],
+  "letra": {
+   "cuerpo": [
+    "Por la calle de los trombones baja el humo del café, / y el que sube con la clave ya no sabe qué hacer.",
+    "Dos metales en la esquina le contestan al cantor: / uno dice lo que pasa y el otro dice mejor."
+   ],
+   "coro": "Calle de los trombones, donde la salsa es mayor",
+   "pregones": [
+    "Que suene el metal, que la calle está caliente",
+    "Del barrio para el mundo, del mundo para el barrio",
+    "Si no tienes trombón, tráete la clave"
+   ]
+  }
+ },
+ "perillas": {
+  "frase": "generado",
+  "dens": 1,
+  "oct": 1,
+  "blq": 1,
+  "int": 1,
+  "semi": 1,
+  "leg": 0.6,
+  "ten": 1,
+  "crom": 1,
+  "salto": 0,
+  "zig": 1,
+  "rep": 0,
+  "reg": 0,
+  "amb": 7,
+  "lh": "auto",
+  "dim": 0,
+  "gancho": 0.75,
+  "var": 0.35,
+  "largo": "auto",
+  "mezcla": 0.15,
+  "temp": 0.6,
+  "acc": 1,
+  "b_estilo": "auto",
+  "b_aprox": 0.25,
+  "b_dens": 1,
+  "b_reg": "medio",
+  "b_gliss": 0,
+  "v_forma": "auto",
+  "v_largo": "auto",
+  "v_repite": 0.5,
+  "v_dens": 1,
+  "v_reg": 0,
+  "v_art": 1,
+  "v_crom": 0.9,
+  "v_cresc": 0.5,
+  "v_agudo": 0,
+  "v_remate": "auto",
+  "v_fuente": "estilo",
+  "p_int": 0.55,
+  "p_relleno": 0.6,
+  "m_clave": 1,
+  "m_congas": 1,
+  "m_bongo": 1,
+  "m_campanas": 1,
+  "m_timbales": 1,
+  "m_guiro": 1,
+  "m_bateria": 0.8
+ }
+}

@@ -4,6 +4,8 @@
  "cancion": {
   "version": 2,
   "titulo": "La esquina del barrio",
+  "orden": 3,
+  "descripcion": "salsa brava de los 70",
   "clave": "son 2-3",
   "banda": "timba",
   "bajoSonido": "acbass",

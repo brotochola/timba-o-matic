@@ -20,7 +20,7 @@ if (args.includes('--muestrario')) {
   secs = Object.entries(TM.ESTILOS).map(([e, E], i) => ({ id: 'm' + i, nombre: E.n, tipo: 'coro', marcha: 'marcha', estilo: e, prog: coro.prog, vueltas: 2, semilla: 7 + i, entrada: 'plato4y', perillas: {} }));
 }
 const { M } = C.modeloDeEntrada(), ctx = C.cadenaPagina(), { parse, evaluate, buildNotes } = ctx.__api;
-const r = TM.generarCancion({ titulo: c.titulo, clave: c.clave, perillas: J.perillas || {}, loop: loop ? { desde: 0, hasta: secs.length - 1 } : null, secciones: secs }, M);
+const r = TM.generarCancion({ titulo: c.titulo, clave: c.clave, perillas: J.perillas || {}, vientos: c.vientos, loop: loop ? { desde: 0, hasta: secs.length - 1 } : null, secciones: secs }, M);
 ctx.__percMotor = { id: 'motor-x', compases: r.perc, extra: r.extra, mix: r.mixes, estilo: r.estilos };
 const score = evaluate(parse(TM.aLilyPond(r, { clave: c.clave, bpm: c.bpm || 190, percusionId: 'motor-x' }))), notas = buildNotes(score), ms = score.measures;
 const barOf = t => ms.findIndex(m => t >= m.start && t < m.end), perc = ms.map(() => []);

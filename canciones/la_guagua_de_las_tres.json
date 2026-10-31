@@ -4,6 +4,8 @@
  "cancion": {
   "version": 2,
   "titulo": "La guagua de las tres",
+  "orden": 2,
+  "descripcion": "timba en clave de rumba, con coro bomba",
   "clave": "rumba 2-3",
   "banda": "timba",
   "bajoSonido": "acbass",

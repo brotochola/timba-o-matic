@@ -4,6 +4,8 @@
  "cancion": {
   "version": 2,
   "titulo": "No me pidas calma",
+  "orden": 1,
+  "descripcion": "timba con presión, despelote y bomba",
   "clave": "rumba 2-3",
   "banda": "timba",
   "bajoSonido": "bass",
