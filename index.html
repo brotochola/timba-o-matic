@@ -121,10 +121,6 @@
 .kn-alcance button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .kn-alc-info{font-size:12px}
 .kn-alc-info:empty{display:none}
-.sec-banda{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
-.sec-banda .gen-row h3{margin:0}
-.sec-banda .kn-alcance{margin-left:auto}
-.cn-flds{max-width:640px}
 .kn-box{display:flex;flex-direction:column;gap:6px}
 .kn-grp{border-top:1px solid var(--line);padding-top:8px}
 .kn-grp summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;font:600 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -171,7 +167,7 @@
 .bd-ayuda li{margin:3px 0}
 @media (max-width:760px){.bd-dat{white-space:normal;grid-column:2/5}.bd-cab .bd-ver{grid-row:1;grid-column:4}}
 /* partitura opcional y explicaciones */
-body.sin-partitura .grid,body.sin-partitura #tabs,body.sin-partitura #seguir-lbl{display:none!important}
+body.sin-partitura .grid,body.sin-partitura #tabs{display:none!important}
 .ayuda{display:none;margin:0;font-size:11.5px;line-height:1.45;color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
 body.con-ayuda .ayuda{display:block}
 .gen .grp>.ayuda,.kn-list .ayuda{margin-top:-6px}
@@ -304,6 +300,98 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
   input[type=range]{width:100px}
   .paper{padding:18px 6px 24px}
 }
+/* ===== la app de pantalla completa, a lo Ableton: barra arriba, las pistas en el medio, el detalle de la sección abajo
+   (bloques plegables) y los paneles (canción y sonido, base de MIDIs, partitura) que se abren encima ===== */
+:root{--bar-h:52px;--det-h:42vh;--bg:#d2d2d2;--panel:#e2e2e2;--line:#b5b5b5;--ink:#151515;--muted:#5a5a5a;--soft:#ebebeb}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1d1d1d;--panel:#282828;--line:#3b3b3b;--ink:#e3e3e3;--muted:#979797;--soft:#313131}}
+:root[data-theme="dark"]{--bg:#1d1d1d;--panel:#282828;--line:#3b3b3b;--ink:#e3e3e3;--muted:#979797;--soft:#313131}
+body{font-size:13px}
+.wrap{max-width:none;margin:0;padding:0}
+.wrap>header{display:none}
+.btn{border-radius:4px}
+.ghost{padding:5px 10px;font-size:12.5px}
+.gen .btn{padding:5px 10px;font-size:12.5px}
+.transport{position:sticky;top:0;z-index:30;margin:0;border-radius:0;border-width:0 0 1px;padding:6px 12px 8px;gap:8px 14px;box-shadow:none}
+.transport .logo{font:700 13px/1 Inter,system-ui,sans-serif;letter-spacing:.05em;color:var(--accent)}
+.transport .play{width:34px;height:34px}
+.transport .play svg{width:14px;height:14px}
+.transport #stop{width:34px;height:34px;padding:0;justify-content:center}
+.transport .pos{margin-left:0;font:600 13px/1 "JetBrains Mono",monospace;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:7px 9px;min-width:118px;color:var(--muted)}
+.transport .ctl{font-size:12px;gap:6px}
+.transport select{padding:4px 6px;font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+.transport input[type=range]{width:90px;accent-color:var(--accent)}
+.transport .bar{position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:0}
+.tr-panels{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.chk.tg{border:1px solid var(--line);border-radius:4px;padding:5px 9px;background:var(--bg);font-size:12.5px;color:var(--ink);user-select:none}
+.chk.tg input{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.chk.tg:has(input:checked){background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chk.tg:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:1px}
+.tr-panels .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+#gen{margin:0;border:0;border-radius:0;padding:6px 10px 0;gap:6px;background:var(--bg)}
+#gen>.gen-head{gap:8px}
+#gen>.ayuda-panel{margin:0}
+.cn-titulo{font-size:14px;max-width:420px}
+.mt{border-radius:4px;background:var(--panel)}
+.mt-sec{border-radius:3px;color:#151515;font-weight:600}
+.mt-sec.sel{outline:2px solid var(--ink);outline-offset:-1px;color:#151515}
+.mt-h{gap:5px}
+.mt-color{flex:0 0 4px;align-self:stretch;margin:3px 2px 3px -4px;border-radius:2px}
+.sec-box{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:0;gap:0}
+.sec-head{padding:6px 8px;gap:8px;border-bottom:1px solid var(--line);background:var(--soft)}
+.sec-head .sc-nombre{flex:0 1 240px;padding:5px 8px;font-size:13px;background:var(--bg)}
+.sec-head .kn-alcance{margin-left:auto}
+.kn-alc-info{padding:4px 10px 0}
+.det-plegar{width:28px;justify-content:center;padding:4px 0}
+.sec-box.cerrado .det-plegar{transform:rotate(180deg)}
+.det-tirador{height:5px;cursor:ns-resize;border-radius:4px 4px 0 0}
+.det-tirador:hover,.det-tirador.arrastra{background:var(--accent)}
+.det-body{display:flex;gap:6px;align-items:stretch;overflow:auto;padding:6px;min-height:0}
+.dev{flex:0 0 auto;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px;background:var(--bg);min-height:0}
+.dev[data-dev="estructura"]{width:370px}
+.dev[data-dev="acordes"]{width:440px}
+.dev[data-dev="piano"],.dev[data-dev="bajo"],.dev[data-dev="perc"]{width:260px}
+.dev-h{appearance:none;border:0;border-bottom:1px solid var(--line);background:var(--soft);color:var(--ink);font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:7px 9px;cursor:pointer;border-radius:4px 4px 0 0}
+.dev-h::before{content:'▾ ';color:var(--muted)}
+.dev-h:hover,.dev-h:focus-visible{color:var(--accent)}
+.dev-c{padding:8px 9px;overflow:auto;display:flex;flex-direction:column;gap:8px;min-height:0}
+.dev.plegado{width:30px!important}
+.dev.plegado .dev-c{display:none}
+.dev.plegado .dev-h{writing-mode:vertical-rl;transform:rotate(180deg);flex:1;border:0;padding:9px 7px;text-align:right;border-radius:4px}
+.dev.plegado .dev-h::before{content:'▸ '}
+.dev .sec-flds{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+.dev .gen-row.gen-head{gap:8px}
+.dev .gen-tools{margin-left:0}
+.dev .cg-grid{gap:6px}
+.dev .cg-card{padding:16px 4px 4px;border-radius:4px}
+.dev .cg-slot{font-size:15px;padding:6px 3px;border-radius:4px}
+.dev .kn-grp:first-child{border-top:0;padding-top:0}
+.sec-box.cerrado .det-body,.sec-box.cerrado .kn-alc-info{display:none}
+.panel{display:none!important;position:fixed;z-index:40;top:var(--bar-h);right:0;bottom:0;width:min(620px,100vw);margin:0;border-radius:0;border-width:0 0 0 1px;overflow:auto;box-shadow:-18px 0 40px -24px rgba(0,0,0,.55)}
+body.ver-gen-arr #gen-arr,body.ver-gen-base #gen-base{display:flex!important}
+.pn-x{margin-left:auto}
+.panel-full{position:fixed;z-index:35;top:var(--bar-h);left:0;right:0;bottom:0;overflow:auto;background:var(--bg);padding:12px 16px 30px}
+body.sin-partitura .panel-full{display:none}
+.pn-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:10px}
+.pn-head h2{margin:0;font:600 16px/1.2 Inter,system-ui,sans-serif}
+.panel-full .mutes{margin-bottom:10px}
+@media (min-width:761px) and (min-height:560px){
+  body{overflow:hidden}
+  .wrap{height:100vh;display:flex;flex-direction:column}
+  #gen{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .mt{flex:1 1 auto;min-height:120px;overflow:auto}
+  .sec-box{flex:0 0 auto;height:var(--det-h);min-height:96px;display:flex;flex-direction:column;margin-bottom:8px}
+  .sec-box.cerrado{height:auto;min-height:0}
+  .det-body{flex:1 1 auto}
+}
+@media (max-width:760px){
+  .transport{position:relative}
+  .tr-panels{margin-left:0}
+  .det-body{flex-direction:column}
+  .dev{width:auto!important}
+  .dev.plegado .dev-h{writing-mode:horizontal-tb;transform:none;flex:none;text-align:left}
+  .det-tirador{display:none}
+  .sec-head .kn-alcance{margin-left:0}
+}
 </style>
 </head>
 <body>
@@ -317,44 +405,43 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
   </header>
 
   <div class="transport">
+    <span class="logo">timba·o·matic</span>
     <button class="btn play" id="play" title="Reproducir / pausa (barra espaciadora)" aria-label="Reproducir">
       <svg id="ico-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>
       <svg id="ico-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>
     </button>
-    <button class="btn ghost" id="stop" title="Detener y volver al inicio">
-      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg>Detener
+    <button class="btn ghost" id="stop" title="Detener y volver al inicio" aria-label="Detener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg>
     </button>
+    <div class="pos"><b id="pos-m">1</b> / <span id="pos-n">–</span> · <span id="pos-t">0:00</span></div>
     <label class="ctl">Tempo <input type="range" id="tempo" min="90" max="240" value="184"> <b id="tempo-v">184</b></label>
-    <div class="mutes" id="mutes">
-      <label class="chk"><input type="checkbox" data-g="voz" checked> Voz</label>
-      <label class="chk"><input type="checkbox" data-g="tp" checked> Trompetas</label>
-      <label class="chk"><input type="checkbox" data-g="sx" checked> Saxos</label>
-      <label class="chk"><input type="checkbox" data-g="tb" checked> Trombones</label>
-      <label class="chk"><input type="checkbox" data-g="pno" checked> Piano</label>
-      <label class="chk"><input type="checkbox" data-g="bajo" checked> Bajo</label>
-      <label class="chk"><input type="checkbox" data-g="rit" checked> Percusión</label>
-    </div>
-    <label class="chk" title="Mostrar u ocultar la partitura y el código LilyPond. Oculta, la página no la dibuja y anda más liviana."><input type="checkbox" id="ver-partitura"> Partitura</label>
-    <label class="chk" id="seguir-lbl" title="Mientras suena, bajar la página para seguir el compás en la partitura"><input type="checkbox" id="seguir"> Seguir</label>
-    <label class="chk" title="Mostrar debajo de cada control una explicación corta de qué hace"><input type="checkbox" id="ver-ayuda"> Explicaciones</label>
-    <button class="btn ghost" id="midi" title="Exportar archivo MIDI">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>.mid
-    </button>
-    <div class="pos">Compás <b id="pos-m">1</b> / <span id="pos-n">–</span> · <span id="pos-t">0:00</span></div>
+    <label class="ctl">Clave <select id="tb-clave"><option>rumba 3-2</option><option>rumba 2-3</option><option>son 3-2</option><option>son 2-3</option></select></label>
+    <label class="ctl">Banda <select id="cn-banda"><option value="timba">timba (con batería)</option><option value="salsa">salsa (sin batería)</option></select></label>
+    <label class="ctl">Loop <select id="cn-loop"><option value="cancion">toda la canción</option><option value="seccion">la sección elegida</option><option value="no">sin loop</option></select></label>
+    <label class="chk tg" id="seguir-lbl" title="Mientras suena, el panel de abajo muestra la sección que suena (con sus perillas y volúmenes) y las pistas la siguen"><input type="checkbox" id="seguir"> Seguir</label>
+    <span class="tr-panels">
+      <button class="btn ghost" type="button" data-panel="gen-arr" title="Timbre del bajo, sonido, canciones guardadas, MIDI y MP3">Canción y sonido</button>
+      <button class="btn ghost" type="button" data-panel="gen-base" title="De qué MIDIs aprende el generador">Base de MIDIs</button>
+      <label class="chk tg" title="Ver la partitura y el código LilyPond (oculta, la página anda más liviana)"><input type="checkbox" id="ver-partitura"> Partitura</label>
+      <label class="chk tg" title="Mostrar debajo de cada control una explicación corta de qué hace"><input type="checkbox" id="ver-ayuda"> Explicaciones</label>
+      <button class="btn ghost" id="midi" title="Bajar lo que suena como MIDI">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>.mid
+      </button>
+    </span>
     <div class="bar" id="bar"><i id="bar-i"></i></div>
   </div>
 
   <section class="gen" id="gen" aria-label="Canción">
     <div class="gen-row gen-head">
-      <h2><span class="num">1</span>Canción</h2>
-      <input id="cn-titulo" class="cn-titulo" type="text" placeholder="Título" aria-label="Título de la canción" maxlength="80">
+      <input id="cn-titulo" class="cn-titulo" type="text" placeholder="Título de la canción" aria-label="Título de la canción" maxlength="80">
       <span class="gen-tools">
-        <label class="ctl">Loop <select id="cn-loop"><option value="cancion">toda la canción</option><option value="seccion">la sección elegida</option><option value="no">sin loop</option></select></label>
+        <label class="ctl">Zoom <select id="mt-zoom"><option value="0">ajustar</option><option value="24">chico</option><option value="36">medio</option><option value="52">grande</option><option value="72">enorme</option></select></label>
       </span>
     </div>
     <div class="mt" id="mt"><div class="mt-in" id="mt-in"></div></div>
-    <p class="mt-ayuda muted">Clic en una sección para editarla · clic en una pista adentro de una sección: entra o sale ese instrumento ahí · clic en la regla: tocar desde ese compás</p>
+    <p class="ayuda mt-ayuda">Clic en una sección para editarla · clic en una pista adentro de una sección: entra o sale ese instrumento ahí · clic en la regla: tocar desde ese compás</p>
     <div class="sec-box" id="sec-box">
+      <div class="det-tirador" id="det-tirador" title="Arrastrá para cambiar el alto del panel"></div>
       <div class="gen-row sec-head">
         <input id="sc-nombre" class="sc-nombre" type="text" placeholder="Nombre de la sección" aria-label="Nombre de la sección" maxlength="40">
         <span class="sec-tools">
@@ -365,56 +452,76 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
           <button class="btn ghost" id="sc-dup" type="button" title="Repetir esta sección a continuación, con el mismo gancho">Duplicar</button>
           <button class="btn ghost" id="sc-del" type="button" title="Sacar esta sección de la canción">Borrar</button>
         </span>
+        <div class="kn-alcance" id="kn-alcance" role="group" aria-label="A qué se aplican las perillas"><span class="muted">Las perillas valen para:</span><button type="button" data-a="seccion">esta sección</button><button type="button" data-a="cancion">toda la canción</button></div>
+        <button class="btn ghost det-plegar" id="det-plegar" type="button" title="Ocultar o mostrar el panel de la sección" aria-label="Ocultar o mostrar el panel de la sección">▾</button>
       </div>
-      <div class="sec-flds">
-        <label class="fld"><span>Tipo</span><select id="sc-tipo"><option value="">elegí…</option><option value="intro">Intro</option><option value="cuerpo">Cuerpo (verso)</option><option value="coro">Coro / montuno</option><option value="mambo">Mambo</option><option value="mona">Moña</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option><option value="bloque">Bloque</option><option value="final">Final</option></select></label>
-        <label class="fld"><span>Marcha</span><select id="tb-gear"><option value="cuerpo">Cuerpo</option><option value="marcha" selected>Coro · marcha</option><option value="mambo">Mambo</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option></select></label>
-        <label class="fld"><span>Onda del piano</span><select id="tb-onda"><option value="pupy" selected>Pupy</option><option value="melon">Melón</option><option value="tirso">Tirso / Charanga</option><option value="songo">Songo setentoso</option><option value="salsa">Montuno de salsa</option><option value="libre">Libre</option></select></label>
-        <label class="fld"><span>Compases</span><select id="cg-n"><option>2</option><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label>
-        <label class="fld"><span>Vueltas</span><select id="sc-vueltas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option><option>8</option></select></label>
-        <label class="fld"><span>Al final</span><select id="sc-trans"><option value="ninguna">sigue derecho</option><option value="abanico">abanico (timbal)</option><option value="cierre">cierre (toda la banda)</option><option value="corte">corte</option></select></label>
-        <label class="fld"><span>Al entrar</span><select id="sc-entra"><option value="">directo</option><option value="plato">plato del timbalero</option></select></label>
-        <label class="fld"><span>Gancho del piano</span><select id="sc-gancho"><option value="">propio</option></select></label>
-        <label class="fld"><span>Variante n.º</span><span class="sec-var"><input id="tb-seed" type="number" value="7" min="1" max="9999"><button class="btn ghost" id="tb-var" type="button" title="Otro tumbao para esta sección, con los mismos acordes y estilo">Otra</button></span></label>
-      </div>
-      <p class="desc" id="onda-desc"></p>
-      <div class="sec-pistas" id="sec-pistas" aria-label="Instrumentos que tocan en esta sección"></div>
-      <div class="gen-row gen-head">
-        <h3>Acordes de la sección</h3>
-        <span class="muted">Tocá un acorde para cambiarlo · «½» parte el compás en dos mitades</span>
-        <span class="gen-tools">
-          <label class="ctl">Cargar progresión <select id="cg-preset"><option value="">elegí…</option></select></label>
-          <span class="tr"><button class="btn ghost" id="cg-down" type="button" title="Transponer medio tono abajo">−½ tono</button><button class="btn ghost" id="cg-up" type="button" title="Transponer medio tono arriba">+½ tono</button></span>
-        </span>
-      </div>
-    <div class="cg-grid" id="cg-grid"></div>
-    <div class="cg-pick" id="cg-pick" hidden>
-      <div class="gen-row"><b id="cg-pick-lbl">Compás</b><button class="btn ghost" id="cg-close" type="button">Listo</button></div>
-      <div class="cg-roots" id="cg-roots" aria-label="Raíz"></div>
-      <div class="cg-quals" id="cg-quals" aria-label="Tipo de acorde"></div>
-    </div>
-      <div class="sec-banda">
-        <div class="gen-row"><h3>Cómo toca la banda</h3>
-          <div class="kn-alcance" id="kn-alcance" role="group" aria-label="A qué se aplican las perillas"><span class="muted">Las perillas valen para:</span><button type="button" data-a="seccion">esta sección</button><button type="button" data-a="cancion">toda la canción</button></div>
-        </div>
-        <span class="kn-alc-info muted" id="kn-alc-info"></span>
-        <div class="grps">
-          <div class="grp"><h3>Piano</h3><div class="kn-box" data-g="piano"></div></div>
-          <div class="grp"><h3>Bajo</h3><div class="kn-box" data-g="bajo"></div></div>
-          <div class="grp"><h3>Percusión</h3><div class="kn-box" data-g="perc"></div></div>
-        </div>
+      <span class="kn-alc-info muted" id="kn-alc-info"></span>
+      <div class="det-body">
+        <section class="dev" data-dev="estructura">
+          <button class="dev-h" type="button" aria-expanded="true">Estructura</button>
+          <div class="dev-c">
+            <div class="sec-flds">
+              <label class="fld"><span>Tipo</span><select id="sc-tipo"><option value="">elegí…</option><option value="intro">Intro</option><option value="cuerpo">Cuerpo (verso)</option><option value="coro">Coro / montuno</option><option value="mambo">Mambo</option><option value="mona">Moña</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option><option value="bloque">Bloque</option><option value="final">Final</option></select></label>
+              <label class="fld"><span>Marcha</span><select id="tb-gear"><option value="cuerpo">Cuerpo</option><option value="marcha" selected>Coro · marcha</option><option value="mambo">Mambo</option><option value="presion">Presión</option><option value="bomba">Bomba</option><option value="despelote">Despelote</option><option value="muela">Muela</option></select></label>
+              <label class="fld"><span>Onda del piano</span><select id="tb-onda"><option value="pupy" selected>Pupy</option><option value="melon">Melón</option><option value="tirso">Tirso / Charanga</option><option value="songo">Songo setentoso</option><option value="salsa">Montuno de salsa</option><option value="libre">Libre</option></select></label>
+              <label class="fld"><span>Compases</span><select id="cg-n"><option>2</option><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label>
+              <label class="fld"><span>Vueltas</span><select id="sc-vueltas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option><option>8</option></select></label>
+              <label class="fld"><span>Al final</span><select id="sc-trans"><option value="ninguna">sigue derecho</option><option value="abanico">abanico (timbal)</option><option value="cierre">cierre (toda la banda)</option><option value="corte">corte</option></select></label>
+              <label class="fld"><span>Al entrar</span><select id="sc-entra"><option value="">directo</option><option value="plato">plato del timbalero</option></select></label>
+              <label class="fld"><span>Gancho del piano</span><select id="sc-gancho"><option value="">propio</option></select></label>
+              <label class="fld"><span>Variante n.º</span><span class="sec-var"><input id="tb-seed" type="number" value="7" min="1" max="9999"><button class="btn ghost" id="tb-var" type="button" title="Otro tumbao para esta sección, con los mismos acordes y estilo">Otra</button></span></label>
+            </div>
+            <p class="desc" id="onda-desc"></p>
+            <div class="sec-pistas" id="sec-pistas" aria-label="Instrumentos que tocan en esta sección"></div>
+          </div>
+        </section>
+        <section class="dev" data-dev="acordes">
+          <button class="dev-h" type="button" aria-expanded="true">Acordes</button>
+          <div class="dev-c">
+            <div class="gen-row gen-head">
+              <span class="ayuda">Tocá un acorde para cambiarlo · «½» parte el compás en dos mitades</span>
+              <span class="gen-tools">
+                <label class="ctl">Cargar progresión <select id="cg-preset"><option value="">elegí…</option></select></label>
+                <span class="tr"><button class="btn ghost" id="cg-down" type="button" title="Transponer medio tono abajo">−½ tono</button><button class="btn ghost" id="cg-up" type="button" title="Transponer medio tono arriba">+½ tono</button></span>
+              </span>
+            </div>
+            <div class="cg-grid" id="cg-grid"></div>
+            <div class="cg-pick" id="cg-pick" hidden>
+              <div class="gen-row"><b id="cg-pick-lbl">Compás</b><button class="btn ghost" id="cg-close" type="button">Listo</button></div>
+              <div class="cg-roots" id="cg-roots" aria-label="Raíz"></div>
+              <div class="cg-quals" id="cg-quals" aria-label="Tipo de acorde"></div>
+            </div>
+          </div>
+        </section>
+        <section class="dev" data-dev="piano">
+          <button class="dev-h" type="button" aria-expanded="true">Piano</button>
+          <div class="dev-c">
+            <div class="kn-box" data-g="piano"></div>
+          </div>
+        </section>
+        <section class="dev" data-dev="bajo">
+          <button class="dev-h" type="button" aria-expanded="true">Bajo</button>
+          <div class="dev-c">
+            <div class="kn-box" data-g="bajo"></div>
+          </div>
+        </section>
+        <section class="dev" data-dev="perc">
+          <button class="dev-h" type="button" aria-expanded="true">Percusión</button>
+          <div class="dev-c">
+            <div class="kn-box" data-g="perc"></div>
+          </div>
+        </section>
       </div>
     </div>
   </section>
 
-  <section class="gen" id="gen-arr" aria-label="Banda y sonido">
+  <section class="gen panel" id="gen-arr" aria-label="Canción y sonido">
     <div class="gen-row gen-head">
-      <h2><span class="num">2</span>Banda y sonido</h2>
-      <span class="muted">Lo que vale para toda la canción</span>
+      <h2>Canción y sonido</h2>
+      <span class="muted">Timbre del bajo, sonido, canciones guardadas y exportar</span>
+      <button class="btn ghost pn-x" type="button" data-cerrar aria-label="Cerrar">✕</button>
     </div>
     <div class="sec-flds cn-flds">
-      <label class="fld"><span>Clave</span><select id="tb-clave"><option>rumba 3-2</option><option>rumba 2-3</option><option>son 3-2</option><option>son 2-3</option></select></label>
-      <label class="fld"><span>Banda</span><select id="cn-banda"><option value="timba">timba (con batería)</option><option value="salsa">salsa (sin batería)</option></select></label>
       <label class="fld"><span>Bajo</span><select id="pk-bass"><option value="bass">bajo eléctrico</option><option value="acbass">baby bass</option></select></label>
     </div>
     <div class="snd-row">
@@ -441,10 +548,11 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
     <details class="credits"><summary>Créditos de los sonidos</summary><ul id="pk-credits"><li>Percusión de mano: Versilian Community Sample Library (VCSL) — CC0</li><li>Slap de conga, timbales, batería y bajo: GeneralUser GS v2.0.3, S. Christian Collins</li><li>Piano: Salamander Grand Piano, Alexander Holm — CC-BY 3.0</li></ul></details>
   </section>
 
-  <section class="gen" id="gen-base" aria-label="Base de MIDIs">
+  <section class="gen panel" id="gen-base" aria-label="Base de MIDIs">
     <div class="gen-row gen-head">
-      <h2><span class="num">3</span>Base de MIDIs</h2>
+      <h2>Base de MIDIs</h2>
       <span class="muted">De dónde aprende el algoritmo nuevo · arrastrá archivos .mid acá para sumarlos</span>
+      <button class="btn ghost pn-x" type="button" data-cerrar aria-label="Cerrar">✕</button>
       <span class="gen-tools">
         <label class="btn ghost" for="bd-file" tabindex="0">Agregar MIDIs…</label><input type="file" id="bd-file" accept=".mid,.midi,audio/midi,audio/x-midi" multiple hidden>
         <button class="btn ghost" id="bd-export" type="button" title="Baja un .json con tus MIDIs y sus datos, para pasarlo a otro navegador o sumarlo al repositorio">Exportar los míos</button>
@@ -462,6 +570,17 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
       <li>Lo que sumás acá queda en este navegador. «Exportar los míos» baja un .json: con <code>node analisis_tumbaos/construir.js --importar archivo.json</code> pasa a la base del repositorio.</li>
     </ul></details>
   </section>
+  <div class="panel-full" id="pn-partitura">
+    <div class="pn-head"><h2>Partitura y código LilyPond</h2><span class="muted">Lo que suena, escrito. También se puede abrir o escribir un .ly o un .mid.</span><button class="btn ghost pn-x" type="button" id="pn-partitura-x" aria-label="Cerrar">✕</button></div>
+    <div class="mutes" id="mutes">
+      <label class="chk"><input type="checkbox" data-g="voz" checked> Voz</label>
+      <label class="chk"><input type="checkbox" data-g="tp" checked> Trompetas</label>
+      <label class="chk"><input type="checkbox" data-g="sx" checked> Saxos</label>
+      <label class="chk"><input type="checkbox" data-g="tb" checked> Trombones</label>
+      <label class="chk"><input type="checkbox" data-g="pno" checked> Piano</label>
+      <label class="chk"><input type="checkbox" data-g="bajo" checked> Bajo</label>
+      <label class="chk"><input type="checkbox" data-g="rit" checked> Percusión</label>
+    </div>
   <div class="filebar" id="filebar">
     <label class="btn ghost" for="openfile" title="Abrir un archivo MIDI (.mid) o LilyPond (.ly)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>Abrir .mid / .ly
@@ -569,6 +688,7 @@ bajo = {
         </ul>
       </details>
     </section>
+  </div>
   </div>
 </div>
 
@@ -1687,10 +1807,13 @@ function pistaDe(n){
   if(n.part==='melody'){const g=groupOf(n.staff);return g==='pno'?'piano':g==='bajo'?'bajo':null}
   return n.part==='bass'?'bajo':'piano';
 }
+// y el volumen de la pista en la sección de la nota: P.volBar, uno por compás (lo arma la app para la partitura P.volScore)
+function barDe(t){const ms=P.score.measures;let lo=0,hi=ms.length-1;while(lo<hi){const m=(lo+hi+1)>>1;if(ms[m].start<=t)lo=m;else hi=m-1}return lo}
 function volDe(n){
-  const M=P.mezcla; if(!M)return 1;
-  const m=M[pistaDe(n)]; if(!m)return P.haySolo?0:1;
-  return m.mute||(P.haySolo&&!m.solo)?0:(m.vol??1);
+  const id=pistaDe(n),M=P.mezcla;let k=1;
+  if(M){const m=M[id];if(!m){if(P.haySolo)return 0}else if(m.mute||(P.haySolo&&!m.solo))return 0;else k=m.vol??1}
+  if(id&&P.volBar&&P.volScore===P.score){const v=P.volBar[n._b??(n._b=barDe(n.t))];if(v&&v[id]!=null)k*=v[id]}
+  return k;
 }
 // loop de una región (la sección elegida, solo en la partitura para la que se marcó: P.loopScore) o de todo
 const enRegion=()=>P.loopFin!=null&&P.loopScore===P.score;
@@ -1781,8 +1904,12 @@ function updateUI(t){
       if(!prev||prev.line!==r.line){
         const rect=L.box.getBoundingClientRect(), head=(document.querySelector('.transport')||{offsetHeight:90}).offsetHeight+16;
         const fits=rect.height<innerHeight-head-20;
-        if(rect.top<head||rect.top>(fits?innerHeight-rect.height-20:innerHeight*0.35))
-          scrollTo({top:rect.top+scrollY-head,behavior:'smooth'});
+        // la partitura vive en su panel (pn-partitura), que se desplaza solo; si no, la página
+        const pn=$('pn-partitura');
+        if(rect.top<head||rect.top>(fits?innerHeight-rect.height-20:innerHeight*0.35)){
+          if(pn&&getComputedStyle(pn).position==='fixed')pn.scrollBy({top:rect.top-head,behavior:'smooth'});
+          else scrollTo({top:rect.top+scrollY-head,behavior:'smooth'});
+        }
       }
     }
     P.curM=mi;
@@ -4362,12 +4489,14 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   const abiertos=leer('tdt-perillas-abiertas',{'Piano · ritmo y textura':true,'Bajo':true,'Percusión':true});
   const fmt=(d,v)=>d.f==='x'?(+v).toFixed(2)+'×':d.f==='%'?Math.round(v*100)+'%':d.f==='±'?(v>0?'+':'')+(+v).toFixed(2):d.f==='±st'?(v>0?'+':'')+v+' st':d.f==='st'?v+' st':String(v);
   const grupos={},controles={};
-  for(const d of TM.PERILLAS_UI){
+  // la mezcla de la percusión no va acá: es el volumen de cada pista en cada sección (en el multipista)
+  const UI=TM.PERILLAS_UI.filter(d=>d.g!=='Mezcla de percusión');
+  for(const d of UI){
     if(!grupos[d.g]){
       const det=document.createElement('details');det.className='kn-grp';det.open=!!abiertos[d.g];
       const sm=document.createElement('summary');sm.append(d.g.replace(/^Piano · /,''));
       const rs=document.createElement('button');rs.type='button';rs.className='kn-reset';rs.textContent='↺';rs.title='Volver a los valores de entrada (en una sección: a los de la canción)';rs.setAttribute('aria-label','Restablecer '+d.g);
-      rs.onclick=e=>{e.preventDefault();e.stopPropagation();for(const x of TM.PERILLAS_UI)if(x.g===d.g){if(alcance)delete alcance.perillas[x.id];else k[x.id]=DEF[x.id]}pintar();cambio()};
+      rs.onclick=e=>{e.preventDefault();e.stopPropagation();for(const x of UI)if(x.g===d.g){if(alcance)delete alcance.perillas[x.id];else k[x.id]=DEF[x.id]}pintar();cambio()};
       sm.appendChild(rs);det.appendChild(sm);
       const list=document.createElement('div');list.className='kn-list';det.appendChild(list);
       det.addEventListener('toggle',()=>{abiertos[d.g]=det.open;guardar('tdt-perillas-abiertas',abiertos)});
@@ -4389,7 +4518,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   // en rojo: lo que difiere de los valores de entrada (canción) o lo que la sección cambia respecto de la canción
   function pintarUno(d){const c=controles[d.id],v=valor(d.id);c.inp.value=v;if(d.tipo!=='sel')c.val.textContent=fmt(d,v);
     c.lab.classList.toggle('mod',alcance?d.id in alcance.perillas:String(v)!==String(DEF[d.id]))}
-  function pintar(){for(const d of TM.PERILLAS_UI)pintarUno(d)}
+  function pintar(){for(const d of UI)pintarUno(d)}
   function cambio(){guardar('tdt-perillas',k);regenerar()}
   pintar();
 
@@ -4583,7 +4712,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   const progStr=bars=>bars.map(b=>b.b?name(b.a)+'+'+name(b.b):name(b.a)).join(' ');
 
   // ---------- la canción: secciones con sus acordes, marcha, onda, perillas propias, pistas que tocan y transición
-  const seccion=o=>Object.assign({id:nid(),nombre:'',bars:fromProg(PRESETS[0][0],8),vueltas:2,marcha:'marcha',onda:'pupy',perillas:{},pistas:{},transicion:'ninguna',semilla:azar()},o);
+  const seccion=o=>Object.assign({id:nid(),nombre:'',bars:fromProg(PRESETS[0][0],8),vueltas:2,marcha:'marcha',onda:'pupy',perillas:{},pistas:{},vol:{},transicion:'ninguna',semilla:azar()},o);
   // el loop de antes (estado guardado o favorito viejo) → canción de una sección
   function desdeLoop(bars,ui){ui=ui||{};const g=ui['tb-gear'];
     return {version:1,titulo:'',clave:ui['tb-clave']||'son 2-3',mezcla:{},secciones:[seccion({bars:clon(bars),vueltas:+ui['tb-reps']||2,marcha:MARCHA_TXT[g]?g:'marcha',onda:ui['tb-onda']||'pupy',semilla:+ui['tb-seed']||7})]}}
@@ -4652,6 +4781,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     alcanceUI();
   }
   function alternar(i,id){const p=song.secciones[i].pistas;if(p[id]===false)delete p[id];else p[id]=false;changed()}
+  function mostrar(i){cur=i;sel=null;pintarSeccion();draw();pintarPistas()}
   function elegir(i){
     cur=i;sel=null;pintarSeccion();draw();pintarPistas();save();
     aplicarLoop();if(P.playing&&P.loopFin!=null){const t=curTick();if(t<P.loopIni||t>=P.loopFin)seek(P.loopIni)}
@@ -4681,7 +4811,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   $('tb-seed').onchange=()=>{S().semilla=Math.max(1,+$('tb-seed').value||1);changed()};
   $('tb-var').onclick=()=>{S().semilla=azar();pintarSeccion();go(true)};
   const insertar=s=>{song.secciones.splice(cur+1,0,s);elegir(cur+1);changed()};
-  $('sc-add').onclick=()=>{const s=S();insertar(seccion({bars:clon(s.bars),vueltas:s.vueltas,marcha:s.marcha,onda:s.onda,perillas:clon(s.perillas)}))};
+  $('sc-add').onclick=()=>{const s=S();insertar(seccion({bars:clon(s.bars),vueltas:s.vueltas,marcha:s.marcha,onda:s.onda,perillas:clon(s.perillas),vol:clon(s.vol||{})}))};
   $('sc-dup').onclick=()=>{const s=S();insertar({...clon(s),id:nid(),ganchoDe:s.id})};
   $('sc-del').onclick=()=>{if(song.secciones.length<2||!confirm('¿Sacar la sección «'+nombreDe(S())+'» de la canción?'))return;
     const id=S().id;song.secciones.splice(cur,1);for(const s of song.secciones)if(s.ganchoDe===id)delete s.ganchoDe;elegir(Math.min(cur,song.secciones.length-1));changed()};
@@ -4697,31 +4827,40 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     $('kn-alc-info').textContent=alc==='seccion'?'Lo que muevas queda solo en '+nom+'. En rojo, lo que esta sección cambia respecto de toda la canción; ↺ lo vuelve atrás.'
       :'Lo que muevas vale para todas las secciones'+(S().fija?', salvo las fijadas':'')+(n?'; '+nom+' cambia '+n+(n>1?' perillas':' perilla')+' por su cuenta':'')+'.';
   }
-  document.querySelectorAll('#kn-alcance button').forEach(b=>b.onclick=()=>{alc=b.dataset.a;store('tdt-alcance2',alc);alcanceUI()});
+  document.querySelectorAll('#kn-alcance button').forEach(b=>b.onclick=()=>{alc=b.dataset.a;store('tdt-alcance2',alc);alcanceUI();pintarPistas()});
 
-  // ---------- el multipista: regla, secciones, acordes y una pista por instrumento
+  // ---------- el multipista: regla, secciones (de colores por marcha), acordes y una pista por instrumento
   const mt=$('mt'), mtIn=$('mt-in');
   let bw=40, cursor=null, xDe=()=>0;
   const tok=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const ALTO={piano:40,bajo:28};
+  const cabezaPx=()=>parseFloat(tok('--mt-head'))||136;
+  const ALTO={piano:60,bajo:42};
+  const COL_MARCHA={cuerpo:'#8fb4dc',marcha:'#93cf8e',mambo:'#f0b45e',presion:'#e5857a',bomba:'#b897d8',despelote:'#ea94bf',muela:'#a9b7bf'};
+  const COL_PISTA={piano:'#e9a43f',bajo:'#5ea2e0',clave:'#cfc65a',congas:'#df7c4f',bongo:'#c973b8',campanas:'#e4c24f',timbales:'#6fc3a3',guiro:'#98bb57',bateria:'#9696e0'};
+  const zoomSel=$('mt-zoom');zoomSel.value=String(load('tdt-zoom',0));if(!zoomSel.value)zoomSel.value='0';
+  zoomSel.onchange=()=>{store('tdt-zoom',+zoomSel.value);pintarPistas()};
   function pintarPistas(){
-    bw=innerWidth<620?30:40;
-    const ts=tramos(), nb=ts.reduce((a,x)=>a+x.n,0), W=nb*bw;
+    const ts=tramos(), nb=Math.max(1,ts.reduce((a,x)=>a+x.n,0));
+    bw=+zoomSel.value||Math.max(16,Math.min(64,Math.floor((mt.clientWidth-cabezaPx()-16)/nb)));   // «ajustar»: la canción entera a lo ancho
+    const W=nb*bw;
     mtIn.innerHTML='';mtIn.style.width='calc(var(--mt-head) + '+W+'px)';
-    const fila=(cls,nombre,alto)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');hd.appendChild(el('span','mt-nom',nombre));
+    const fila=(cls,nombre,alto,color)=>{const r=el('div','mt-row '+cls),hd=el('div','mt-h'),b=el('div','mt-b');
+      if(color){const c=el('span','mt-color');c.style.background=color;hd.appendChild(c)}
+      const nm=el('span','mt-nom',nombre);nm.title=nombre;hd.appendChild(nm);
       b.style.width=W+'px';if(alto)b.style.height=alto+'px';r.append(hd,b);mtIn.appendChild(r);return {hd,b}};
     const enBarra=(e,b)=>Math.max(0,Math.min(nb-1,Math.floor((e.clientX-b.getBoundingClientRect().left)/bw)));
     const tramoDe=k=>ts.findIndex(x=>k>=x.ini&&k<x.ini+x.n);
     // regla: número de compás, con el lado 3 de la clave sombreado
     const tres=/3-2/.test(song.clave), rg=fila('mt-regla','Compás');
-    for(let k=0;k<nb;k++){const c=el('span','mt-c'+(((res&&res.lados[k])||((k+(tres?0:1))%2===0?'A':'B'))==='A'?' l3':''),bw>=30||k%2===0?String(k+1):'');
+    for(let k=0;k<nb;k++){const c=el('span','mt-c'+(((res&&res.lados[k])||((k+(tres?0:1))%2===0?'A':'B'))==='A'?' l3':''),bw>=26||k%4===0?String(k+1):'');
       c.style.left=k*bw+'px';c.style.width=bw+'px';rg.b.appendChild(c)}
     rg.b.title='Clic: tocar desde ese compás (sombreado: lado 3 de la clave)';
     rg.b.onclick=e=>{const ms=P.score&&P.score.measures,k=enBarra(e,rg.b);if(ms&&ms[k])seek(ms[k].start)};
-    // secciones
+    // secciones, del color de su marcha
     const sc=fila('mt-secs','Secciones');
     ts.forEach((x,i)=>{const b=el('button','mt-sec'+(i===cur?' sel':''),(x.s.fija?'🔒 ':'')+nombreDe(x.s)+(x.s.vueltas>1?' ×'+x.s.vueltas:''));b.type='button';
-      b.style.left=x.ini*bw+2+'px';b.style.width=Math.max(8,x.n*bw-4)+'px';b.title=nombreDe(x.s)+' · '+x.n+' compases · '+(MARCHA_TXT[x.s.marcha]||x.s.marcha)+' · clic para editarla';
+      b.style.left=x.ini*bw+1+'px';b.style.width=Math.max(8,x.n*bw-2)+'px';b.style.background=COL_MARCHA[x.s.marcha]||'#c8c8c8';
+      b.title=nombreDe(x.s)+' · '+x.n+' compases · '+(MARCHA_TXT[x.s.marcha]||x.s.marcha)+' · clic para editarla';
       b.onclick=()=>elegir(i);sc.b.appendChild(b)});
     // acordes
     const ac=fila('mt-acs','Acordes');
@@ -4733,9 +4872,9 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     if(P.score)for(const n of P.notes){const id=pistaDe(n);if(id)(porPista[id]=porPista[id]||[]).push(n)}
     const ms=P.score?P.score.measures:[];
     xDe=t=>{let lo=0,hi=ms.length-1;if(hi<0)return 0;while(lo<hi){const m=(lo+hi+1)>>1;if(ms[m].start<=t)lo=m;else hi=m-1}const m=ms[lo];return (lo+Math.min(1,(t-m.start)/(m.end-m.start||1)))*bw};
-    const col={ink:tok('--ink'),acc:tok('--accent'),soft:tok('--accent-soft'),line:tok('--line'),muted:tok('--muted')};
+    const col={soft:tok('--accent-soft'),line:tok('--line'),bg:tok('--bg')};
     for(const [id,t] of PISTAS){
-      const h=ALTO[id]||20,f=fila('mt-pista',t,h);
+      const h=ALTO[id]||28,f=fila('mt-pista',t,h,COL_PISTA[id]);
       cabeza(f.hd,id,t);
       const cv=el('canvas');f.b.appendChild(cv);dibujar(cv,id,ts,W,h,porPista[id]||[],col);
       f.b.title='Clic: entra o sale '+t.toLowerCase()+' en esa sección';
@@ -4743,34 +4882,38 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     }
     cursor=el('div','mt-cursor');mtIn.appendChild(cursor);
   }
+  // cada sección es un «clip»: fondo del color de la pista, más fuerte en la sección elegida, gris donde la pista no toca
   function dibujar(cv,id,ts,W,h,notas,col){
     const dpr=window.devicePixelRatio||1;cv.width=Math.max(1,Math.round(W*dpr));cv.height=Math.round(h*dpr);cv.style.width=W+'px';cv.style.height=h+'px';
-    const g=cv.getContext('2d');g.scale(dpr,dpr);
+    const g=cv.getContext('2d');g.scale(dpr,dpr);const c=COL_PISTA[id];
     ts.forEach((x,i)=>{
-      if(i===cur){g.fillStyle=col.soft;g.fillRect(x.ini*bw,0,x.n*bw,h)}
-      if(x.s.pistas[id]===false){g.fillStyle=col.line;g.globalAlpha=.6;g.fillRect(x.ini*bw,0,x.n*bw,h);g.globalAlpha=1}
-      g.fillStyle=col.line;g.fillRect(x.ini*bw,0,1,h);
+      const x0=x.ini*bw+1,w=x.n*bw-2;
+      if(x.s.pistas[id]===false){g.fillStyle=col.line;g.globalAlpha=.35;g.fillRect(x0,2,w,h-4)}
+      else{g.fillStyle=c;g.globalAlpha=i===cur?.32:.16;g.fillRect(x0,2,w,h-4);g.globalAlpha=i===cur?.9:.45;g.fillRect(x0,2,w,2)}
+      g.globalAlpha=1;
     });
     if(!notas.length)return;
+    g.fillStyle=tok('--ink');
     if(id==='piano'||id==='bajo'){
       let lo=127,hi=0;for(const n of notas){if(n.midi<lo)lo=n.midi;if(n.midi>hi)hi=n.midi}
-      g.fillStyle=col.ink;
-      for(const n of notas){const x=xDe(n.t),w=Math.max(1.5,xDe(n.t+(n.dur||240))-x-1),y=h-3-(n.midi-lo)/Math.max(1,hi-lo)*(h-6);g.fillRect(x,y-1,w,2.2)}
+      for(const n of notas){const x=xDe(n.t),w=Math.max(1.5,xDe(n.t+(n.dur||240))-x-1),y=h-5-(n.midi-lo)/Math.max(1,hi-lo)*(h-11);g.fillRect(x,y-1,w,2.4)}
     } else {
-      g.fillStyle=col.acc;
-      for(const n of notas){const v=Math.min(1,(n.vel||1)/1.1),a=(h-4)*(.3+.7*v);g.globalAlpha=.4+.6*v;g.fillRect(xDe(n.t),h-2-a,1.6,a)}
+      for(const n of notas){const v=Math.min(1,(n.vel||1)/1.1),a=(h-8)*(.3+.7*v);g.globalAlpha=.45+.55*v;g.fillRect(xDe(n.t),h-3-a,1.6,a)}
       g.globalAlpha=1;
     }
   }
-  // ---------- mezcla (mute, solo, volumen por pista): se aplica al tocar, sin regenerar
+  // ---------- mezcla: mute y solo valen para toda la canción (se aplican al tocar); el volumen es de cada sección
+  // (o de todas, con «Las perillas valen para: toda la canción»), y también se aplica al tocar, sin regenerar
   function aplicarMezcla(){P.mezcla=song.mezcla;P.haySolo=Object.values(song.mezcla).some(m=>m&&m.solo)}
+  function aplicarVolumen(){P.volBar=tramos().flatMap(x=>Array(x.n).fill(x.s.vol||(x.s.vol={})));P.volScore=P.score}
   function cabeza(hd,id,t){
-    const m=song.mezcla[id]=song.mezcla[id]||{mute:false,solo:false,vol:1};
+    const m=song.mezcla[id]=song.mezcla[id]||{mute:false,solo:false};
     const bt=(txt,clave,tit)=>{const b=el('button','mt-btn',txt);b.type='button';b.title=tit;b.setAttribute('aria-pressed',String(!!m[clave]));
       b.onclick=()=>{m[clave]=!m[clave];b.setAttribute('aria-pressed',String(m[clave]));aplicarMezcla();save()};return b};
-    const v=el('input');v.type='range';v.min=0;v.max=1.5;v.step=.05;v.value=m.vol??1;v.title='Volumen de '+t.toLowerCase();v.setAttribute('aria-label',v.title);
-    v.oninput=()=>{m.vol=+v.value;aplicarMezcla()};v.onchange=save;
-    hd.append(bt('M','mute','Silenciar '+t.toLowerCase()),bt('S','solo','Solo: escuchar solo las pistas con S'),v);
+    const s=S(),v=el('input');v.type='range';v.min=0;v.max=1.5;v.step=.05;v.value=(s.vol&&s.vol[id])??1;
+    v.title='Volumen de '+t.toLowerCase()+(alc==='cancion'?' en toda la canción':' en «'+nombreDe(s)+'»');v.setAttribute('aria-label',v.title);
+    v.oninput=()=>{for(const x of alc==='cancion'?song.secciones:[S()])(x.vol=x.vol||{})[id]=+v.value};v.onchange=save;
+    hd.append(bt('M','mute','Silenciar '+t.toLowerCase()+' (en toda la canción)'),bt('S','solo','Solo: escuchar solo las pistas con S'),v);
   }
 
   // ---------- loop: toda la canción, la sección elegida o nada
@@ -4791,7 +4934,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     const was=P.playing; if(was)pause();
     if(!window.__setSource(r.src,'cancion.ly'))return;
     res=r.res;partitura=P.score;generated=true;window.__lastTumbao=r.src;
-    aplicarLoop();pintarPistas();alcanceUI();inf(resumen());save();
+    aplicarLoop();aplicarVolumen();pintarPistas();alcanceUI();inf(resumen());save();
     if(play_||was){
       if($('pk-snd').value==='pack'&&!PACK.S.ready){inf('Cargando la banda de samples…');await PACK.load();inf(resumen())}
       else if($('pk-snd').value==='sf2'&&!SF2.ready()){inf('Cargando GeneralUser GS…');await SF2.load();inf(resumen())}
@@ -4809,6 +4952,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   $('tb-copy').onclick=async()=>{const s=window.__lastTumbao||$('src').value;try{await navigator.clipboard.writeText(s);inf('Código LilyPond copiado.')}catch(_){const t=$('src');t.focus();t.select();inf('Seleccioné el código en el editor: copialo con Ctrl+C / Cmd+C.')}};
   function refrescar(){
     song.mezcla=song.mezcla||{};cur=Math.min(cur,song.secciones.length-1);
+    for(const [id,m] of Object.entries(song.mezcla)){if(m&&m.vol!=null){if(m.vol!==1)for(const x of song.secciones){x.vol=x.vol||{};if(x.vol[id]==null)x.vol[id]=m.vol}delete m.vol}}
     $('cn-titulo').value=song.titulo||'';$('tb-clave').value=song.clave||'son 2-3';$('cn-banda').value=song.banda==='salsa'?'salsa':'timba';
     aplicarMezcla();pintarSeccion();draw();pintarPistas();save();
   }
@@ -4836,10 +4980,11 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   const midiGeneral=$('midi').onclick;
   function bajarMidi(){
     if(!res||P.score!==partitura)return midiGeneral&&midiGeneral();
-    const ms=P.score.measures,perc=ms.map(()=>[]);
+    const ms=P.score.measures,perc=ms.map(()=>[]),vb=b=>(P.volBar&&P.volBar[b])||{};
     for(const n of P.notes){if(!n.drum)continue;let i=0;while(i<ms.length-1&&ms[i+1].start<=n.t)i++;const m=ms[i];
-      perc[i].push({p:Math.max(0,Math.min(15,Math.round((n.t-m.start)/((m.end-m.start)/16)))),d:n.drum,v:n.vel||1})}
-    bajar(TM.aMidi({...res,extra:null},P.bpm,{porFamilia:true,perc}),archivo()+'.mid','audio/midi');
+      perc[i].push({p:Math.max(0,Math.min(15,Math.round((n.t-m.start)/((m.end-m.start)/16)))),d:n.drum,v:(n.vel||1)*(vb(i)[TM.familiaPerc(n.drum)]??1)})}
+    const conVol=(evs,id)=>evs.map(e=>({...e,v:Math.round((e.v||90)*(vb(Math.floor(e.p/16))[id]??1))}));
+    bajar(TM.aMidi({...res,der:conVol(res.der,'piano'),izq:conVol(res.izq,'piano'),bajo:conVol(res.bajo,'bajo'),extra:null},P.bpm,{porFamilia:true,perc}),archivo()+'.mid','audio/midi');
     inf('MIDI de la canción: piano, bajo y una pista por instrumento de percusión, con las secciones marcadas.');
   }
   $('midi').onclick=bajarMidi;$('cn-midi').onclick=bajarMidi;
@@ -4932,7 +5077,6 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
 
   // ---------- lo que suena: cursor en el multipista (que se corre para seguirlo) y acorde resaltado en la grilla
   let lastOn=-1, ancho=innerWidth;
-  const cabezaPx=()=>parseFloat(tok('--mt-head'))||136;
   (function frame(){
     let idx=-1;
     if(generated&&P.score&&cursor){
@@ -4940,7 +5084,9 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
       cursor.style.display=ver?'block':'none';
       if(ver){const x=xDe(t);cursor.style.left='calc(var(--mt-head) + '+x+'px)';
         if(P.playing){const vis=x-mt.scrollLeft,an=mt.clientWidth-cabezaPx();if(vis<0||vis>an-24)mt.scrollLeft=Math.max(0,x-24)}}
-      if(P.playing){let k=0;while(k<ms.length-1&&ms[k+1].start<=t)k++;const x=tramos()[cur];
+      if(P.playing){let k=0;while(k<ms.length-1&&ms[k+1].start<=t)k++;
+        if(P.seguir){const i=tramos().findIndex(x=>k>=x.ini&&k<x.ini+x.n);if(i>=0&&i!==cur)mostrar(i)}
+        const x=tramos()[cur];
         if(k>=x.ini&&k<x.ini+x.n)idx=((k-x.ini)%x.s.bars.length)*2+((t-ms[k].start)>=(ms[k].end-ms[k].start)/2?1:0)}
     }
     if(idx!==lastOn){document.querySelectorAll('.cg-card').forEach(c=>{const i=+c.dataset.i;const on=idx>=0&&(idx>>1)===i;c.classList.toggle('on',on);
@@ -4948,7 +5094,30 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     requestAnimationFrame(frame);
   })();
   // el ancho de los compases cambia en el celular: redibujar al rotar o achicar la ventana
-  addEventListener('resize',()=>{if((innerWidth<620)!==(ancho<620))pintarPistas();ancho=innerWidth});
+  let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(!+zoomSel.value||(innerWidth<620)!==(ancho<620))pintarPistas();ancho=innerWidth},150)});
+
+  // ---------- la app: paneles que se abren encima, partitura, bloques plegables y alto del panel de la sección
+  const medirBarra=()=>document.documentElement.style.setProperty('--bar-h',document.querySelector('.transport').offsetHeight+'px');
+  medirBarra();addEventListener('resize',medirBarra);addEventListener('load',medirBarra);
+  const PANELES=['gen-arr','gen-base'];
+  const abrir=(id,on)=>{document.body.classList.toggle('ver-'+id,on);
+    document.querySelectorAll('.tr-panels [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(document.body.classList.contains('ver-'+b.dataset.panel))))};
+  document.querySelectorAll('.tr-panels [data-panel]').forEach(b=>b.onclick=()=>{const on=!document.body.classList.contains('ver-'+b.dataset.panel);PANELES.forEach(x=>abrir(x,false));abrir(b.dataset.panel,on)});
+  document.querySelectorAll('.panel [data-cerrar]').forEach(b=>b.onclick=()=>abrir(b.closest('.panel').id,false));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')PANELES.forEach(x=>abrir(x,false))});
+  $('pn-partitura-x').onclick=()=>{const c=$('ver-partitura');c.checked=false;c.dispatchEvent(new Event('change'))};
+  const plegados=load('tdt-devs',{});
+  document.querySelectorAll('.dev').forEach(d=>{const h=d.querySelector('.dev-h'),id=d.dataset.dev;
+    const poner=v=>{d.classList.toggle('plegado',v);h.setAttribute('aria-expanded',String(!v));h.title=(v?'Mostrar ':'Plegar ')+h.textContent.toLowerCase()};
+    poner(!!plegados[id]);h.onclick=()=>{plegados[id]=!d.classList.contains('plegado');poner(plegados[id]);store('tdt-devs',plegados)}});
+  const caja=$('sec-box');caja.classList.toggle('cerrado',!!load('tdt-det-cerrado',false));
+  $('det-plegar').onclick=()=>{caja.classList.toggle('cerrado');store('tdt-det-cerrado',caja.classList.contains('cerrado'))};
+  const altoDet=h=>document.documentElement.style.setProperty('--det-h',Math.round(h)+'px');
+  if(load('tdt-det-h',0))altoDet(load('tdt-det-h',0));
+  $('det-tirador').onpointerdown=e=>{
+    const t=e.currentTarget,y0=e.clientY,h0=caja.getBoundingClientRect().height;t.setPointerCapture(e.pointerId);t.classList.add('arrastra');
+    t.onpointermove=ev=>altoDet(Math.max(96,Math.min(innerHeight*.8,h0-(ev.clientY-y0))));
+    t.onpointerup=()=>{t.onpointermove=null;t.classList.remove('arrastra');store('tdt-det-h',caja.getBoundingClientRect().height)}};
 
   refrescar();drawFavs();
   // el ejemplo inicial ya está en el editor: lo marcamos como generado para que los cambios regeneren
@@ -4968,8 +5137,8 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
   const ayuda=(el,texto)=>{const s=document.createElement('small');s.className='ayuda';s.textContent=texto;
     el.after(s);return s};
   const PANELES={
-    '#gen':'Arriba, la canción como multipista: cada bloque es una sección y cada fila un instrumento. Clic en una sección para editarla abajo: tipo, marcha, onda del piano, compases, vueltas, cómo entra y cómo termina, qué instrumentos tocan, sus acordes y cómo toca la banda (las perillas de piano, bajo y percusión de esa sección). Clic en una pista adentro de una sección la prende o la apaga ahí; M, S y el volumen de cada pista mezclan sin cambiar las notas.',
-    '#gen-arr':'La clave, la banda (timba con batería o salsa sin batería) y el timbre del bajo valen para toda la canción. Abajo, el sonido y los botones para generar, guardar y exportar.',
+    '#gen':'Las pistas de la canción: cada bloque de color es una sección (el color dice la marcha) y cada fila un instrumento. Clic en una sección para editarla en el panel de abajo (estructura, acordes, piano, bajo y percusión; cada bloque se pliega con su título). Clic en una pista adentro de una sección: ese instrumento entra o sale ahí. M y S valen para toda la canción; el volumen de cada pista es de la sección elegida. Con «Seguir», mientras suena, el panel de abajo muestra la sección que suena.',
+    '#gen-arr':'Timbre del bajo, sonido, canciones guardadas y para bajar MIDI o MP3. La clave, la banda, el tempo y el loop están en la barra de arriba.',
     '#gen-base':'El algoritmo nuevo aprende de los temas marcados: el ritmo y la textura del piano, los roles del bajo y los juegos de percusión. Desmarcá temas o usá los filtros para cambiar el estilo; sumá tus MIDIs para enseñarle cosas nuevas.'
   };
   for(const s in PANELES){const h=q(s+' .gen-head');if(h){const p=ayuda(h,PANELES[s]);p.classList.add('ayuda-panel')}}
@@ -4990,6 +5159,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     '#tb-var':{t:'Otro tumbao para esta sección, con los mismos acordes y estilo'},
     '#cn-titulo':{t:'Título de la canción (va en la partitura)'},
     '#cn-loop':{t:'Qué se repite: toda la canción o solo la sección que estás editando'},
+    '#mt-zoom':{t:'Ancho de cada compás en las pistas; «ajustar» mete la canción entera a lo ancho'},
     '#cn-nueva':{t:'Empezar una canción nueva de una sola sección'},
     '#sc-entra':{t:'Cómo arranca la sección: directo, o con el plato del timbalero en el 1'},
     '#sc-tipo':{t:'Qué parte del tema es',e:'Trae la marcha, cómo termina y qué instrumentos tocan: en el cuerpo, martillo de bongó y cáscara sin campanas; en el coro entran las campanas; del cuerpo al coro, abanico. Después se puede cambiar todo.'},
@@ -5044,8 +5214,9 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     'son 3-2':'Clave de son: lado 3 en el 1, el 2& y el 4; lado 2 en el 2 y el 3. Empieza por el lado 3.',
     'son 2-3':'Clave de son que empieza por el lado 2 (golpes en el 2 y el 3), y sigue con el lado 3.'};
   for(const [id,T] of [['tb-gear',MARCHAS],['tb-clave',CLAVES]]){
-    const sel=document.getElementById(id),s=ayuda(id==='tb-gear'?q('.sec-flds'):sel.closest('label'),'');
-    const poner=()=>{s.textContent=T[sel.value]||''};poner();sel.addEventListener('change',poner);sel.addEventListener('input',poner);
+    // la clave está en la barra de arriba: su explicación va de tooltip
+    const sel=document.getElementById(id),s=id==='tb-gear'?ayuda(q('.sec-flds'),''):null;
+    const poner=()=>{if(s)s.textContent=T[sel.value]||'';else sel.closest('label').title=sel.title=T[sel.value]||''};poner();sel.addEventListener('change',poner);sel.addEventListener('input',poner);
   }
   // interruptor de las explicaciones (prendido de entrada)
   const sw=document.getElementById('ver-ayuda');
