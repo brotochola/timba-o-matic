@@ -44,8 +44,10 @@ if (iImp >= 0) {
 // (salvo las que dicen _encendida). Una colección puede traer sus .mid de otra carpeta (_carpeta, con subcarpetas: el estilo
 // de cada una en _grupos y el tipo de sección según el nombre del archivo en _secciones). Las _local van a base_local.js,
 // que no se sube al repositorio: es material comprado.
-const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)).sort() : [];
-const listarTodo = d => fs.existsSync(d) ? fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? listarTodo(path.join(d, e.name)) : /\.midi?$/i.test(e.name) ? [path.join(d, e.name)] : []).sort() : [];
+// los .kar son MIDI con letra; quedan afuera los repetidos al bajarlos («… (1).mid») y lo que exporta la propia app («!!…»)
+const sirve = f => /\.(midi?|kar)$/i.test(f) && !/\(\d+\)\.\w+$/.test(f) && !f.startsWith('!!');
+const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(sirve).map(f => path.join(d, f)).sort() : [];
+const listarTodo = d => fs.existsSync(d) ? fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? listarTodo(path.join(d, e.name)) : sirve(e.name) ? [path.join(d, e.name)] : []).sort() : [];
 const leerMeta = d => fs.existsSync(path.join(d, 'fuentes.json')) ? JSON.parse(fs.readFileSync(path.join(d, 'fuentes.json'), 'utf8')) : {};
 const archivos = [...listar(RAIZ), ...listar(MIDIS)].sort().map(f => ({ f, nombre: path.basename(f), meta: META[path.basename(f)] || {} }));
 const colecciones = {}, locales = new Set();
