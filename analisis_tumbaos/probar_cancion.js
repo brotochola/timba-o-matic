@@ -192,6 +192,55 @@ for (const [rel, d] of [['abanico', 'timbalH'], ['redoble', 'timbalL'], ['floreo
   ok((rf.perc[4] || []).concat(rf.extra[4] || []).some(e => e.p === 0 && ['plato', 'timbalH', 'salidor', 'crash'].includes(e.d)), `relleno ${rel}: un golpe en el 1 de lo que viene`);
 }
 
+console.log('15. el piano del pianista acomodado a los acordes (09_piano.js)');
+// la conducción de voces: la frase de un pianista sobre sus mismos acordes vuelve igual, y con todos los acordes un tono arriba
+// sube un tono entera (salvo lo que se corrige a propósito: notas fuera del acorde largas o fuertes, y arriba del mi6)
+{
+  let igual = 0, total = 0, sube = 0;
+  for (const id of ['b:1165.mid', 'b:1148.mid', 'b:Lloraras.mid', 'b:1176.mid']) {
+    const f = base.fuentes.find(x => x.id === id); if (!f) continue;
+    const tops = f.piano.flatMap(c => c.e.map(e => Math.max(...e[2]))).sort((a, b) => a - b), medTop = tops[tops.length >> 1];
+    const evsDe = (c, K, T) => c.e.map(([p, d, ps, v]) => { const o = ps.slice().sort((a, b) => a - b), top = o[o.length - 1], cur = K.en(p), S = TM.anticipaAtaque(o, top, cur, K.proximo(p)) ? K.proximo(p) : cur, sola = top < medTop - 9;
+      return { p, d, v, der: sola ? [] : o.filter(x => x >= top - 12), izq: sola ? o : o.filter(x => x < top - 12), S, T: T(S), fuerte: p % 16 === 6 || p % 16 === 14 || d >= 3 }; }).sort((a, b) => a.p - b.p);
+    for (const c of f.piano) {
+      const K = TM.acordesCiclo(c); if (!K.ok) continue;
+      const ev = evsDe(c, K, S => S);
+      if (!ev.every(e => e.der.concat(e.izq).every(m => TM.funcion(m, e.S) !== 'X' || (e.d <= 2 && !e.fuerte)) && e.der.every(m => m <= 86))) continue;
+      TM.acomodar(ev, {}); for (const e of ev) { total++; if (e.der2.join() === e.der.join() && e.izq2.join() === e.izq.join()) igual++; }
+      const ev2 = evsDe(c, K, S => TM.acorde(TM.NOM[(S.raiz + 2) % 12] + S.q));
+      TM.acomodar(ev2, {}); for (const e of ev2) if (e.der2.join() === e.der.map(x => x + 2).join() && e.izq2.join() === e.izq.map(x => x + 2).join()) sube++;
+    }
+  }
+  console.log(`   ${total} ataques: ${igual} iguales en sus acordes, ${sube} transportados un tono`);
+  ok(total > 1000 && igual / total >= 0.95, `la frase en sus mismos acordes vuelve igual (${igual}/${total})`);
+  ok(total > 1000 && sube / total >= 0.94, `con los acordes un tono arriba, la frase sube un tono (${sube}/${total})`);
+}
+const sec1 = (p = {}, extra = {}) => TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 2, semilla: 3, perillas: p, ...extra }] }, M);
+const opus = sec1();
+ok(opus.secciones[0].info.opus && opus.der.length > 30, 'el piano de entrada es Opus');
+// sin la colección local (esta base no la trae), Toontrack toca Opus en el estilo más parecido
+const tt = sec1({ frase: 'toontrack', tt_estilo: 'songo' });
+ok(tt.secciones[0].info.sinToontrack && tt.secciones[0].info.opus && tt.der.length > 30, 'Toontrack sin la colección local: toca Opus');
+// las perillas fuera de rango (una canción guardada con «deslizamientos 3300%») valen lo mismo que en su tope
+const fuera = sec1({ b_gliss: 33, dens: 9, frase: 'xx', lh: 'nada de nada' }), tope = sec1({ b_gliss: 1, dens: 1.5, frase: 'opus', lh: 'auto' });
+ok(JSON.stringify([fuera.der, fuera.izq, fuera.bajo]) === JSON.stringify([tope.der, tope.izq, tope.bajo]), 'las perillas se acotan a su rango y las listas a sus valores');
+for (const e of opus.izq) if (Math.min(...e.ps) < 45) { ok(false, `la izquierda no baja del la2 (${TM.nom(Math.min(...e.ps))} en ${e.p})`); break; }
+
+console.log('16. el bajo: el 2& y el 4; el 1 solo si no vino ligado (pedido del dueño)');
+const bajoEn = (r, b) => r.bajo.filter(e => e.p >= b * 16 && e.p < b * 16 + 16).map(e => e.p % 16);
+// el tumbao de salsa anticipa en el 4 aunque el estilo cambie en el 4& (Pupy), salvo el último compás (la unión)
+const pupySalsa = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 2, semilla: 3, perillas: { b_estilo: 'salsa', b_aprox: 0 } }] }, M);
+ok([1, 2, 3, 4, 5, 6].every(b => bajoEn(pupySalsa, b).includes(12) && !bajoEn(pupySalsa, b).includes(14)), `tumbao de salsa en Pupy: el anticipo en el 4 (${[1, 2, 3].map(b => bajoEn(pupySalsa, b).join(',')).join(' | ')})`);
+ok(bajoEn(pupySalsa, 0).join() === '0,6,12', `el bajo que toca el 1 (el principio) hace el tresillo: ${bajoEn(pupySalsa, 0).join(',')}`);
+ok(!bajoEn(pupySalsa, 7).includes(0), 'el último compás no vuelve a atacar el 1 (la raíz vino ligada del 4)');
+// con clave de son, el 4 del lado 3 siempre (el timbero no lo traía); con la de rumba, no hace falta
+for (const [clave, quiere] of [['son 2-3', true], ['rumba 2-3', false]]) {
+  const rt = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'tirso', vueltas: 2, semilla: 3, perillas: { b_estilo: 'timbero', b_aprox: 0 } }] }, M);
+  const lado3 = rt.lados.map((l, b) => l === 'A' ? b : null).filter(b => b != null);
+  const todos = lado3.every(b => bajoEn(rt, b).includes(12));
+  ok(todos === quiere, `${clave}: el timbero ${quiere ? 'toca' : 'no está obligado a tocar'} el 4 del lado 3 (${lado3.map(b => bajoEn(rt, b).join(',')).join(' | ')})`);
+}
+
 if (process.argv[2]) { fs.writeFileSync(process.argv[2], ly); console.log('LilyPond → ' + process.argv[2]); }
 console.log(`\n${pruebas - fallas}/${pruebas} bien`);
 process.exit(fallas ? 1 : 0);

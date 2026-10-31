@@ -66,6 +66,10 @@
       if (a.T.nombre !== b.T.nombre) s += Math.abs(dt) <= 2 ? 0.4 : Math.abs(dt) <= 4 ? 0.1 : -0.2;
       return s;
     };
+    // arriba del mi6 (el techo del piano en la app), la octava de arriba se deja: la línea sigue en la nota de abajo, como haría el
+    // pianista (si no, la línea entera se correría a otras notas para no pasarse)
+    const ideal = (y, S, T) => { const obj = objetivo(y, S, T); let best = null; for (let m = y + reg - 6; m <= y + reg + 6; m++) if (TM.funcion(m, T) === obj && (best == null || Math.abs(m - y - reg) < Math.abs(best - y - reg))) best = m; return best ?? y + reg; };
+    for (const e of evs) { const top = e.der[e.der.length - 1]; if (e.der.length > 1 && e.der.includes(top - 12) && ideal(top, e.S, e.T) > 88) e.der = e.der.filter(x => x !== top); }
     // 1. la línea de arriba (los ataques con derecha)
     const D = evs.filter(e => e.der.length);
     const topF = D.map(e => e.der[e.der.length - 1]);
@@ -104,7 +108,7 @@
     // izquierda baja del sib2 en menos del 2% de los ataques)
     const I = evs.filter(e => e.izq.length);
     const bajos = I.map(e => e.izq[0]);
-    const techoI = e => e.der2 && e.der2.length ? e.der2[0] - 1 : 72;
+    const techoI = e => e.der2 && e.der2.length ? e.der2[0] - 1 : 84;   // la izquierda sola, sin la derecha encima
     const izqs = viterbi(I.length, i => { const z = bajos[i] + reg, c = []; for (let m = Math.max(43, z - 6); m <= Math.min(techoI(I[i]), z + 6); m++) c.push(m); return c.length ? c : [Math.min(techoI(I[i]), Math.max(45, z))]; },
       (i, m) => puntaje(I[i], bajos[i], m) - 0.5 * ((m - bajos[i] - reg) / 5) ** 2 - (m < 46 ? 2 : 0),
       (i, ma, mb) => paso(I[i - 1], I[i], bajos[i - 1], bajos[i], ma, mb));
@@ -135,10 +139,11 @@
     // resolviendo por grado (medio tono o un tono) en una nota del acorde del ataque que sigue; si no, va a la nota del acorde más
     // cercana. Doblada (en octava o bloque) solo dura una semicorchea, y en Opus va sola. Y nunca dos notas a medio tono que el
     // acorde no explica
-    const resuelve = (z, n) => n && [...n.der2, ...n.izq2].some(w => Math.abs(w - z) >= 1 && Math.abs(w - z) <= 2 && DEL[TM.funcion(w, n.T)]);
+    const resuelve = (z, ns) => ns.some(n => [...n.der2, ...n.izq2].some(w => Math.abs(w - z) >= 1 && Math.abs(w - z) <= 2 && DEL[TM.funcion(w, n.T)]));
     evs.forEach((e, i) => {
-      const n = evs[i + 1] && evs[i + 1].p - e.p <= 4 ? evs[i + 1] : null;
-      const dePaso = z => crom > 0 && !e.fuerte && e.d <= 2 && resuelve(z, n);
+      // (resuelve en algún ataque de la negra que sigue: también después de un salto del arpegio, do# fa# re)
+      const ns = evs.slice(i + 1).filter(x => x.p - e.p <= 4);
+      const dePaso = z => crom > 0 && !e.fuerte && e.d <= 2 && resuelve(z, ns);
       const arreglar = (lista, techo, derecha) => {
         for (let k = 0; k < lista.length; k++) {
           const z = lista[k], g = TM.funcion(z, e.T);
