@@ -1,10 +1,12 @@
 /* =====================================================================
    Jurado: todo lo que se puede medir de una vez, para ajustar el motor sin romper otra cosa
-   uso: node analisis_tumbaos/jurado.js [--solo reglas|temas]
+   uso: node analisis_tumbaos/jurado.js [--solo reglas|temas|piano]
    1. Temas: recrea pedazos de temas de la base (comparar.js) con el estilo que corresponde y da el parecido por instrumento.
    2. Reglas: genera cada estilo en cada marcha (una sección en loop y una canción con final) y revisa
       la clave, los anticipos según el cambio de acorde, la costura del loop, las notas cromáticas, los registros,
       las manos que se pisan y el final.
+   3. Piano: el oído (comparar.js) sobre lo que toca cada piano (Opus, células, frase real, Toontrack) en cada estilo, al lado de los
+      pianistas de la base: clave, anticipos, gancho, acentos, notas falsas, semitonos, choques con el bajo, la izquierda en el barro.
    ===================================================================== */
 const path = require('path');
 const TM = require('./motor');
@@ -20,7 +22,7 @@ const TEMAS = [
   { t: 'Pare cochero - Salsa.mid', desde: 40, n: 16, sec: { marcha: 'marcha', estilo: 'charanga' }, nota: 'Pare cochero: montuno (charanga)' },
   { t: 'ya empezo la fiesta.mid', desde: 12, n: 16, sec: { marcha: 'marcha', estilo: 'melon' }, nota: 'Ya empezó la fiesta (timba)', sinPerc: 'la clave del original es dudosa' }
 ];
-if (solo !== 'reglas') {
+if (solo !== 'reglas' && solo !== 'piano') {
   const ctx = C.cadenaPagina();
   console.log('TEMAS (parecido 0-1 por instrumento; promedio de 3 semillas)');
   for (const x of TEMAS) {
@@ -35,7 +37,7 @@ if (solo !== 'reglas') {
 }
 
 // ---------- 2. reglas
-if (solo !== 'temas') {
+if (solo !== 'temas' && solo !== 'piano') {
   const PROG = 'Am D7 G E7', MARCHAS = ['cuerpo', 'marcha', 'mambo', 'presion', 'bomba', 'despelote', 'muela'];
   const fallas = {}, n = { casos: 0 }, stats = { notas: 0, cortas: 0, golpes: 0, distintas: 0, unisono: 0, saltos: {}, sube: { n: 0, a: 0, z: 0 } };
   const falla = (regla, caso) => { (fallas[regla] = fallas[regla] || []).push(caso); };
@@ -120,4 +122,44 @@ if (solo !== 'temas') {
   if (sb.n) console.log(`  los mambos largos suben: la nota más aguda de cada compás, del primer tercio al último, ${((sb.z - sb.a) / sb.n >= 0 ? '+' : '') + ((sb.z - sb.a) / sb.n).toFixed(1)} semitonos (corpus +2: de Do5 a Re5)`);
   for (const [k, v] of Object.entries(fallas)) console.log(`  ${k}: ${v.length} — ${v.slice(0, 4).join(' | ')}`);
   process.exitCode = Object.keys(fallas).length ? 1 : 0;
+}
+
+// ---------- 3. piano: el oído
+if (!solo || solo === 'piano') {
+  const PROGS = ['Am D7 G E7', 'Dm7 G7 Cmaj7 A7', 'Gm Cm D7 Gm'], MARCHAS = ['cuerpo', 'marcha', 'mambo'];
+  const COLS = [['clave', 'clave', 'n'], ['claveOK', 'cl+', '%'], ['ligaA', 'lig3', '%'], ['ligaB', 'lig2', '%'], ['densidad', 'dens', 'n'], ['repite4', 'gch4', '%'], ['acentos', 'acen', 'n'],
+    ['falsas', 'fals', '%'], ['semitono', 'semi', '%'], ['choqueBajo', 'bajo', '%'], ['izqGrave', 'izq', '%'], ['octavas', 'oct', '%'], ['sueltas', 'sola', '%'], ['bloques', 'blq', '%'], ['delAcorde', 'acor', '%'], ['terceras', '3as', '%'], ['cambiaDir', 'giro', '%']];
+  const f2 = (t, v) => v == null ? '   - ' : t === 'n' ? v.toFixed(2).padStart(5) : (Math.round(100 * v) + '%').padStart(5);
+  const fila = (n, o) => console.log('  ' + n.padEnd(24) + COLS.map(([k, , t]) => f2(t, o[k])).join(''));
+  const perfil = base.perfil, velRef = M.piano.vel;
+  console.log('\nPIANO: el oído (clave: log-verosimilitud del ritmo en su lado contra el otro; lig3/lig2: anticipos ligados hacia el lado 3 y el 2;');
+  console.log('  gch4: el ritmo que vuelve a los 4 compases; fals: notas fuera del acorde largas o en el 2& y el 4&; semi: dos notas a medio tono que');
+  console.log('  el acorde no explica; bajo: medio tono contra el bajo; izq: la izquierda debajo del fa2)');
+  console.log('  ' + ''.padEnd(24) + COLS.map(([, c]) => c.padStart(5)).join(''));
+  // los pianistas de la base, por grupo
+  let loc = []; try { require('./base_local.js'); loc = (globalThis.BASE_TUMBAOS_LOCAL || {}).fuentes || []; } catch (e) { }
+  const grupos = {};
+  const grupoDe = f => f.coleccion === 'toontrack' ? 'Toontrack ' + f.grupo : f.coleccion === 'vientos2' ? (/salsa/.test(f.genero || '') ? 'vientos2: salsa' : null) : f.coleccion ? null : 'base: ' + f.estilo;
+  for (const f of base.fuentes.concat(loc)) { const g = grupoDe(f); if (g) for (const t of C.tocadoDeFuente(f)) (grupos[g] = grupos[g] || []).push({ o: C.oidoPiano(t, perfil, velRef), n: t.lados.length }); }
+  for (const g of Object.keys(grupos).sort()) fila(g, C.juntarOidos(grupos[g], velRef));
+  // lo que sale, por modo (y Opus por estilo)
+  const fallasP = [];
+  for (const modo of ['opus', 'generado', 'frase', ...(loc.length ? ['toontrack'] : [])]) {
+    const todo = [], porE = {};
+    for (const estilo of Object.keys(TM.ESTILOS)) for (const marcha of MARCHAS) for (const prog of PROGS) for (const clave of ['son 2-3', 'rumba 3-2']) {
+      const r = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog, marcha, estilo, vueltas: 2, semilla: 5, perillas: { frase: modo } }] }, M);
+      const x = { o: C.oidoPiano(C.tocadoDe(r), perfil, velRef), n: r.compases }; todo.push(x); (porE[estilo] = porE[estilo] || []).push(x);
+    }
+    fila(modo.toUpperCase(), C.juntarOidos(todo, velRef));
+    if (modo === 'opus') for (const [e, xs] of Object.entries(porE)) {
+      const o = C.juntarOidos(xs, velRef); fila('  ' + e, o);
+      // el piano de entrada: en la clave, sin notas falsas, sin semitonos que el acorde no explica, la izquierda fuera del barro
+      if (o.clave <= 0) fallasP.push(e + ': cruzado con la clave (' + o.clave.toFixed(2) + ')');
+      if (o.falsas > 0.01) fallasP.push(e + ': notas falsas ' + Math.round(100 * o.falsas) + '%');
+      if (o.semitono > 0.02) fallasP.push(e + ': semitonos ' + Math.round(100 * o.semitono) + '%');
+      if (o.izqGrave > 0.01) fallasP.push(e + ': izquierda debajo del fa2 ' + Math.round(100 * o.izqGrave) + '%');
+    }
+  }
+  console.log(fallasP.length ? '  el piano de entrada: ' + fallasP.join(' | ') : '  el piano de entrada (Opus): en la clave, sin notas falsas ni semitonos, la izquierda fuera del barro');
+  if (fallasP.length) process.exitCode = 1;
 }

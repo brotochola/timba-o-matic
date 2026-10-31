@@ -247,9 +247,9 @@
       }
     }
     evs.sort((a, b) => a.p - b.p);
-    // el registro: Toontrack y la frase real, el del pianista (más la perilla); Opus pone la línea de la plantilla, de a octavas, en
-    // el centro de la base (y de la marcha: el cuerpo, más grave)
-    const reg = (k.reg || 0) + (o.centrar ? 12 * Math.round((X.M.piano.registro.p50 + (X.marP.reg || 0) - medTop) / 12) : 0);
+    // el registro: el del pianista (más la perilla). Opus solo corre la plantilla de a octavas si quedó lejos (más de una sexta) del
+    // centro de la base: un pianista que toca grave en el soneo no tiene por qué tocar grave el coro
+    const lejos = X.M.piano.registro.p50 - medTop, reg = (k.reg || 0) + (o.centrar && Math.abs(lejos) > 8 ? 12 * Math.round(lejos / 12) : 0);
     acomodar(evs, { reg, salto: k.salto || 0, ten: k.ten, crom: k.crom, rep: X.efect ? X.efect.rep : 0, memoria: o.memoria, gancho: k.gancho, cromSola: !!o.cromSola });
     // el gancho fijo (Opus): cada vuelta repite las notas de la primera donde la plantilla y los acordes son los mismos; con la
     // perilla del gancho, a veces el pianista la toca un poco distinta
@@ -267,6 +267,8 @@
     const modo = o.izquierdaPropia && k.lh !== 'nada' ? 'auto' : k.lh || 'auto';
     for (const e of evs) {
       if (modo === 'nada') e.izq2 = [];
+      // debajo de una nota de paso, nada (la izquierda la haría chocar)
+      else if (modo !== 'auto' && e.der2.length && TM.funcion(e.der2[e.der2.length - 1], e.T) === 'X') e.izq2 = [];
       else if (modo !== 'auto' && modo !== 'ancla' && e.der2.length) e.izq2 = izquierdaDe(modo, e.der2[e.der2.length - 1], e.der2[0], e.T, X.centro || 76);
       else if (modo !== 'auto' && modo !== 'ancla') e.izq2 = [];
       // marchas livianas (cuerpo): la izquierda solo en los anticipos, en el 1 y el 3, y a veces
@@ -424,7 +426,8 @@
       const top = e.ps[e.ps.length - 1], izq = e.ps.filter(x => x < top - 12), der = e.ps.filter(x => x >= top - 12);
       const actual = der.includes(top - 12) ? 'o' : der.length === 1 ? 'x' : der.length === 2 ? 'd' : 'a';
       const base = P.tex[L][e.q] || {}, tot = Object.values(base).reduce((a, b) => a + b, 0) || 1, mult = { o: efect.oct, x: 1, d: efect.blq, a: efect.blq };
-      const t = elegir(R, ['o', 'x', 'd', 'a'], x => ((actual === x ? 0.7 : 0) + 0.3 * (base[x] || 0) / tot) * mult[x]);
+      // (al cuadrado: con la marcha que pide terceras o notas sueltas, la textura de la plantilla cede de verdad)
+      const t = elegir(R, ['o', 'x', 'd', 'a'], x => ((actual === x ? 0.7 : 0) + 0.3 * (base[x] || 0) / tot) * mult[x] ** 2);
       if (t === actual && t !== 'o') continue;
       const ch = br.acordes.length > 1 && e.q >= 8 ? br.acordes[1] : br.acordes[0];
       const debajo = (m, a, z) => { for (let x = m - a; x >= m - z; x--) if (ch.pcs.includes(pc(x))) return x; return null; };
