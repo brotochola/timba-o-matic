@@ -67,7 +67,7 @@
           e.f = TM.funcion(e.top, e.ch);
         }
         const ritmo = new Array(32).fill('.'); for (const e of ev) ritmo[e.p] = e.t;
-        P.ciclos.push({ f: f.id, estilo: f.estilo, ev, ritmo: ritmo.join(''), A: K.A, n: ev.length });
+        P.ciclos.push({ f: f.id, estilo: f.estilo, seccion: f.seccion || null, grupo: f.grupo || null, c: c.c, ev, ritmo: ritmo.join(''), A: K.A, n: ev.length });
         for (const L of ['A', 'B']) {
           P.n[L]++;
           for (const e of ev) {

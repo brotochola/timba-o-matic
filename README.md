@@ -21,8 +21,11 @@ La app ocupa toda la ventana, a lo Ableton:
    - El bajo puede tocar su tumbao (aprendido, de salsa, timbero, songo, en motivo con el piano), una nota pedal grave y larga (la presión), notas largas que cambian cada dos compases (el «pedal» de Kevin Moore) o deslizamientos por la cuerda grave con golpes cortos (Feliciano Arango; el despelote).
 2. **Canción y sonido** (panel): timbre del bajo, el sonido, generar, guardar y exportar.
 3. **Base de MIDIs.** De dónde aprende el generador. Se pueden marcar o desmarcar temas y sumar MIDIs propios.
-   - De entrada aprende de los 18 temas originales (y de los tuyos).
+   - De entrada aprende de los temas originales (y de los tuyos) y, si está en esta compu, de la colección Toontrack (ver «Colecciones»).
    - «Todos los MIDIs» suma además la colección de mididb.com: 104 temas más, casi todos de salsa (ver [§11 del análisis](Tumbaos_analisis_midis.md)).
+   - Las fuentes que dicen de qué sección son (las de Toontrack: intro, A y B, coro, montuno, soneo, mambo, final) se eligen según el tipo de la sección: un coro aprende de los coros, un mambo de los mambos.
+4. **Onda del piano.** Pupy, Melón y Tirso son ajustes de perillas sacados de la bibliografía. Songo (Van Van), Son montuno, Mambo, Funk cubano y Montuno de salsa además prefieren ese estilo de la colección Toontrack.
+5. **De dónde sale el piano** (la primera perilla del piano): «generado nota por nota» o «frase real». La frase real toca lo que tocó el pianista de un tema de la base (ritmo, voces, mano izquierda y la fuerza de cada golpe) y le acomoda las notas a tus acordes: la raíz va a la raíz, la tercera a la tercera, y lo que no le queda al acorde nuevo, a la nota del acorde más cercana. Las demás perillas del piano no la cambian.
 
 «Generar y escuchar» arma la canción y la toca. «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` para abrirla en otro lado.
 - **Bajar MIDI** (también el botón `.mid` de arriba): para el DAW, con piano, bajo, una pista por instrumento de percusión y un marcador por sección.
@@ -37,7 +40,7 @@ En la barra de arriba:
 ## Cómo genera
 
 Aprende de una base de MIDIs analizados.
-- Toma células reales de piano (ritmo y textura, lado 3 | lado 2 de la clave).
+- Toma células reales de piano (ritmo y textura, lado 3 | lado 2 de la clave). En la frase real, toma la frase entera y le cambia solo las notas.
 - Pone anticipos con las probabilidades medidas.
 - Busca la línea de arriba nota por nota: función armónica, zigzag, enlace entre acordes y un gancho que se repite.
 - Arma bajo y percusión con lo aprendido. En las marchas sin juegos aprendidos (presión, despelote, muela) la percusión sale de reglas escritas a partir de la bibliografía (Kevin Moore, Orlando Fiol). No hay maracas: el raspado es el güiro.
@@ -78,6 +81,11 @@ Cada carpeta dentro de `midis/` es una colección; por ejemplo, `midis/mididb/`.
 - Lleva su propio `fuentes.json` con los datos de cada archivo; `_titulo` es el nombre que muestra la página.
 - Entra a la base, pero la página la deja apagada. Se prende con «todos los MIDIs» o con la casilla de la colección.
 - El perfil de la clave (con qué se adivina el lado en los temas sin clave) se aprende solo de los originales.
+- `_encendida`: la colección arranca prendida.
+- `_local`: material comprado. Su base va a `analisis_tumbaos/base_local.js`, que no se sube al repositorio; `index.html` la carga si está.
+- `_carpeta`: los `.mid` están en otra carpeta, con subcarpetas. `_grupos` dice el estilo de cada subcarpeta y `_secciones` el tipo de sección según cómo empieza el nombre del archivo.
+
+**Toontrack.** `midis/toontrack/fuentes.json` apunta a `mg_tt-latcu/` (el paquete *Latin Cuban EZkeys MIDI*, convertido a MIDI). Entran el son montuno, el mambo, la salsa media y la rápida, el songo y el funk cubano: 99 archivos con montuno. El bolero, el chachachá y la guajira no son montunos y quedaron afuera. Para rearmar la base local: `node analisis_tumbaos/construir.js`.
 - Los archivos que no dejan nada usable (ni piano, ni bajo, ni percusión) quedan afuera.
 
 ## Para tocar el código

@@ -31,16 +31,29 @@ if (iImp >= 0) {
 }
 
 // ---------- qué MIDIs: la base original (carpeta del proyecto y midis/) y las colecciones (cada carpeta dentro de midis/,
-// con su propio fuentes.json). Las colecciones entran a la base pero la página las deja apagadas hasta que se elijan.
+// con su propio fuentes.json). Las colecciones entran a la base pero la página las deja apagadas hasta que se elijan
+// (salvo las que dicen _encendida). Una colección puede traer sus .mid de otra carpeta (_carpeta, con subcarpetas: el estilo
+// de cada una en _grupos y el tipo de sección según el nombre del archivo en _secciones). Las _local van a base_local.js,
+// que no se sube al repositorio: es material comprado.
 const listar = d => fs.existsSync(d) ? fs.readdirSync(d).filter(f => /\.midi?$/i.test(f)).map(f => path.join(d, f)).sort() : [];
+const listarTodo = d => fs.existsSync(d) ? fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? listarTodo(path.join(d, e.name)) : /\.midi?$/i.test(e.name) ? [path.join(d, e.name)] : []).sort() : [];
 const leerMeta = d => fs.existsSync(path.join(d, 'fuentes.json')) ? JSON.parse(fs.readFileSync(path.join(d, 'fuentes.json'), 'utf8')) : {};
 const archivos = [...listar(RAIZ), ...listar(MIDIS)].sort().map(f => ({ f, nombre: path.basename(f), meta: META[path.basename(f)] || {} }));
-const colecciones = {};
+const colecciones = {}, locales = new Set();
 for (const col of fs.existsSync(MIDIS) ? fs.readdirSync(MIDIS, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name).sort() : []) {
-  const meta = leerMeta(path.join(MIDIS, col)), lista = listar(path.join(MIDIS, col));
+  const meta = leerMeta(path.join(MIDIS, col)), dir = path.resolve(MIDIS, col, meta._carpeta || '.');
+  const lista = meta._carpeta ? listarTodo(dir) : listar(dir);
   if (!lista.length) continue;
-  colecciones[col] = { titulo: meta._titulo || col };
-  for (const f of lista) archivos.push({ f, nombre: path.basename(f), meta: meta[path.basename(f)] || {}, coleccion: col });
+  colecciones[col] = { titulo: meta._titulo || col, ...(meta._encendida ? { encendida: true } : {}) };
+  if (meta._local) locales.add(col);
+  const secciones = Object.entries(meta._secciones || {}).sort((a, b) => b[0].length - a[0].length);
+  for (const f of lista) {
+    const nombre = path.relative(dir, f).split(path.sep).join('/'), base = path.basename(f).replace(/\.midi?$/i, '');
+    const g = (meta._grupos || {})[nombre.split('/')[0]] || null, s = secciones.find(([p]) => base.startsWith(p));
+    const v = /^(.*)_Variation_(\d+)$/.exec(base), parte = v ? `${v[1].replace(/_/g, ' ')} · var. ${+v[2]}` : base.replace(/_/g, ' ');
+    const m = { ...(g ? { estilo: g.estilo, grupo: g.grupo, titulo: (g.titulo || '') + ' · ' + parte } : {}), ...(s ? { seccion: s[1] } : {}), ...(meta[nombre] || {}) };
+    archivos.push({ f, nombre, meta: m, coleccion: col });
+  }
 }
 
 // ---------- analizar en dos pasadas: la primera aprende el perfil rítmico del piano por lado de clave (solo con la base original)
@@ -53,14 +66,24 @@ datos.forEach((d, i) => {
   const f = TM.analizarFuente(d.bytes, d.meta, { perfil });
   const id = 'b:' + (d.coleccion ? d.coleccion + '/' : '') + d.nombre;
   if (!f.piano.length && !f.bajo.length && !f.perc.length) { console.log(`${id.slice(2).padEnd(34)} sin compases usables de piano, bajo ni percusión: queda afuera`); return; }
-  fuentes.push({ id, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...(d.coleccion ? { coleccion: d.coleccion } : {}), ...f });
+  fuentes.push({ id, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...(d.coleccion ? { coleccion: d.coleccion } : {}),
+    ...(d.meta.grupo ? { grupo: d.meta.grupo } : {}), ...(d.meta.seccion ? { seccion: d.meta.seccion } : {}), ...f });
   const a = f.analisis;
   console.log(`${(d.coleccion ? d.coleccion + '/' : '') + d.nombre.padEnd(34)} ${String(f.piano.length).padStart(4)} ciclos de piano · ${String(f.bajo.length).padStart(4)} de bajo · ${String(f.perc.length).padStart(3)} juegos de percusión · lado: ${a.ladoFuente}${a.conflicto ? ' (' + a.conflicto + ' compases en contra)' : ''}`);
 });
-const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, colecciones, fuentes };
+const esLocal = f => locales.has(f.coleccion);
+const soloDe = (o, sel) => Object.fromEntries(Object.entries(o).filter(([c]) => sel(c)));
+const base = { version: 1, generado: new Date().toISOString().slice(0, 10), perfil, colecciones: soloDe(colecciones, c => !locales.has(c)), fuentes: fuentes.filter(f => !esLocal(f)) };
 const json = JSON.stringify(base);
 fs.writeFileSync(BASE_F, json);
-console.log(`\nbase: ${fuentes.length} fuentes · ${(json.length / 1024).toFixed(0)} kB → ${path.relative(RAIZ, BASE_F)}`);
+console.log(`\nbase: ${base.fuentes.length} fuentes · ${(json.length / 1024).toFixed(0)} kB → ${path.relative(RAIZ, BASE_F)}`);
+// las colecciones locales: un script aparte que index.html carga si existe
+const LOCAL_F = path.join(__dirname, 'base_local.js'), loc = fuentes.filter(esLocal);
+if (loc.length) {
+  const js = `/* Base local de timba-o-matic (colecciones compradas): la escribe analisis_tumbaos/construir.js. No va al repositorio. */\nglobalThis.BASE_TUMBAOS_LOCAL = ${JSON.stringify({ colecciones: soloDe(colecciones, c => locales.has(c)), fuentes: loc })};\n`;
+  fs.writeFileSync(LOCAL_F, js);
+  console.log(`base local: ${loc.length} fuentes · ${(js.length / 1024).toFixed(0)} kB → ${path.relative(RAIZ, LOCAL_F)}`);
+} else if (fs.existsSync(LOCAL_F)) fs.unlinkSync(LOCAL_F);
 
 // ---------- meter el motor y la base en index.html, entre las marcas
 if (!args.includes('--sin-html')) {

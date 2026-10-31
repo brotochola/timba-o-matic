@@ -31,6 +31,7 @@
 
   // ---------- perillas: valor por defecto y cómo se muestran
   const PERILLAS_UI = [
+    { g: 'Piano · ritmo y textura', id: 'frase', l: 'De dónde sale el piano', tipo: 'sel', def: 'generado', ops: [['generado', 'generado nota por nota'], ['frase', 'frase real de la base']], h: 'Generado: células reales de la base y la línea buscada nota por nota, con todas las perillas. Frase real: toca tal cual lo que tocó el pianista de un tema de la base (ritmo, voces, mano izquierda y fuerza de cada golpe) y le acomoda las notas a tus acordes; las perillas del piano no la cambian, salvo «sin mano izquierda». Suena mejor con la colección Toontrack' },
     { g: 'Piano · ritmo y textura', id: 'dens', l: 'Densidad', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Cuántos ataques por compás, respecto de la célula elegida' },
     { g: 'Piano · ritmo y textura', id: 'oct', l: 'Octavas', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Más o menos ataques en octava (la línea que «habla»)' },
     { g: 'Piano · ritmo y textura', id: 'blq', l: 'Bloques (díadas y acordes)', min: 0, max: 2.5, st: 0.05, def: 1, f: 'x', h: 'El golpe armónico, sobre todo en el 3& y el 1& del lado 3' },
@@ -73,15 +74,22 @@
     { g: 'Mezcla de percusión', id: 'm_bateria', l: 'Batería', min: 0, max: 1.5, st: 0.05, def: 0.8, f: 'x', h: 'Volumen de la batería: bombo, caja, charles y platillos (0 = no suena)' }
   ];
   const PERILLAS = Object.fromEntries(PERILLAS_UI.map(k => [k.id, k.def]));
-  // las ondas de la app como ajustes de perillas (y de qué estilo de la base aprender)
+  // las ondas de la app como ajustes de perillas (y de qué estilo de la base aprender; grupo: los estilos de una colección,
+  // como los de Toontrack, que la onda prefiere cuando están en la base)
   const ONDAS = {
     pupy: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
     melon: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
     tirso: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
-    songo: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano' },
-    salsa: { lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa' },
+    songo: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
+    sonmontuno: { lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
+    mambo: { lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
+    funk: { lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
+    salsa: { lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
     libre: {}
   };
+  // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
+  const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };
+  const TIPO_DE_MARCHA = { cuerpo: 'cuerpo', marcha: 'coro', mambo: 'mambo' };
 
   // ---------- células de bajo de la guía, con roles: [posición, duración, rol, salto sugerido]
   const BAJO_GUIA = {
@@ -123,14 +131,66 @@
     let ganchoFin = null, ligaFin = false, lineaFin = previo ? previo.linea : null;
     if (pianoOK) {
       // gancho de otra sección: misma fuente, mismas células y la memoria de sus notas
-      const G0 = C.gancho && C.gancho.H <= nb ? C.gancho : null;
-      // fuente principal (un tema de la base), con peso por raíz del número de ciclos
+      const G0 = C.gancho && !C.gancho.frase && C.gancho.H <= nb ? C.gancho : null;
+      // fuente principal (un tema de la base), con peso por raíz del número de ciclos. Las fuentes que dicen de qué sección
+      // son (Toontrack: intro, A, coro, mambo…) pesan más en una sección de ese tipo, y las del grupo de la onda, más todavía
       const porF = {}; for (const c of P.ciclos) (porF[c.f] = porF[c.f] || []).push(c);
       const fs = Object.keys(porF);
       const pref = opc.estiloPreferido, cubano = e => e === 'cubano' || e === 'timba';
       const coincide = e => !pref || (pref === 'salsa' ? e === 'salsa' : cubano(pref) ? cubano(e) : e === pref);
-      const F = G0 && porF[G0.F] ? G0.F : elegir(R, fs, f => Math.sqrt(porF[f].length) * (coincide(porF[f][0].estilo) ? 1 : 0.15));
+      const secOK = SECCION_BASE[opc.tipo || TIPO_DE_MARCHA[opc.marcha]] || null;
+      const grupos = opc.grupo ? [].concat(opc.grupo) : null;
+      const pesoSec = c => !c.seccion || !secOK ? 1 : secOK.includes(c.seccion) ? 4 : 0.3;
+      const pesoGrupo = c => !grupos ? 1 : grupos.includes(c.grupo) ? 6 : c.grupo ? 0.3 : 0.5;
+      const pesoF = f => { const c = porF[f][0]; return Math.sqrt(porF[f].length) * (coincide(c.estilo) ? 1 : 0.15) * pesoSec(c) * pesoGrupo(c); };
+      const Fprev = G0 ? G0.F : C.gancho && C.gancho.frase ? C.gancho.F : null;
+      const F = Fprev && porF[Fprev] ? Fprev : elegir(R, fs, pesoF);
       info.piano = F;
+      if (k.frase === 'frase') {
+        // ---------- frase real: los ciclos de la fuente en orden, con las notas acomodadas a los acordes de la sección
+        info.frase = true;
+        const cic = porF[F].slice().sort((a, b) => a.c - b.c), n = cic.length;
+        const desde = C.gancho && C.gancho.frase && C.gancho.F === F ? C.gancho.desde : R() < 0.5 ? 0 : Math.floor(R() * n);
+        const desfase = lado(0) === 'B' ? 1 : 0;
+        // una nota del acorde S (el de la fuente) al acorde T: la misma función (raíz, 3a, 5a, 7a) y, si es tensión o cromática,
+        // el mismo intervalo; las largas que no le quedan al acorde nuevo van a la nota del acorde más cercana
+        const mapear = (m, S, T, larga) => {
+          if (!S || !T || S.nombre === T.nombre) return m;
+          const iv = pc(m - S.raiz), A = S.fun, B = T.fun;
+          let nv = iv;
+          if (iv === 0) nv = 0;
+          else if (iv === A.t) nv = B.t ?? iv;
+          else if (iv === A.f) nv = B.f;
+          else if (A.s != null && iv === A.s) nv = B.s ?? (iv === 9 ? 9 : 12);
+          else if (larga && !B.T.includes(iv) && !T.pcs.includes((iv + T.raiz) % 12)) { let best = null; for (const x of T.pcs) { const d = plegar(x - T.raiz - iv); if (best == null || Math.abs(d) < Math.abs(best)) best = d; } nv = iv + best; }
+          return m + plegar(T.raiz - S.raiz) + plegar(nv - iv);
+        };
+        const evs = [];
+        for (let b = 0; b < nb; b++) {
+          const cy = cic[(desde + Math.floor((b + desfase) / 2)) % n], L_ = lado(b), cs = acordesDe(b);
+          for (const e of cy.ev) {
+            if ((e.p < 16) !== (L_ === 'A')) continue;
+            const pos = e.p % 16;
+            const T = !e.antic ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
+            const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 3)))].sort((x, y) => x - y);
+            evs.push({ p: b * 16 + pos, d: e.d, ps, v: e.v, ch: T, antic: !!e.antic && T.nombre !== acordeEn(b, pos).nombre });
+          }
+        }
+        // las dos manos por registro (debajo del sol de la clave de fa, la izquierda); cada mano sin pisarse con su ataque siguiente
+        const manos = { der: [], izq: [] };
+        for (const e of evs) {
+          const d = e.ps.filter(m => m >= 55), i = k.lh === 'nada' ? [] : e.ps.filter(m => m < 55);
+          if (d.length) manos.der.push({ ...e, ps: d });
+          if (i.length) manos.izq.push({ ...e, ps: i });
+        }
+        for (const [mano, out] of [[manos.der, der], [manos.izq, izq]]) mano.forEach((e, i) => {
+          const gap = (mano[i + 1] ? mano[i + 1].p : nb * 16) - e.p;
+          out.push({ p: e.p, L: Math.max(1, Math.min(e.d, gap)), ps: e.ps, v: Math.max(30, Math.min(127, e.v)), art: e.v >= 100 ? '->' : '', antic: e.antic, ch: e.ch });
+        });
+        const ult = der[der.length - 1];
+        lineaFin = ult ? { m: ult.ps[ult.ps.length - 1], pd: 0, ch: ult.ch.nombre, f: null } : lineaFin;
+        if (ctx) ganchoFin = { frase: true, F, desde, H: 2 };
+      } else {
       const meta = (P.densidad.A + P.densidad.B) / 2 * efect.dens;
       const elegirCelula = (parecida) => {
         const pool = R() < k.mezcla ? P.ciclos : porF[F];
@@ -362,6 +422,7 @@
           izq.push({ p: b * 16 + pos, L: L_, ps: [m], v: 84, art: '->', ch });
         }
       }
+      }   // fin del piano generado
     }
 
     // =========================== BAJO ===========================

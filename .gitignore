@@ -4,3 +4,7 @@
 *.jpg
 fuga y misterio/
 Anima_sola.html
+# colecciones compradas (Toontrack): los MIDI quedan en mg_tt-latcu/ y lo analizado en la base local
+mg_tt-latcu/
+mg_tt-latcu.rar
+analisis_tumbaos/base_local.js

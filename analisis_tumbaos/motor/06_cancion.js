@@ -54,7 +54,7 @@
       const on = ons[i], perillas = { ...cancion.perillas, ...s.perillas };
       for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
       const sig = progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
-      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null,
+      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null, tipo: s.tipo || null, grupo: s.grupo || null,
         contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
       ganchos[s.id != null ? s.id : i] = r.gancho;
       const nb = r.compases, S = (nb - 1) * 16, fin = { ...r.fin, entraSolo: false };

@@ -1,0 +1,27 @@
+{
+ "_titulo": "Toontrack · Latin Cuban (EZkeys)",
+ "_ayuda": "Paquete comprado: los MIDI y lo que se analiza de ellos no se suben al repositorio. _local: la base de esta colección va a analisis_tumbaos/base_local.js (ignorado por git). _carpeta: dónde están los .mid, una subcarpeta por estilo. _grupos: estilo de cada subcarpeta (el grupo lo usan las ondas del piano). _secciones: comienzo del nombre del archivo → tipo de sección de la app.",
+ "_local": true,
+ "_encendida": true,
+ "_carpeta": "../../mg_tt-latcu/Toontrack.Latin.Cuban.EZkeys.MIDI/Straight_4-4",
+ "_grupos": {
+  "EARLY_CUBAN_FUNK_114_BPM": { "grupo": "funk_cubano", "titulo": "Funk cubano", "estilo": "cubano" },
+  "FAST_SALSA_170_BPM": { "grupo": "salsa_rapida", "titulo": "Salsa rápida", "estilo": "salsa" },
+  "MAMBO_95_BPM": { "grupo": "mambo", "titulo": "Mambo", "estilo": "cubano" },
+  "MID_SALSA_90_BPM": { "grupo": "salsa_media", "titulo": "Salsa media", "estilo": "salsa" },
+  "SON_MONTUNO_91_BPM": { "grupo": "son_montuno", "titulo": "Son montuno", "estilo": "cubano" },
+  "VAN_SONGO_105_BPM": { "grupo": "songo", "titulo": "Songo Van Van", "estilo": "timba" }
+ },
+ "_secciones": {
+  "Intro": "intro",
+  "A_Section": "cuerpo",
+  "B_Section": "cuerpo",
+  "Coro": "coro",
+  "Montuno": "coro",
+  "Soneo": "coro",
+  "Mambo": "mambo",
+  "Solo": "solo",
+  "Break": "bloque",
+  "End_Vamp": "final"
+ }
+}
