@@ -1,0 +1,549 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 2,
+ "cancion": {
+  "version": 2,
+  "titulo": "No me pidas calma",
+  "clave": "rumba 2-3",
+  "banda": "timba",
+  "bajoSonido": "bass",
+  "mezcla": {},
+  "bpm": 200,
+  "secciones": [
+   {
+    "id": "s1",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {},
+    "transicion": "abanico",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Intro",
+    "tipo": "intro",
+    "marcha": "cuerpo",
+    "estilo": "tirso",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 101
+   },
+   {
+    "id": "s2",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Cuerpo",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "melon",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 3,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m7b5"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m7"
+      },
+      "b": {
+       "r": 7,
+       "q": "7"
+      }
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 102
+   },
+   {
+    "id": "s3",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Puente",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "melon",
+    "bars": [
+     {
+      "a": {
+       "r": 8,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "semilla": 103
+   },
+   {
+    "id": "s4",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato4y",
+    "perillas": {},
+    "nombre": "Coro",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 104
+   },
+   {
+    "id": "s5",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "plato4y",
+    "perillas": {
+     "frase": "frase"
+    },
+    "nombre": "Mambo",
+    "tipo": "mambo",
+    "marcha": "mambo",
+    "estilo": "pupy",
+    "pianoComo": "songo",
+    "bars": [
+     {
+      "a": {
+       "r": 5,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 105
+   },
+   {
+    "id": "s6",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Presión",
+    "tipo": "presion",
+    "marcha": "presion",
+    "estilo": "pupy",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 106
+   },
+   {
+    "id": "s7",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato4y",
+    "perillas": {},
+    "nombre": "Despelote",
+    "tipo": "despelote",
+    "marcha": "despelote",
+    "estilo": "melon",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 107
+   },
+   {
+    "id": "s8",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Bomba",
+    "tipo": "bomba",
+    "marcha": "bomba",
+    "estilo": "pupy",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 108
+   },
+   {
+    "id": "s9",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato4y",
+    "perillas": {},
+    "nombre": "Coro final",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 109
+   },
+   {
+    "id": "s10",
+    "pistas": {},
+    "vol": {},
+    "transicion": "corte",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Final",
+    "tipo": "final",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "bars": [
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "semilla": 110
+   }
+  ],
+  "letra": {
+   "cuerpo": [
+    "Me dices que baje la voz, que la noche es larga, / que el que corre mucho se cansa y no llega a nada.",
+    "Pero tú no ves la orquesta cómo está prendida, / y el piano que me llama dando vueltas a la vida."
+   ],
+   "puente": "Yo no sé estar quieto… yo no sé esperar…",
+   "coro": "No me pidas calma, que la timba está en el alma",
+   "presion": "¡Ahí na’ má’! — la gente para y la clave sola",
+   "despelote": "¡Suéltate, suéltate! Que se suelte todo el mundo",
+   "bomba": "¡Bomba! Pa’l piso, pa’l piso…",
+   "pregones": [
+    "Calma tiene el que no baila",
+    "Si me quedo quieto me da una cosa en el pie",
+    "Ni el reloj ni la policía"
+   ]
+  }
+ },
+ "perillas": {
+  "frase": "generado",
+  "dens": 1,
+  "oct": 1,
+  "blq": 1,
+  "int": 1,
+  "semi": 1,
+  "leg": 0.6,
+  "ten": 1,
+  "crom": 1,
+  "salto": 0,
+  "zig": 1,
+  "rep": 0,
+  "reg": 0,
+  "amb": 7,
+  "lh": "auto",
+  "dim": 0,
+  "gancho": 0.75,
+  "var": 0.35,
+  "largo": "auto",
+  "mezcla": 0.15,
+  "temp": 0.6,
+  "acc": 1,
+  "b_estilo": "auto",
+  "b_aprox": 0.25,
+  "b_dens": 1,
+  "b_reg": "medio",
+  "b_gliss": 0,
+  "p_int": 0.55,
+  "p_relleno": 0.6,
+  "m_clave": 1,
+  "m_congas": 1,
+  "m_bongo": 1,
+  "m_campanas": 1,
+  "m_timbales": 1,
+  "m_guiro": 1,
+  "m_bateria": 0.8
+ }
+}

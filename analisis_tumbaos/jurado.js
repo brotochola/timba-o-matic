@@ -60,6 +60,11 @@ if (solo !== 'temas') {
     if (['cuerpo', 'marcha', 'mambo'].includes(marcha) && (!r.costura || !r.costura.entrada.length)) falla('costura del loop sin datos', caso);
     // notas cromáticas: siempre solas
     for (const e of r.der) if (e.ps.length > 1 && TM.funcion(e.ps.at(-1), e.ch) === 'X') { falla('cromática doblada (octava o bloque)', `${caso} c${Math.floor(e.p / 16) + 1}.${e.p % 16}`); break; }
+    // la frase real (los pianistas de la base): sus notas, acomodadas a los acordes, no quedan cromáticas dobladas que duren;
+    // una nota de paso de una semicorchea en octavas sí (las líneas en octavas del montuno)
+    const rf = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog: PROG, marcha, estilo, vueltas: 2, semilla: 7, perillas: { frase: 'frase' } }] }, M);
+    for (const e of rf.der) if (e.ps.length > 1 && e.L >= 2 && TM.funcion(e.ps.at(-1), e.ch) === 'X') { falla('frase real: cromática doblada', `${caso} c${Math.floor(e.p / 16) + 1}.${e.p % 16}`); break; }
+    for (const hs of [rf.der, rf.izq]) for (let i = 1; i < hs.length; i++) if (hs[i - 1].p + hs[i - 1].L > hs[i].p) { falla('frase real: notas que se pisan', `${caso} ${hs[i].p}`); break; }
     // las manos no se pisan; la izquierda debajo de la derecha
     for (const [nom, hs] of [['derecha', r.der], ['izquierda', r.izq], ['bajo', r.bajo]]) for (let i = 1; i < hs.length; i++) if (hs[i - 1].p + hs[i - 1].L > hs[i].p) { falla(`${nom}: notas que se pisan`, `${caso} ${hs[i].p}`); break; }
     for (const e of r.izq) { const d = r.der.find(x => x.p === e.p); if (d && Math.max(...e.ps) >= Math.min(...d.ps)) { falla('la izquierda por encima de la derecha', `${caso} ${e.p}`); break; } }

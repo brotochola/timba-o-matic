@@ -1,0 +1,406 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 2,
+ "cancion": {
+  "version": 2,
+  "titulo": "La esquina del barrio",
+  "clave": "son 2-3",
+  "banda": "timba",
+  "bajoSonido": "acbass",
+  "mezcla": {},
+  "bpm": 192,
+  "secciones": [
+   {
+    "id": "s11",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Intro",
+    "tipo": "intro",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 201
+   },
+   {
+    "id": "s12",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {},
+    "transicion": "abanico",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Cuerpo",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 7,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 5,
+       "q": "maj7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "m7b5"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 202
+   },
+   {
+    "id": "s13",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Coro",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 203
+   },
+   {
+    "id": "s14",
+    "pistas": {},
+    "vol": {},
+    "transicion": "cierre",
+    "entrada": "plato",
+    "perillas": {
+     "frase": "frase"
+    },
+    "nombre": "Mambo",
+    "tipo": "mambo",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 204
+   },
+   {
+    "id": "s15",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Coro y soneos",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 4,
+    "semilla": 205
+   },
+   {
+    "id": "s16",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "entrada": "plato",
+    "perillas": {},
+    "nombre": "Moña",
+    "tipo": "mona",
+    "marcha": "mambo",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 2,
+    "semilla": 206
+   },
+   {
+    "id": "s17",
+    "pistas": {},
+    "vol": {},
+    "transicion": "corte",
+    "entrada": "",
+    "perillas": {},
+    "nombre": "Final",
+    "tipo": "final",
+    "marcha": "marcha",
+    "estilo": "salsabrava",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "semilla": 207
+   }
+  ],
+  "letra": {
+   "cuerpo": [
+    "En la esquina del barrio se juntaban los de siempre, / con la radio en la ventana y el sol pegando de frente.",
+    "Uno tocaba la lata, otro cantaba un bolero, / y la vieja desde el quinto gritaba: «¡suban el pandero!»"
+   ],
+   "coro": "Esquina del barrio, ahí nació mi son",
+   "pregones": [
+    "De la 110 a la 116, la misma clave",
+    "Que lo diga el timbalero, que estuvo ahí",
+    "Cuando la campana suena, nadie se va pa’ la casa"
+   ],
+   "mona": "(los metales tiran la moña y el coro contesta)"
+  }
+ },
+ "perillas": {
+  "frase": "generado",
+  "dens": 1,
+  "oct": 1,
+  "blq": 1,
+  "int": 1,
+  "semi": 1,
+  "leg": 0.6,
+  "ten": 1,
+  "crom": 1,
+  "salto": 0,
+  "zig": 1,
+  "rep": 0,
+  "reg": 0,
+  "amb": 7,
+  "lh": "auto",
+  "dim": 0,
+  "gancho": 0.75,
+  "var": 0.35,
+  "largo": "auto",
+  "mezcla": 0.15,
+  "temp": 0.6,
+  "acc": 1,
+  "b_estilo": "auto",
+  "b_aprox": 0.25,
+  "b_dens": 1,
+  "b_reg": "medio",
+  "b_gliss": 0,
+  "p_int": 0.55,
+  "p_relleno": 0.6,
+  "m_clave": 1,
+  "m_congas": 1,
+  "m_bongo": 1,
+  "m_campanas": 1,
+  "m_timbales": 1,
+  "m_guiro": 1,
+  "m_bateria": 0.8
+ }
+}

@@ -3828,7 +3828,11 @@ window.PACK_DATA={"manifest": {"perc": {"clave": {"layers": [["k/clave_0_0.mp3"]
           else if (iv === A.f) nv = B.f;
           else if (A.s != null && iv === A.s) nv = B.s ?? (iv === 9 ? 9 : 12);
           else if (larga && !B.T.includes(iv) && !T.pcs.includes((iv + T.raiz) % 12)) { let best = null; for (const x of T.pcs) { const d = plegar(x - T.raiz - iv); if (best == null || Math.abs(d) < Math.abs(best)) best = d; } nv = iv + best; }
-          return m + plegar(T.raiz - S.raiz) + plegar(nv - iv);
+          const x = m + plegar(T.raiz - S.raiz) + plegar(nv - iv);
+          if (!larga || TM.funcion(x, T) !== 'X') return x;
+          // la función de antes no le queda al acorde nuevo (una sexta mayor sobre un menor, una 7a sobre una tríada…): a la nota del acorde más cercana
+          let best = x; for (let d = 1; d <= 2 && best === x; d++) for (const y of [x - d, x + d]) if (T.pcs.includes(pc(y))) { best = y; break; }
+          return best;
         };
         const evs = [];
         for (let b = 0; b < nb; b++) {
@@ -3837,7 +3841,8 @@ window.PACK_DATA={"manifest": {"perc": {"clave": {"layers": [["k/clave_0_0.mp3"]
             if ((e.p < 16) !== (L_ === 'A')) continue;
             const pos = e.p % 16;
             const T = !e.antic || !anticipa ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
-            const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 3)))].sort((x, y) => x - y);
+            // solo la nota de paso corta y sola queda libre; lo que dura o va doblado tiene que ser del acorde nuevo (o una tensión que le quede)
+            const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 2 || e.ps.length > 1)))].sort((x, y) => x - y);
             evs.push({ p: b * 16 + pos, d: e.d, ps, v: e.v, ch: T, antic: !!e.antic && T.nombre !== acordeEn(b, pos).nombre });
           }
         }
