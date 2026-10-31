@@ -427,7 +427,7 @@
       ev.push({ ...vec, q, d: 2, ps: vec.ps.slice(), v: vec.v * 0.94 }); ev.sort((a, b) => a.q - b.q);
     }
     // texturas: cada ataque se queda con la suya o pasa a octava, nota sola, díada o acorde, con las proporciones de la base
-    if (Math.abs(efect.oct - 1) > 0.02 || Math.abs(efect.blq - 1) > 0.02 || Math.abs((k.int ?? 1) - 1) > 0.02) for (const e of ev) {
+    if (Math.abs(efect.oct - 1) > 0.02 || Math.abs(efect.blq - 1) > 0.02) for (const e of ev) {
       const top = e.ps[e.ps.length - 1], izq = e.ps.filter(x => x < top - 12), der = e.ps.filter(x => x >= top - 12);
       const actual = der.includes(top - 12) ? 'o' : der.length === 1 ? 'x' : der.length === 2 ? 'd' : 'a';
       const base = P.tex[L][e.q] || {}, tot = Object.values(base).reduce((a, b) => a + b, 0) || 1, mult = { o: efect.oct, x: 1, d: efect.blq, a: efect.blq };
@@ -441,6 +441,17 @@
       else if (t === 'd') { const z = debajo(top, 3, 5) ?? debajo(top, 8, 9); if (z != null) nd = [z, top]; }
       else if (t === 'a') { const z1 = debajo(top, 3, 5), z2 = z1 != null ? debajo(z1, 3, 5) : null; nd = [z2, z1, top].filter(x => x != null); }
       e.ps = [...izq, ...nd].sort((a, b) => a - b);
+    }
+    // octavas rellenas: la nota de adentro (una 3a o 4a del acorde debajo de la de arriba) se agrega o se saca, sin tocar el resto
+    const int = k.int ?? 1;
+    if (Math.abs(int - 1) > 0.02) for (const e of ev) {
+      const top = e.ps[e.ps.length - 1]; if (!e.ps.includes(top - 12)) continue;
+      const adentro = e.ps.filter(x => x > top - 12 && x < top);
+      if (int < 1 && adentro.length && R() < 1 - int) e.ps = e.ps.filter(x => !adentro.includes(x));
+      else if (int > 1 && !adentro.length && R() < Math.min(0.9, (int - 1) * 0.5)) {
+        const ch = br.acordes.length > 1 && e.q >= 8 ? br.acordes[1] : br.acordes[0];
+        for (let x = top - 3; x >= top - 5; x--) if (ch.pcs.includes(pc(x))) { e.ps = [...e.ps, x].sort((a, b) => a - b); break; }
+      }
     }
     // semicorcheas: más (notas de paso picadas antes de los contratiempos) o menos que la plantilla
     if (efect.semi < 0.98) ev = ev.filter(e => e.q % 2 === 0 || R() < efect.semi);

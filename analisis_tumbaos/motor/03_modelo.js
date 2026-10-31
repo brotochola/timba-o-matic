@@ -71,7 +71,7 @@
     // la timba de la base (secuencias de 1998): notas sueltas y díadas con la izquierda en décimas, la textura de Melón (Fiol)
     if (f.estilo === 'timba') return ['melon', 'pupy', 'tirso', 'songo'];
     if (f.estilo === 'otro') return [];
-    if (f.estilo === 'cubano') return ['sonmontuno'];
+    if (f.estilo === 'cubano') return /mambo/i.test(t) ? [] : ['sonmontuno'];
     if (/pare cochero|aragón|charanga/i.test(t)) return ['charanga'];
     if (ROMANTICA.test(t)) return ['salsa'];
     if (BRAVA.test(t)) return ['salsabrava'];
