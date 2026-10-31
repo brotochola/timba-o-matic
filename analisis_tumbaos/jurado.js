@@ -144,7 +144,7 @@ if (!solo || solo === 'piano') {
   for (const g of Object.keys(grupos).sort()) fila(g, C.juntarOidos(grupos[g], velRef));
   // lo que sale, por modo (y Opus por estilo)
   const fallasP = [];
-  for (const modo of ['opus', 'generado', 'frase', ...(loc.length ? ['toontrack'] : [])]) {
+  for (const modo of ['opus', 'celulas', 'frase', ...(loc.length ? ['toontrack'] : [])]) {
     const todo = [], porE = {};
     for (const estilo of Object.keys(TM.ESTILOS)) for (const marcha of MARCHAS) for (const prog of PROGS) for (const clave of ['son 2-3', 'rumba 3-2']) {
       const r = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 'a', prog, marcha, estilo, vueltas: 2, semilla: 5, perillas: { frase: modo } }] }, M);

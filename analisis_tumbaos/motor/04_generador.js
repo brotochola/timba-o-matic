@@ -53,7 +53,7 @@
   // ---------- perillas: valor por defecto y cómo se muestran. Las del piano valen para Opus y el generado; Toontrack y la
   // frase real tocan lo del pianista y solo les cambian la izquierda, el registro, el legato, los acentos y el cromatismo
   const PERILLAS_UI = [
-    { g: 'Piano · qué toca', id: 'frase', l: 'Qué toca el piano', tipo: 'sel', def: 'opus', ops: [['opus', 'Opus: montuno de pianista acomodado a tus acordes'], ['toontrack', 'patrón de Toontrack (colección local)'], ['frase', 'frase real de un tema de la base'], ['generado', 'células y línea nota por nota']], h: 'Opus: elige el montuno de un pianista para el estilo, el tipo de sección y el ritmo de tus acordes (de Toontrack si está la colección local, y de los temas de la base), lo repite como gancho y conduce sus voces a tus acordes. Toontrack: el patrón que elijas abajo, tal cual. Frase real: la frase entera de un tema de la base, en orden. Células: el ritmo de la base y la línea buscada nota por nota' },
+    { g: 'Piano · qué toca', id: 'frase', l: 'Qué toca el piano', tipo: 'sel', def: 'opus', ops: [['opus', 'Opus: montuno de pianista acomodado a tus acordes'], ['toontrack', 'patrón de Toontrack (colección local)'], ['frase', 'frase real de un tema de la base'], ['celulas', 'células y línea nota por nota']], h: 'Opus: elige el montuno de un pianista para el estilo, el tipo de sección y el ritmo de tus acordes (de Toontrack si está la colección local, y de los temas de la base), lo repite como gancho y conduce sus voces a tus acordes. Toontrack: el patrón que elijas abajo, tal cual. Frase real: la frase entera de un tema de la base, en orden. Células: el ritmo de la base y la línea buscada nota por nota' },
     { g: 'Piano · qué toca', id: 'tt_estilo', l: 'Toontrack: estilo', tipo: 'sel', def: 'auto', ops: [['auto', 'el de la sección'], ...TOONTRACK.estilos], h: 'Solo con «patrón de Toontrack»: de qué carpeta de la colección local sale el patrón. Sin la colección local, el piano toca Opus en el estilo más parecido' },
     { g: 'Piano · qué toca', id: 'tt_parte', l: 'Toontrack: parte', tipo: 'sel', def: 'auto', ops: [['auto', 'según el tipo de sección'], ...TOONTRACK.partes.map(([id, n]) => [id, n])], h: 'Solo con «patrón de Toontrack»: qué parte de la canción de Toontrack (intro en la intro, A o B en el cuerpo, coro o montuno en el coro, mambo en el mambo, End Vamp en el final). Si el estilo no la tiene, toca la más parecida' },
     { g: 'Piano · qué toca', id: 'tt_var', l: 'Toontrack: variación', min: 0, max: 10, st: 1, def: 0, f: 'n', h: 'Solo con «patrón de Toontrack»: cuál de las variaciones de esa parte (1, 2, 3…). En 0, la elige la variante de la sección (🎲)' },
@@ -204,9 +204,9 @@
       info.piano = F;
       // ---------- Opus, Toontrack y la frase real (09_piano.js): lo que tocó un pianista, acomodado a los acordes de la sección.
       // Toontrack sin la colección local toca Opus en el estilo más parecido
-      const modo = ['opus', 'toontrack', 'frase'].includes(k.frase) ? k.frase : 'generado';
+      const modo = ['opus', 'toontrack', 'frase'].includes(k.frase) ? k.frase : 'celulas';
       let hecho = null;
-      if (modo !== 'generado' && TM.tocarPiano) {
+      if (modo !== 'celulas' && TM.tocarPiano) {
         const TT = TM.TOONTRACK, ttElegido = k.tt_estilo && k.tt_estilo !== 'auto' ? TT.aEstilo[k.tt_estilo] : null;
         const X = { k, nb, L, lado, acordesDe, acordeEn, antDe, posDe, previo, ctx: !!ctx, C, M, R, RA, RV, info, marP, efect, opc, lineaFin,
           estilo: k.como || ({ salsa: 'salsa', cubano: 'sonmontuno', timba: 'pupy' })[opc.estiloPreferido] || null, centro: P.registro.p50 + (k.reg || 0) + (marP.reg || 0) };
