@@ -12,14 +12,19 @@ La app ocupa toda la ventana, a lo Ableton:
 - Con **Seguir**, mientras suena, el panel de abajo muestra la sección que suena: se ven cambiar sus perillas y volúmenes.
 
 1. **Canción.** Arriba, el multipista: la regla (con el lado 3 de la clave sombreado), las secciones, los acordes y una pista por instrumento (piano, bajo, clave, congas, bongó, campana, timbales, güiro, batería).
-   - Clic en una sección para editarla: tipo (intro, cuerpo, coro, mambo, moña, presión, despelote, muela, bloque, final), marcha, onda del piano, compases, vueltas, cómo entra (directo o con el plato del timbalero), cómo termina (abanico, cierre o corte), gancho, variante, sus acordes (uno por compás, o dos con «½») y cómo toca la banda: las perillas de piano, bajo y percusión de esa sección.
+   - Clic en una sección para editarla. El panel de abajo tiene un bloque por cosa:
+     - **Estructura:** tipo (intro, cuerpo, coro, mambo, moña, presión, despelote, muela, bloque, final), marcha de la banda, compases, vueltas, cómo termina (abanico, cierre o corte), la variante de toda la sección y qué instrumentos tocan.
+     - **Acordes:** uno por compás, o dos con «½».
+     - **Piano:** onda, marcha propia (o «como la sección»), de qué secciones de la base aprende, gancho, 🎲 otra variante solo del piano, y sus perillas.
+     - **Bajo:** el sonido (eléctrico o baby bass, para toda la canción), 🎲 otra variante solo del bajo, y sus perillas («Qué toca» sigue la marcha de la sección o elige otro tumbao).
+     - **Percusión:** marcha propia (o «como la sección»), cómo entra (directo, plato del timbalero en el 4& del último compás de antes o en el 1), 🎲 otra variante solo de la percusión, y sus perillas.
    - Clic en una pista adentro de una sección: ese instrumento entra o sale ahí.
-   - M y S valen para toda la canción; el volumen de cada pista es de cada sección (o de todas, si las perillas valen para toda la canción). Todo se aplica al tocar, sin cambiar las notas.
+   - M y S valen para toda la canción; el volumen de cada pista es de cada sección (moviéndolo con Shift, de todas). Todo se aplica al tocar, sin cambiar las notas.
    - Loop de toda la canción o de la sección que estás editando.
-   - Cada sección tiene su variante: cambiar una no cambia las otras. «Fijar» la deja como está aunque cambies las perillas de la canción.
-   - Las perillas (densidad, octavas, bloques, semicorcheas, tensiones, cromatismo, registro, mano izquierda, anticipos, gancho, estilo del bajo, intensidad y mezcla de la percusión…) valen para esa sección o, si se elige, para toda la canción.
+   - Cada sección tiene su variante: cambiar una no cambia las otras. El 🎲 de cada instrumento cambia solo ese instrumento (el bajo que aprende de la base sigue al piano).
+   - Las perillas (densidad, octavas, bloques, semicorcheas, tensiones, cromatismo, registro, mano izquierda, anticipos, gancho, qué toca el bajo, intensidad de la percusión…): lo que se mueve queda en la sección elegida. En rojo, lo que esa sección cambia respecto de toda la canción; ↺ lo vuelve atrás y «a todas» lo pasa a toda la canción.
    - El bajo puede tocar su tumbao (aprendido, de salsa, timbero, songo, en motivo con el piano), una nota pedal grave y larga (la presión), notas largas que cambian cada dos compases (el «pedal» de Kevin Moore) o deslizamientos por la cuerda grave con golpes cortos (Feliciano Arango; el despelote).
-2. **Canción y sonido** (panel): timbre del bajo, el sonido, generar, guardar y exportar.
+2. **Canción y sonido** (panel): el sonido, guardar y exportar.
 3. **Base de MIDIs.** De dónde aprende el generador. Se pueden marcar o desmarcar temas y sumar MIDIs propios.
    - De entrada aprende de los temas originales (y de los tuyos) y, si está en esta compu, de la colección Toontrack (ver «Colecciones»).
    - «Todos los MIDIs» suma además la colección de mididb.com: 104 temas más, casi todos de salsa (ver [§11 del análisis](Tumbaos_analisis_midis.md)).
@@ -27,7 +32,7 @@ La app ocupa toda la ventana, a lo Ableton:
 4. **Onda del piano.** Pupy, Melón y Tirso son ajustes de perillas sacados de la bibliografía. Songo (Van Van), Son montuno, Mambo, Funk cubano y Montuno de salsa además prefieren ese estilo de la colección Toontrack.
 5. **De dónde sale el piano** (la primera perilla del piano): «generado nota por nota» o «frase real». La frase real toca lo que tocó el pianista de un tema de la base (ritmo, voces, mano izquierda y la fuerza de cada golpe) y le acomoda las notas a tus acordes: la raíz va a la raíz, la tercera a la tercera, y lo que no le queda al acorde nuevo, a la nota del acorde más cercana. Las demás perillas del piano no la cambian.
 
-«Generar y escuchar» arma la canción y la toca. «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` para abrirla en otro lado.
+La canción se arma sola al abrir la página y con cada cambio. «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` para abrirla en otro lado.
 - **Bajar MIDI** (también el botón `.mid` de arriba): para el DAW, con piano, bajo, una pista por instrumento de percusión y un marcador por sección.
 - **Bajar MP3**: la canción grabada con los sonidos elegidos y la mezcla de las pistas. Se arma sin tocarla en tiempo real (unos segundos) y se codifica en el navegador con [lamejs](https://github.com/zhuker/lamejs), que se baja la primera vez; sin internet sale en WAV. Con un dispositivo MIDI externo no se puede grabar.
 - **Copiar LilyPond**: la partitura (con una marca por sección), que compila tal cual en LilyPond 2.24.
@@ -94,6 +99,7 @@ Hace falta Node 18 o más nuevo, sin dependencias.
 
 ```
 node analisis_tumbaos/construir.js          analiza los MIDI (carpeta del proyecto, midis/ y sus colecciones) y actualiza la base y index.html
+node analisis_tumbaos/construir.js --solo-html   mete en index.html el motor y la base que ya está, sin volver a analizar
 node analisis_tumbaos/informe.js            estadísticas del corpus (informe.txt)
 node analisis_tumbaos/ver.js "tema.mid"     visor compás por compás
 node analisis_tumbaos/probar_motor.js out   genera tumbaos de prueba para compararlos con el corpus (--todo: con las colecciones)

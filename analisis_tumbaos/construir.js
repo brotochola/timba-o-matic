@@ -3,6 +3,7 @@
    uso:
      node analisis_tumbaos/construir.js                    analiza los .mid (carpeta del proyecto y midis/), escribe la base y actualiza index.html
      node analisis_tumbaos/construir.js --sin-html         solo escribe analisis_tumbaos/base_tumbaos.json
+     node analisis_tumbaos/construir.js --solo-html        no vuelve a analizar: mete el motor y la base que ya está en index.html
      node analisis_tumbaos/construir.js --importar x.json  primero suma a midis/ los MIDI exportados desde la app («Exportar los míos»)
    Los datos de cada archivo (título, estilo, clave, rol, acordes…) van en analisis_tumbaos/fuentes.json.
    ===================================================================== */
@@ -13,6 +14,7 @@ const META_F = path.join(__dirname, 'fuentes.json'), BASE_F = path.join(__dirnam
 const HTML_F = path.join(RAIZ, 'index.html'), MIDIS = path.join(RAIZ, 'midis');
 const args = process.argv.slice(2);
 const META = JSON.parse(fs.readFileSync(META_F, 'utf8'));
+if (args.includes('--solo-html')) { meterEnHtml(fs.readFileSync(BASE_F, 'utf8')); process.exit(0); }
 
 // ---------- importar lo exportado desde la app
 const iImp = args.indexOf('--importar');
@@ -86,7 +88,8 @@ if (loc.length) {
 } else if (fs.existsSync(LOCAL_F)) fs.unlinkSync(LOCAL_F);
 
 // ---------- meter el motor y la base en index.html, entre las marcas
-if (!args.includes('--sin-html')) {
+if (!args.includes('--sin-html')) meterEnHtml(json);
+function meterEnHtml(json) {
   if (!fs.existsSync(HTML_F)) { console.error('No encuentro ' + HTML_F); process.exit(1); }
   const html = fs.readFileSync(HTML_F, 'utf8');
   const A = '<!--motor-tumbaos-->', Z = '<!--/motor-tumbaos-->';

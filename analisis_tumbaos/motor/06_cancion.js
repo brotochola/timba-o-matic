@@ -55,6 +55,7 @@
       for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
       const sig = progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
       const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: s.estilo || cancion.estiloPreferido || null, tipo: s.tipo || null, grupo: s.grupo || null,
+        tipoPiano: s.tipoPiano || null, marchaPiano: s.marchaPiano || null, marchaPerc: s.marchaPerc || null, semillas: { piano: s.semillaPiano, bajo: s.semillaBajo, perc: s.semillaPerc },
         contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
       ganchos[s.id != null ? s.id : i] = r.gancho;
       const nb = r.compases, S = (nb - 1) * 16, fin = { ...r.fin, entraSolo: false };
@@ -63,6 +64,12 @@
       const perc = r.perc || new Array(nb).fill(null), extra = Array.from({ length: nb }, () => []);
       // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico) y el plato del timbalero al entrar
       if (s.entrada === 'plato') pend.push({ p: 0, d: 'plato', v: 0.85 });
+      // plato en el 4& del último compás de la sección anterior, junto con el anticipo del piano y del bajo (en vez del 1)
+      if (s.entrada === 'plato4y' && i > 0) {
+        pend = pend.filter(g => g.d !== 'plato');
+        const ult = res.perc.length - 1, dst = res.perc[ult] || res.extra[ult];
+        if (suena(ons[i - 1], 'plato') && suena(on, 'plato') && !dst.some(e => e.p === 14 && e.d === 'plato')) dst.push({ p: 14, d: 'plato', v: 0.9 });
+      } else if (s.entrada === 'plato4y') pend.push({ p: 0, d: 'plato', v: 0.85 });
       for (const g of pend) {
         if (g.quitar && perc[0]) perc[0] = perc[0].filter(e => e.p >= 4 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d)));
         const dst = perc[0] || extra[0];
@@ -116,7 +123,7 @@
       ligados = { der: ligDer, bajo: pasa && ons[i + 1].bajo ? nB.filter(e => e.cola) : [] };
       for (let b = 0; b < nb; b++) {
         res.perc.push(perc[b]); res.extra.push(extra[b]); res.acordes.push(r.acordes[b]); res.lados.push(r.lados[b]);
-        res.marchas.push(marcha); res.mixes.push(r.mix); res.estilos.push(ESTILO[marcha]);
+        res.marchas.push(marcha); res.mixes.push(r.mix); res.estilos.push(ESTILO[TM.MARCHAS[s.marchaPerc] ? s.marchaPerc : marcha]);
       }
       const nombre = String(s.nombre || '').replace(/["\\]/g, '').trim(), palabra = PALABRA[marcha];
       const texto = !nombre ? r.marca : nombre.toLowerCase().includes(palabra) ? nombre : `${nombre} · ${palabra}`;

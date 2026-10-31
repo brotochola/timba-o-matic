@@ -55,7 +55,7 @@
     { g: 'Piano · armonía y forma', id: 'mezcla', l: 'Mezclar fuentes', min: 0, max: 1, st: 0.05, def: 0.15, f: '%', h: '0 = todas las células de un mismo tema de la base; 100% = de cualquiera' },
     { g: 'Piano · armonía y forma', id: 'temp', l: 'Libertad', min: 0, max: 2, st: 0.05, def: 0.6, f: 'x', h: 'Cuánto se permite salir de lo más probable' },
     { g: 'Piano · armonía y forma', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves' },
-    { g: 'Bajo', id: 'b_estilo', l: 'Estilo', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
+    { g: 'Bajo', id: 'b_estilo', l: 'Qué toca', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha de la sección'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
     { g: 'Bajo', id: 'b_ant', l: 'Anticipo del bajo', tipo: 'sel', def: 'auto', ops: [['auto', 'como la célula'], ['12', 'en el 4'], ['14', 'en el 4&']], h: 'En qué momento el bajo trae la raíz del acorde que viene: en el 4 (salsa) o en el 4& (timba)' },
     { g: 'Bajo', id: 'b_aprox', l: 'Aproximaciones cromáticas', min: 0, max: 1, st: 0.05, def: 0.25, f: '%', h: 'Medio tono antes de la raíz que viene' },
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
@@ -108,11 +108,15 @@
   function generar(opc, M) {
     const k = Object.assign({}, PERILLAS, opc.perillas || {});
     const ctx = opc.contexto || null, C = ctx || {}, previo = C.previo || null;
-    const R = rng((opc.semilla || 1) * 2654435761 + 7);
+    // cada instrumento puede tener su propia variante (opc.semillas: piano, bajo, perc); si no, la de la sección
+    const sem = opc.semillas || {}, sP = sem.piano || opc.semilla || 1, sB = sem.bajo || opc.semilla || 1, sC = sem.perc || opc.semilla || 1;
+    const R = rng(sP * 2654435761 + 7);
     // en una canción cada etapa sortea aparte: cambiar el final de una sección no corre los sorteos de lo que viene antes
-    const sub = n => ctx ? rng((opc.semilla || 1) * 2654435761 + 7 + n * 0x9E3779B9) : R;
-    const RA = sub(1), RL = sub(2), RV = sub(3), RB = sub(4), RP = sub(5);
+    const sub = (s, n) => ctx ? rng(s * 2654435761 + 7 + n * 0x9E3779B9) : R;
+    const RA = sub(sP, 1), RL = sub(sP, 2), RV = sub(sP, 3), RB = sub(sB, 4), RP = sub(sC, 5);
     const mar = MARCHAS[opc.marcha] || MARCHAS.marcha;
+    // el piano y la percusión pueden ir en otra marcha que la sección (el bajo la sigue con su estilo «según la marcha»)
+    const marP = MARCHAS[opc.marchaPiano] || mar, marC = MARCHAS[opc.marchaPerc] || mar;
     const prog = Array.isArray(opc.prog) ? opc.prog : TM.leerProgresion(opc.prog);
     if (!prog.length) throw new Error('Escribí una progresión, por ejemplo: Em C Am B7');
     const L = prog.length, nb = L * (opc.vueltas || 1);
@@ -126,7 +130,7 @@
 
     // =========================== PIANO ===========================
     const der = [], izq = [];
-    const efect = { dens: k.dens * mar.dens, oct: k.oct * mar.oct, blq: k.blq * mar.blq, semi: k.semi * mar.semi, rep: Math.max(k.rep, mar.rep || 0) };
+    const efect = { dens: k.dens * marP.dens, oct: k.oct * marP.oct, blq: k.blq * marP.blq, semi: k.semi * marP.semi, rep: Math.max(k.rep, marP.rep || 0) };
     let pianoOK = P.ciclos.length > 0;
     let ganchoFin = null, ligaFin = false, lineaFin = previo ? previo.linea : null;
     if (pianoOK) {
@@ -138,7 +142,7 @@
       const fs = Object.keys(porF);
       const pref = opc.estiloPreferido, cubano = e => e === 'cubano' || e === 'timba';
       const coincide = e => !pref || (pref === 'salsa' ? e === 'salsa' : cubano(pref) ? cubano(e) : e === pref);
-      const secOK = SECCION_BASE[opc.tipo || TIPO_DE_MARCHA[opc.marcha]] || null;
+      const secOK = SECCION_BASE[opc.tipoPiano || opc.tipo || TIPO_DE_MARCHA[opc.marchaPiano || opc.marcha]] || null;
       const grupos = opc.grupo ? [].concat(opc.grupo) : null;
       const pesoSec = c => !c.seccion || !secOK ? 1 : secOK.includes(c.seccion) ? 4 : 0.3;
       const pesoGrupo = c => !grupos ? 1 : grupos.includes(c.grupo) ? 6 : c.grupo ? 0.3 : 0.5;
@@ -516,11 +520,11 @@
     let perc = null;
     const desborde = [];
     const mix = { clave: k.m_clave, congas: k.m_congas, bongo: k.m_bongo, campanas: k.m_campanas, timbales: k.m_timbales, guiro: k.m_guiro, bateria: k.m_bateria };
-    const usarAprendida = k.p_fuente === 'aprendida' && ['cuerpo', 'marcha', 'mambo'].includes(mar.perc) && M.perc.juegos.length;
+    const usarAprendida = k.p_fuente === 'aprendida' && ['cuerpo', 'marcha', 'mambo'].includes(marC.perc) && M.perc.juegos.length;
     info.percusion = usarAprendida ? 'aprendida' : 'clásica';
     if (usarAprendida) {
-      let pool = M.perc.juegos.filter(j => j.tipo === mar.perc);
-      if (pool.length < 3) pool = M.perc.juegos.filter(j => j.tipo === 'marcha' || j.tipo === mar.perc);
+      let pool = M.perc.juegos.filter(j => j.tipo === marC.perc);
+      if (pool.length < 3) pool = M.perc.juegos.filter(j => j.tipo === 'marcha' || j.tipo === marC.perc);
       if (!pool.length) pool = M.perc.juegos;
       const orden = pool.slice().sort((a, b) => a.densidad - b.densidad);
       const rango = new Map(orden.map((j, i) => [j, orden.length > 1 ? i / (orden.length - 1) : 0.5]));
