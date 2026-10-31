@@ -23,7 +23,7 @@
     marcha: { dens: 1, oct: 1, blq: 1, semi: 1, perc: 'marcha', bajo: 'aprendido', marca: 'Coro · marcha' },
     mambo: { dens: 1, oct: 0.8, blq: 1.8, semi: 1, perc: 'mambo', bajo: 'aprendido', marca: 'Mambo · marcha de mambo' },
     presion: { dens: 0.62, oct: 0.4, blq: 2.2, semi: 0.3, perc: 'presion', bajo: 'pedal', marca: 'Presión' },
-    despelote: { dens: 1.2, oct: 0.8, blq: 1.6, semi: 2.5, rep: 0.6, perc: 'despelote', bajo: 'aprendido', marca: 'Despelote' },
+    despelote: { dens: 1.2, oct: 0.8, blq: 1.6, semi: 2.5, rep: 0.6, perc: 'despelote', bajo: 'deslizado', marca: 'Despelote' },
     muela: { dens: 0.55, oct: 0.15, blq: 0.5, semi: 0, perc: 'muela', bajo: 'muela', marca: 'Muela' }
   };
 
@@ -52,12 +52,12 @@
     { g: 'Piano · armonía y forma', id: 'mezcla', l: 'Mezclar fuentes', min: 0, max: 1, st: 0.05, def: 0.15, f: '%', h: '0 = todas las células de un mismo tema de la base; 100% = de cualquiera' },
     { g: 'Piano · armonía y forma', id: 'temp', l: 'Libertad', min: 0, max: 2, st: 0.05, def: 0.6, f: 'x', h: 'Cuánto se permite salir de lo más probable' },
     { g: 'Piano · armonía y forma', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves' },
-    { g: 'Bajo', id: 'b_estilo', l: 'Estilo', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'pedal'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. «Según la marcha» elige el que le queda a cada marcha' },
+    { g: 'Bajo', id: 'b_estilo', l: 'Estilo', tipo: 'sel', def: 'auto', ops: [['auto', 'según la marcha'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
     { g: 'Bajo', id: 'b_ant', l: 'Anticipo del bajo', tipo: 'sel', def: 'auto', ops: [['auto', 'como la célula'], ['12', 'en el 4'], ['14', 'en el 4&']], h: 'En qué momento el bajo trae la raíz del acorde que viene: en el 4 (salsa) o en el 4& (timba)' },
     { g: 'Bajo', id: 'b_aprox', l: 'Aproximaciones cromáticas', min: 0, max: 1, st: 0.05, def: 0.25, f: '%', h: 'Medio tono antes de la raíz que viene' },
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
     { g: 'Bajo', id: 'b_reg', l: 'Registro del bajo', tipo: 'sel', def: 'medio', ops: [['grave', 'grave'], ['medio', 'medio'], ['agudo', 'agudo']], h: 'En qué octava toca el bajo' },
-    { g: 'Bajo', id: 'b_gliss', l: 'Deslizamientos', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Glissando hacia abajo (bomba, despelote)' },
+    { g: 'Bajo', id: 'b_gliss', l: 'Deslizamientos', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Glissando hacia abajo en los saltos grandes, en cualquier estilo (el estilo «deslizamientos» ya los trae)' },
     { g: 'Percusión', id: 'p_fuente', l: 'Percusión', tipo: 'sel', def: 'aprendida', ops: [['aprendida', 'aprendida de la base'], ['clasica', 'clásica por marcha (la de antes)']], h: 'Aprendida: juegos reales de la base (en cuerpo, coro y mambo). Clásica: los patrones de la guía para cada marcha' },
     { g: 'Percusión', id: 'p_int', l: 'Intensidad', min: 0, max: 1, st: 0.05, def: 0.55, f: '%', h: 'Juegos más ralos o más cargados' },
     { g: 'Percusión', id: 'p_cambio', l: 'Cambiar el patrón', tipo: 'sel', def: '8', ops: [['0', 'nunca'], ['8', 'cada 8 compases'], ['4', 'cada 4 compases']], h: 'Cada cuánto puede pasar a otro juego de percusión parecido, para que no sea un loop idéntico' },
@@ -370,9 +370,24 @@
     info.bajo = estiloBajo;
     const regB = { grave: [28, 43], medio: [31, 47], agudo: [36, 52] }[k.b_reg] || [31, 47];
     const raizEn = (ch, prev) => { const objetivo = prev != null ? prev : (regB[0] + regB[1]) / 2; let best = null; for (let m = regB[0]; m <= regB[1]; m++) if (pc(m) === ch.raiz && (best == null || Math.abs(m - objetivo) < Math.abs(best - objetivo))) best = m; return best; };
-    if (estiloBajo === 'pedal') {
-      let prevR = null;
-      for (let b = 0; b < nb; b++) { const ch = acordesDe(b)[0]; if (prevR && prevR === ch.nombre && b % 2) continue; const dur = (b + 1 < nb && acordesDe(b + 1)[0].nombre === ch.nombre && b % 2 === 0) ? 32 : 16; bajo.push({ p: b * 16, L: Math.min(dur, (nb - b) * 16), ps: [raizEn(ch, null)], v: 96, art: '->', ch }); prevR = ch.nombre; }
+    const grave = ch => 28 + ((ch.raiz - 4 + 12) % 12);   // la raíz en la octava más grave del bajo (mi a re#)
+    if (estiloBajo === 'pedal' || estiloBajo === 'largas') {
+      // nota pedal: una sola nota grave (la raíz del primer acorde) sostenida; se vuelve a tocar cada 4 compases para que no se apague.
+      // notas largas (el «pedal» de Kevin Moore): la raíz cada dos compases, sostenida mientras no cambia
+      let ultima = null, desde = 0;
+      for (let b = 0; b < nb; b += 2) {
+        const ch = estiloBajo === 'pedal' ? acordesDe(0)[0] : acordesDe(b)[0], m = grave(ch), L_ = Math.min(2, nb - b) * 16;
+        if (ultima && ultima.ps[0] === m && b - desde < 4) { ultima.L += L_; continue; }
+        ultima = { p: b * 16, L: L_, ps: [m], v: 100, art: '->', ch }; bajo.push(ultima); desde = b;
+      }
+    } else if (estiloBajo === 'deslizado') {
+      // deslizamientos (Feliciano Arango, NG La Banda): deja el tumbao. Golpes cortos y acentuados, como de tambor, y la mano que
+      // se desliza por la cuerda grave desde la octava hasta la raíz; en el 4& llega la raíz que viene
+      for (let b = 0; b < nb; b++) {
+        const o = b * 16, sig = acordesDe(b + 1)[0], fin = { p: o + 14, L: 2, ps: [grave(sig)], v: 104, art: '->', ch: sig };
+        if (lado(b) === 'A') { const ch = acordeEn(b, 0), r = grave(ch); bajo.push({ p: o, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 6, L: 6, ps: [r + 12], v: 94, art: '\\glissando', ch }, { p: o + 12, L: 2, ps: [r], v: 98, art: '', ch }, fin); }
+        else { const ch = acordeEn(b, 4), r = grave(ch), c2 = acordeEn(b, 10); bajo.push({ p: o + 4, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 8, L: 1, ps: [r], v: 106, art: '->', ch }, { p: o + 10, L: 4, ps: [grave(c2) + 12], v: 92, art: '\\glissando', ch: c2 }, fin); }
+      }
     } else if (estiloBajo !== 'ninguno') {
       let celula;
       if (estiloBajo === 'aprendido') {
@@ -431,7 +446,7 @@
       }
       bajoFin = prev;
     }
-    if (estiloBajo === 'pedal' && bajo.length) bajoFin = bajo[bajo.length - 1].ps[0];
+    if (['pedal', 'largas', 'deslizado'].includes(estiloBajo) && bajo.length) bajoFin = bajo[bajo.length - 1].ps[0];
 
     // =========================== PERCUSIÓN ===========================
     let perc = null;

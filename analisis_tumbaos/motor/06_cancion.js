@@ -61,10 +61,12 @@
       if (!on.piano) { r.der.length = 0; r.izq.length = 0; }
       if (!on.bajo) r.bajo.length = 0;
       const perc = r.perc || new Array(nb).fill(null), extra = Array.from({ length: nb }, () => []);
-      // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico)
+      // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico) y el plato del timbalero al entrar
+      if (s.entrada === 'plato') pend.push({ p: 0, d: 'plato', v: 0.85 });
       for (const g of pend) {
         if (g.quitar && perc[0]) perc[0] = perc[0].filter(e => e.p >= 4 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d)));
-        if (suena(on, g.d) && on[TM.familiaPerc(g.d)] !== false && (r.mix[TM.familiaPerc(g.d)] ?? 1) > 0) (perc[0] || extra[0]).push({ p: g.p, d: g.d, v: g.v });
+        const dst = perc[0] || extra[0];
+        if (suena(on, g.d) && (r.mix[TM.familiaPerc(g.d)] ?? 1) > 0 && !dst.some(e => e.p === g.p && e.d === g.d)) dst.push({ p: g.p, d: g.d, v: g.v });
       }
       pend = r.fin.desborde.map(e => ({ ...e }));
       // costura: lo que la sección anterior dejó ligado (piano) o sonando (bajo) llega hasta el primer ataque de esta
@@ -101,7 +103,8 @@
         const ab = ABANICO.map(([p, d, v]) => ({ p, d, v }));
         if (perc[nb - 1]) perc[nb - 1] = perc[nb - 1].filter(e => e.p < 12 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d))).concat(ab);
         else extra[nb - 1].push(...ab);
-        pend = pend.filter(e => e.d !== 'crash').concat([{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'crash', v: 0.75 }]);
+        // el abanico termina en el plato del timbalero (en vez del platillo de la batería)
+        pend = pend.filter(e => e.d !== 'crash').concat([{ p: 0, d: 'timbalH', v: 1, quitar: true }, { p: 0, d: 'plato', v: 0.8 }]);
       }
       // ---------- concatenar
       const off = inicio * 16;

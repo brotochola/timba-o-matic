@@ -14,7 +14,7 @@
   const FAMILIAS = {
     clave: ['clave'], congas: ['congaO', 'congaS', 'congaH', 'muff', 'salidor', 'tresdos', 'quintoO', 'quintoS'],
     bongo: ['bongoH', 'bongoL', 'bongoM'], campanas: ['bell', 'bellC', 'bongoBell', 'bongoBellC', 'campana'],
-    timbales: ['timbalH', 'timbalL', 'cascara', 'palito', 'block'], guiro: ['guiroS', 'guiroL', 'maraca'],
+    timbales: ['timbalH', 'timbalL', 'cascara', 'palito', 'block', 'plato'], guiro: ['guiroS', 'guiroL', 'maraca'],
     bateria: ['kick', 'bombo', 'snare', 'rim', 'hhC', 'hhO', 'hhP', 'ride', 'rideBell', 'crash', 'tomH', 'tomL']
   };
   const FAM_DE = {}; for (const f in FAMILIAS) for (const d of FAMILIAS[f]) FAM_DE[d] = f;

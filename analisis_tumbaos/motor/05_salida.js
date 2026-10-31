@@ -30,15 +30,17 @@
   function compases(evs, nb, ly) {
     const tk = (ps, d, art, liga) => (ps.length ? (ps.length === 1 ? ps[0] : '<' + ps.join(' ') + '>') : 'r') + D16[d] + (ps.length ? (art || '') + (liga ? '~' : '') : '');
     const res = [];
+    // el glissando sale del último pedazo de la nota (si no, se deslizaría hacia su propia ligadura); los acentos, del primero
+    const gl = a => /glissando/.test(a || '');
     for (let b = 0; b < nb; b++) {
       const lo = b * 16, hi = lo + 16, cur = [];
-      for (const e of evs) { const s = Math.max(e.p, lo), f = Math.min(e.p + e.L, hi); if (f <= s) continue; cur.push({ p: s - lo, L: f - s, ps: e.ps.map(m => ly(m, e.ch)), art: e.p >= lo ? e.art : '', liga: e.p + e.L > hi }); }
+      for (const e of evs) { const s = Math.max(e.p, lo), f = Math.min(e.p + e.L, hi); if (f <= s) continue; cur.push({ p: s - lo, L: f - s, ps: e.ps.map(m => ly(m, e.ch)), art: gl(e.art) ? (e.p + e.L <= hi ? e.art : '') : e.p >= lo ? e.art : '', liga: e.p + e.L > hi }); }
       cur.sort((a, b2) => a.p - b2.p);
       const out = []; let t = 0;
       for (const e of cur) {
         if (e.p < t) continue;   // seguridad: nunca superponer dentro de una voz
         if (e.p > t) for (const d of partir(t, e.p - t)) { out.push(tk([], d)); t += d; }
-        const ds = partir(e.p, e.L); ds.forEach((d, i) => out.push(tk(e.ps, d, i ? '' : e.art, i < ds.length - 1 || e.liga))); t = e.p + e.L;
+        const ds = partir(e.p, e.L); ds.forEach((d, i) => out.push(tk(e.ps, d, gl(e.art) ? (i === ds.length - 1 ? e.art : '') : i ? '' : e.art, i < ds.length - 1 || e.liga))); t = e.p + e.L;
       }
       if (t < 16) for (const d of partir(t, 16 - t)) { out.push(tk([], d)); t += d; }
       res.push(out.join(' '));
@@ -115,7 +117,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
 
   // ---------- MIDI del resultado (piano, bajo, percusión General MIDI)
   const APP_GM = { clave: 75, palito: 76, block: 77, cascara: 37, congaO: 63, congaS: 62, congaH: 62, muff: 62, salidor: 64, tresdos: 63, quintoO: 63, quintoS: 62,
-    bongoH: 60, bongoL: 61, bongoM: 60, bell: 56, bellC: 56, bongoBell: 67, bongoBellC: 67, campana: 56, maraca: 70, guiroS: 73, guiroL: 74, timbalH: 65, timbalL: 66,
+    bongoH: 60, bongoL: 61, bongoM: 60, bell: 56, bellC: 56, bongoBell: 67, bongoBellC: 67, campana: 56, maraca: 70, guiroS: 73, guiroL: 74, timbalH: 65, timbalL: 66, plato: 57,
     kick: 36, bombo: 36, snare: 38, rim: 37, hhC: 42, hhP: 44, hhO: 46, ride: 51, rideBell: 53, crash: 49, tomH: 50, tomL: 45 };
   // o.porFamilia: una pista de percusión por familia (para el DAW); o.perc: golpes por compás que reemplazan a res.perc
   // (por ejemplo, los que tocó la página). Las secciones de una canción van como marcadores.

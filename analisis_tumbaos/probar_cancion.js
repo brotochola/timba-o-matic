@@ -17,7 +17,7 @@ const SECCIONES = [
   { id: 'cuerpo', nombre: 'Cuerpo', prog: 'Am Dm G C F Dm E7 E7', marcha: 'cuerpo', vueltas: 2, semilla: 22, perillas: { b_estilo: 'salsa' } },
   { id: 'puente', nombre: 'Puente', prog: 'F G Am', marcha: 'marcha', semilla: 33, transicion: 'cierre' },
   { id: 'coro', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 4, semilla: 44, transicion: 'abanico' },
-  { id: 'mambo', nombre: 'Mambo', prog: 'Am D7 G E7', marcha: 'mambo', vueltas: 2, semilla: 55, ganchoDe: 'coro' },
+  { id: 'mambo', nombre: 'Mambo', prog: 'Am D7 G E7', marcha: 'mambo', vueltas: 2, semilla: 55, ganchoDe: 'coro', entrada: 'plato' },
   { id: 'presion', nombre: 'Presión', prog: 'Am Am E7 E7', marcha: 'presion', vueltas: 2, semilla: 66, transicion: 'corte' },
   { id: 'final', nombre: 'Coro final', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 2, semilla: 77, transicion: 'corte', perillas: { b_estilo: 'salsa' } }
 ];
@@ -110,7 +110,21 @@ const mid = TM.leerMidi(TM.aMidi(r, 190, { porFamilia: true }));
 ok(secs.every(s => mid.textos.includes(s.texto)), 'marcadores de sección en el MIDI');
 ok(mid.pistas.some(p => p.nombre === 'congas') && !mid.pistas.some(p => p.nombre === 'percusión'), 'una pista de percusión por familia');
 
-console.log('11. velocidad');
+console.log('11. bajo y plato');
+const enSec = (x, s, evs) => evs.filter(e => e.p >= s.inicio * 16 && e.p < (s.inicio + s.compases) * 16);
+const bPres = enSec(r, pres, r.bajo);
+ok(bPres.length && new Set(bPres.map(e => e.ps[0])).size === 1 && bPres.every(e => e.ps[0] < 40 && e.L >= 32), 'presión: una sola nota grave y larga (nota pedal)');
+const desp = TM.generarCancion({ clave: 'son 2-3', perillas: {}, secciones: [{ prog: 'Am Dm E7 Am', marcha: 'despelote', semilla: 9 }] }, M);
+ok(desp.bajo.filter(e => /glissando/.test(e.art)).length >= 4, 'despelote: el bajo trae deslizamientos');
+ok(!/\\glissando~/.test(TM.aLilyPond(desp, { clave: 'son 2-3', bpm: 190 })), 'el glissando sale del último pedazo de la nota, no hacia su propia ligadura');
+const larg = TM.generarCancion({ clave: 'son 2-3', perillas: {}, secciones: [{ prog: 'Am Dm E7 Am', marcha: 'presion', vueltas: 2, semilla: 9, perillas: { b_estilo: 'largas' } }] }, M);
+ok(larg.bajo.every(e => e.p % 32 === 0 && e.L >= 32), 'notas largas: cambian cada 2 compases como mucho');
+const mam = secs.find(s => s.id === 'mambo'), uno = (x, b) => [...(x.perc[b] || []), ...x.extra[b]];
+ok(uno(r, mam.inicio).some(e => e.p === 0 && e.d === 'plato') && fam('plato') === 'timbales', 'plato del timbalero al entrar al mambo (pista de timbales)');
+ok(uno(r, cuerpo0).some(e => e.p === 0 && e.d === 'plato') && !uno(r, cuerpo0).some(e => e.d === 'crash'), 'el abanico termina en el plato del timbalero, no en el de la batería');
+ok(!uno(gen({ mambo: { pistas: { timbales: false } } }), mam.inicio).some(e => e.d === 'plato'), 'sin timbales en el mambo, no hay plato');
+
+console.log('12. velocidad');
 const larga = { titulo: 'Larga', clave: 'son 3-2', perillas: {}, secciones: Array.from({ length: 8 }, (_, i) => ({ id: i, nombre: 'S' + i, prog: 'Am D7 G E7 Am D7 G E7 Dm G C A7', marcha: ['cuerpo', 'marcha', 'mambo', 'presion'][i % 4], semilla: i + 1, transicion: ['abanico', 'cierre', 'ninguna', 'corte'][i % 4] })) };
 const t0 = Date.now(), rl = TM.generarCancion(larga, M), ms = Date.now() - t0;
 console.log(`   ${rl.compases} compases en ${ms} ms`);
