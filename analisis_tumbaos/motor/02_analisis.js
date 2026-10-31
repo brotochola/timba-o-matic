@@ -110,7 +110,11 @@
       if (!ps.length) ps = tonales.filter(x => x !== bajo && (x.prog == null || x.prog < 24 || x.prog > 79));
       pianos = ps.filter((x, i) => i === 0 || x.notas.length >= 0.25 * ps[0].notas.length);
     }
-    return { pianos, bajo, bateria: rol === 'piano' || rol === 'bajo' ? [] : bateria };
+    // vientos: trompeta (56, 59), trombón (57), saxos (64-67), sección de metales (61); o por el nombre de la pista
+    const instrViento = x => x.prog === 56 || x.prog === 59 ? 'tpt' : x.prog === 57 ? 'tbn' : x.prog >= 64 && x.prog <= 67 ? 'sax' : x.prog === 61 ? 'met' :
+      /tromp|trump/i.test(x.nombre) ? 'tpt' : /trombon|trombón/i.test(x.nombre) ? 'tbn' : /sax/i.test(x.nombre) ? 'sax' : /brass|metal/i.test(x.nombre) ? 'met' : null;
+    const vientos = rol === 'auto' ? tonales.filter(x => x !== bajo && !pianos.includes(x) && x.notas.length >= 20 && instrViento(x)).map(x => ({ ...x, ins: instrViento(x) })) : [];
+    return { pianos, bajo, bateria: rol === 'piano' || rol === 'bajo' ? [] : bateria, vientos };
   }
 
   // ---------- grilla: pulso, deriva, compases y lado de la clave
@@ -289,11 +293,15 @@
       });
     }
     const bajoAt = ataques(bajo).map(a => ({ ...a, p: a.ps[0] }));
+    // las notas de los vientos en semicorcheas (cada una con su instrumento)
+    const vientosAt = R.vientos.flatMap(x => x.notas.map(n => ({ q16: Math.round(U(n.on) * 2), d: Math.max(1, Math.round((U(n.off) - U(n.on)) * 2)), p: n.alt, v: n.vel, ins: x.ins })))
+      .sort((a, b) => a.q16 - b.q16 || b.p - a.p);
     const bateria = R.bateria.map(n => ({ alt: n.alt, u: U(n.on), v: n.vel }));
     return {
       ppq: s.ppq, segs: g.segs, deriva: g.deriva, clave: g.clave ? { instrumento: g.clave.alt, tipo: g.clave.tipo } : null,
       ladoFuente: g.ladoFuente, tonalidad: { raiz: NOM[ton.raiz], modo: ton.modo, pc: ton.raiz },
-      compases, partes, bajo, bajoAt, bateria, roles: { piano: partes.length, bajo: !!R.bajo, percusion: R.bateria.length > 0 }
+      compases, partes, bajo, bajoAt, bateria, vientosAt, roles: { piano: partes.length, bajo: !!R.bajo, percusion: R.bateria.length > 0, vientos: R.vientos.map(x => x.ins) },
+      U   // tick → pulso (corcheas) con la fase corregida: para ubicar en la grilla otras pistas (los vientos)
     };
   }
 
@@ -333,7 +341,9 @@
     const nombres = cs => cs.map(a => a.nombre);
     const sigDe = i => (C[i] && C[i].acordes[0]) ? C[i].acordes[0].nombre : null;
     const par = i => C[i] && C[i + 1] && C[i].lado === 'A' && C[i + 1].lado === 'B' && C[i + 1].x === C[i].x + 8;
-    const piano = [], bajo = [], juegos = new Map();
+    const piano = [], bajo = [], juegos = new Map(), vientos = [];
+    // ¿suena la campana (cencerro) en el ciclo? coro o mambo; si no, cuerpo
+    const conCampana = i => det.bateria.some(h => h.alt === 56 && Math.round(h.u * 2) - 2 * C[i].x >= 0 && Math.round(h.u * 2) - 2 * C[i].x < 32);
     for (let i = 0; i + 1 < C.length; i++) {
       if (!par(i)) continue;
       if (pt && usable(det, pt, i) && usable(det, pt, i + 1) && !C[i].conflicto) {
@@ -363,6 +373,12 @@
       }
     }
     const perc = [...juegos].map(([k, n]) => ({ n, k: Object.fromEntries(k.split(' ').map(x => x.split(':'))) }));
+    // vientos: por ciclo de clave, cada nota [posición 0-31, duración, nota, fuerza, instrumento]
+    if (det.vientosAt.length) for (let i = 0; i + 1 < C.length; i++) {
+      if (!par(i) || !C[i].grillaOK || !C[i + 1].grillaOK || !C[i].acordes.length || !C[i + 1].acordes.length) continue;
+      const e = det.vientosAt.map(a => [a.q16 - 2 * C[i].x, a.d, a.p, Math.round(a.v), a.ins]).filter(x => x[0] >= 0 && x[0] < 32);
+      if (e.length >= 2) vientos.push({ c: i, a: [nombres(C[i].acordes), nombres(C[i + 1].acordes)], s: sigDe(i + 2), campana: conCampana(i), e });
+    }
     return {
       version: 1,
       analisis: {
@@ -370,7 +386,7 @@
         bpm: Math.round(det.segs[0].bpm), compases: C.length, roles: det.roles,
         montuno: pt ? pt.compases.filter((c, i) => usable(det, pt, i)).length : 0
       },
-      piano, bajo, perc
+      piano, bajo, perc, vientos
     };
   }
 
