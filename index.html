@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:dark}:root[data-theme="light"]{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .filebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin-bottom:14px;font-size:13px}
 .filebar .btn{padding:7px 13px;font-size:13px}
 .filebar label.btn{cursor:pointer}
@@ -35,7 +35,7 @@
 .cg-pick{border:1px dashed var(--accent);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--accent-soft)}
 .cg-roots,.cg-quals{display:flex;flex-wrap:wrap;gap:6px}
 .cg-roots button,.cg-quals button{min-width:42px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);cursor:pointer;font:500 14px/1 Inter,system-ui,sans-serif}
-.cg-roots button.on,.cg-quals button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.cg-roots button.on,.cg-quals button.on{background:var(--accent-fill);color:var(--on-accent);border-color:var(--accent-fill)}
 .favs{display:flex;flex-wrap:wrap;gap:6px}
 .fav{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--bg)}
 .fav button{border:0;background:transparent;color:var(--ink);padding:5px 10px;cursor:pointer;font:inherit}
@@ -54,7 +54,7 @@
 .gen-head .gen-tools{min-width:0;max-width:100%}
 /* dos paneles numerados: ① Acordes (compases) y ② Arreglo; el arreglo va en 3 columnas con divisiones
    (no en tarjetas de 4, que se confundían con los compases) y el sonido en una franja aparte */
-.gen h2 .num{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:9px;border-radius:50%;background:var(--accent);color:#fff;font:600 12px/1 Inter,system-ui,sans-serif;vertical-align:2px}
+.gen h2 .num{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:9px;border-radius:50%;background:var(--accent-fill);color:#fff;font:600 12px/1 Inter,system-ui,sans-serif;vertical-align:2px}
 .gen .grps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .gen .grp{display:flex;flex-direction:column;gap:10px;min-width:0;padding:2px 20px}
 .gen .grp:first-child{padding-left:0}
@@ -75,7 +75,7 @@
 .gen-actions .gen-more{display:inline-flex;flex-wrap:wrap;gap:8px;margin-left:auto}
 .gen-actions .info:empty{display:none}
 .gen-actions .info{flex-basis:100%}
-.gen .btn.primary{background:var(--accent);color:#fff;padding:10px 18px;font-size:14px}
+.gen .btn.primary{background:var(--accent-fill);color:#fff;padding:10px 18px;font-size:14px}
 .gen .btn.primary:hover{filter:brightness(1.1)}
 .gen .btn.primary svg{width:13px;height:13px}
 /* algoritmo nuevo: selector, perillas por columna y base de MIDIs */
@@ -104,7 +104,7 @@
 .mt-sec:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .mt-acs .mt-b{height:20px;font-size:11px;color:var(--muted)}
 .mt-btn{flex:0 0 auto;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:4px;font:600 10px/1 Inter,system-ui,sans-serif;width:20px;height:18px;padding:0;cursor:pointer}
-.mt-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.mt-btn[aria-pressed="true"]{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
 .mt-h input[type=range]{width:56px;min-width:0;margin:0 0 0 2px;accent-color:var(--accent)}
 .mt-cursor{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--accent);pointer-events:none;z-index:1;display:none}
 .mt-ayuda{margin:-6px 0 0;font-size:12px}
@@ -190,28 +190,41 @@ body.con-ayuda .ayuda{display:block}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tumbaos de timba</title>
+<script>
+/* el tema: oscuro de entrada, sin mirar el del sistema. El botón ◐ de la barra (#tema) pasa a claro y vuelve; queda guardado
+   en este navegador. Va acá arriba para que la página no aparezca un instante con el otro. Avisa con el evento «tdt-tema»
+   (el multipista se vuelve a dibujar con los colores nuevos) */
+(function(){
+  const raiz=document.documentElement;
+  const poner=t=>{raiz.dataset.theme=t;const b=document.getElementById('tema');if(!b)return;const claro=t==='light';
+    b.title=(claro?'Tema claro':'Tema oscuro')+': clic para pasar al '+(claro?'oscuro':'claro')+' (queda guardado en este navegador)';
+    b.setAttribute('aria-label',claro?'Pasar al tema oscuro':'Pasar al tema claro')};
+  let t='dark';try{if(localStorage.getItem('tdt-tema')==='light')t='light'}catch(_){}
+  poner(t);
+  document.addEventListener('DOMContentLoaded',()=>poner(raiz.dataset.theme));
+  document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#tema'))return;
+    const n=raiz.dataset.theme==='light'?'dark':'light';poner(n);try{localStorage.setItem('tdt-tema',n)}catch(_){}
+    window.dispatchEvent(new Event('tdt-tema'))});
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow-bravura.js"></script>
 <style>
+/* el tema: oscuro de entrada, sin mirar el del sistema; claro con data-theme="light" (el botón ◐ de la barra).
+   --accent: el rojo de las letras, las marcas y los bordes; --accent-fill: el de los fondos con letra blanca y el de la
+   partitura (que es papel claro en los dos temas) */
 :root{
-  --bg:#ecebe6; --panel:#f7f6f2; --ink:#1d1b18; --muted:#6c675e; --line:#d6d2c8;
-  --paper:#fbf8f0; --paper-ink:#1d1b18; --accent:#9b2c22; --accent-soft:rgba(155,44,34,.09);
-  --code-bg:#1f1d1a; --code-ink:#e9e4d8; --code-muted:#8d877b;
-  --btn:#1d1b18; --btn-ink:#f7f6f2;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#151412; --panel:#1d1c19; --ink:#ece8df; --muted:#9a9488; --line:#33302b;
-    --paper:#f6f2e7; --accent:#b8392c; --accent-soft:rgba(184,57,44,.10);
-    --code-bg:#100f0d; --btn:#ece8df; --btn-ink:#151412;
-  }
-}
-:root[data-theme="dark"]{
   --bg:#151412; --panel:#1d1c19; --ink:#ece8df; --muted:#9a9488; --line:#33302b;
-  --paper:#f6f2e7; --accent:#b8392c; --accent-soft:rgba(184,57,44,.10);
-  --code-bg:#100f0d; --btn:#ece8df; --btn-ink:#151412;
+  --paper:#f6f2e7; --paper-ink:#1d1b18; --accent:#f47c6a; --accent-fill:#b8392c; --accent-soft:rgba(244,124,106,.16);
+  --code-bg:#100f0d; --code-ink:#e9e4d8; --code-muted:#8d877b;
+  --btn:#ece8df; --btn-ink:#151412;
+}
+:root[data-theme="light"]{
+  --bg:#ecebe6; --panel:#f7f6f2; --ink:#1d1b18; --muted:#6c675e; --line:#d6d2c8;
+  --paper:#fbf8f0; --accent:#9b2c22; --accent-fill:#9b2c22; --accent-soft:rgba(155,44,34,.09);
+  --code-bg:#1f1d1a; --btn:#1d1b18; --btn-ink:#f7f6f2;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -226,7 +239,7 @@ h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:44px
   background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:18px;
   box-shadow:0 6px 20px -14px rgba(0,0,0,.35)}
 .btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:600;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
-.play{width:46px;height:46px;justify-content:center;background:var(--accent);color:#fff}
+.play{width:46px;height:46px;justify-content:center;background:var(--accent-fill);color:#fff}
 .play svg{width:18px;height:18px}
 .ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:8px 14px}
 .ghost:hover{border-color:var(--muted)}
@@ -272,11 +285,11 @@ textarea{display:block;width:100%;height:calc(100vh - 230px);min-height:380px;re
 #score .hair{fill:none;stroke:#1d1b18;stroke-width:1.1}
 #score .gliss{stroke:#1d1b18;stroke-width:1.4}
 #score .lyr{font:12.5px Inter,system-ui,sans-serif;fill:#2a2723;transition:fill .1s}
-#score .lyr.on{fill:var(--accent);font-weight:600}
+#score .lyr.on{fill:var(--accent-fill);font-weight:600}
 #score .rmark rect{fill:#1d1b18}
 #score .rmark text{fill:#fbf8f0;font:600 12px Inter,system-ui,sans-serif;letter-spacing:.02em}
 #score .chordsym{fill:#1d1b18;font-family:Inter,system-ui,sans-serif;font-weight:600;transition:fill .1s}
-#score .chordsym.on{fill:var(--accent)}
+#score .chordsym.on{fill:var(--accent-fill)}
 .chk{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);cursor:pointer}
 .views{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}
 .views button{font:12px Inter,system-ui,sans-serif;color:#6c675e;background:transparent;border:1px solid #d6d2c8;border-radius:999px;padding:5px 12px;cursor:pointer}
@@ -284,7 +297,7 @@ textarea{display:block;width:100%;height:calc(100vh - 230px);min-height:380px;re
 .mutes{display:flex;gap:14px;flex-wrap:wrap}
 #score .iname{font:italic 12px Georgia,serif;fill:#3b3731}
 .chk input{accent-color:var(--accent);width:15px;height:15px}
-#score .vf-stavenote.on path,#score .vf-stavenote.on rect{fill:var(--accent)!important;stroke:var(--accent)!important}
+#score .vf-stavenote.on path,#score .vf-stavenote.on rect{fill:var(--accent-fill)!important;stroke:var(--accent-fill)!important}
 .notice{padding:30px;text-align:center;color:#6c675e;font-size:14px}
 details{margin-top:18px;color:var(--muted);font-size:13px}
 details summary{cursor:pointer;color:var(--ink)}
@@ -310,9 +323,8 @@ kbd{font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(-
 }
 /* ===== la app de pantalla completa, a lo Ableton: barra arriba, las pistas en el medio, el detalle de la sección abajo
    (bloques plegables) y los paneles (canción y sonido, base de MIDIs, partitura) que se abren encima ===== */
-:root{--bar-h:52px;--det-h:42vh;--bg:#d2d2d2;--panel:#e2e2e2;--line:#b5b5b5;--ink:#151515;--muted:#5a5a5a;--soft:#ebebeb}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1d1d1d;--panel:#282828;--line:#3b3b3b;--ink:#e3e3e3;--muted:#979797;--soft:#313131}}
-:root[data-theme="dark"]{--bg:#1d1d1d;--panel:#282828;--line:#3b3b3b;--ink:#e3e3e3;--muted:#979797;--soft:#313131}
+:root{--bar-h:52px;--det-h:42vh;--bg:#1d1d1d;--panel:#282828;--line:#454545;--ink:#e3e3e3;--muted:#a3a3a3;--soft:#313131}
+:root[data-theme="light"]{--bg:#d2d2d2;--panel:#e2e2e2;--line:#b5b5b5;--ink:#151515;--muted:#5a5a5a;--soft:#ebebeb}
 body{font-size:13px}
 .wrap{max-width:none;margin:0;padding:0}
 .wrap>header{display:none}
@@ -332,9 +344,9 @@ body{font-size:13px}
 .tr-panels{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
 .chk.tg{border:1px solid var(--line);border-radius:4px;padding:5px 9px;background:var(--bg);font-size:12.5px;color:var(--ink);user-select:none}
 .chk.tg input{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
-.chk.tg:has(input:checked){background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chk.tg:has(input:checked){background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
 .chk.tg:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:1px}
-.tr-panels .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tr-panels .btn[aria-pressed="true"]{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
 #gen{margin:0;border:0;border-radius:0;padding:6px 10px 0;gap:6px;background:var(--bg)}
 #gen>.gen-head{gap:8px}
 #gen>.ayuda-panel{margin:0}
@@ -433,6 +445,7 @@ body.sin-partitura .panel-full{display:none}
       <button class="btn ghost" id="midi" title="Bajar lo que suena como MIDI">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>.mid
       </button>
+      <button class="btn ghost" id="tema" type="button" title="Tema oscuro o claro" aria-label="Cambiar el tema"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
     </span>
     <div class="bar" id="bar"><i id="bar-i"></i></div>
   </div>
@@ -5879,6 +5892,7 @@ ${vientosStaff}    \\new PianoStaff <<
   })();
   // el ancho de los compases cambia en el celular: redibujar al rotar o achicar la ventana
   let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(!+zoomSel.value||(innerWidth<620)!==(ancho<620))pintarPistas();ancho=innerWidth},150)});
+  addEventListener('tdt-tema',()=>pintarPistas());
 
   // ---------- la app: paneles que se abren encima, partitura, bloques plegables y alto del panel de la sección
   const medirBarra=()=>document.documentElement.style.setProperty('--bar-h',document.querySelector('.transport').offsetHeight+'px');
