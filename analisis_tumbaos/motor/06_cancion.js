@@ -95,6 +95,11 @@
       if (tr === 'corte') {
         cortar(r.der, S, S + 4); cortar(r.izq, S, S + 4); cortar(r.bajo, S, S + 4);
         const tapa = evs => evs.some(e => e.p <= S && e.p + e.L > S);
+        if (on.piano && tapa(r.der)) {
+          // el anticipo ligado es el golpe del final: se completa con el acorde (octava con la nota de adentro y la izquierda)
+          const g = golpePiano(chs[0], refTop);
+          for (const e of r.der) if (e.p <= S && e.p + e.L > S) { e.ps = g.der; e.v = Math.max(e.v || 90, 100); e.art = '->'; r.izq = r.izq.filter(x => x.p !== e.p); r.izq.push({ p: e.p, L: e.L, ps: g.izq, v: 94, art: '->', ch: chs[0] }); }
+        }
         if (on.piano && !tapa(r.der)) { const g = golpePiano(chs[0], refTop); r.der.push({ p: S, L: 4, ps: g.der, v: 104, art: '->', antic: false, ch: chs[0] }); r.izq.push({ p: S, L: 4, ps: g.izq, v: 94, art: '->', ch: chs[0] }); }
         if (on.bajo && !tapa(r.bajo)) r.bajo.push({ p: S, L: 4, ps: [raizCerca(chs[0], refBajo)], v: 104, art: '->', ch: chs[0] });
         perc[nb - 1] = CORTE.filter(([d]) => suena(on, d)).map(([d, v]) => ({ p: 0, d, v })); extra[nb - 1] = [];
