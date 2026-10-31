@@ -19,14 +19,17 @@
 
   // ---------- los formatos (de toda la canción): cuántos de cada familia
   const FORMATOS = {
-    conjunto: { n: 'Conjunto (3 trompetas)', d: 'Arsenio, la Sonora Ponceña: las trompetas solas, en terceras y unísono', familias: { trompetas: 3 } },
+    conjunto: { n: 'Conjunto (3 trompetas)', d: 'Arsenio Rodríguez, el conjunto de son: las trompetas solas, en terceras y unísono', familias: { trompetas: 3 } },
+    // formatos de Puerto Rico (investigacion_vientos_generos.md, R16 y R17)
+    poncena: { n: 'Sonora Ponceña (4 trompetas)', d: 'solo trompetas armonizadas: el mambo entero lo toca el cuarteto', familias: { trompetas: 4 } },
+    grancombo: { n: 'Gran Combo (2 trompetas, trombón y 2 saxos)', d: 'El Gran Combo de Puerto Rico desde 1971: los saxos se quedaron, cuando el sonido de Nueva York era de trombones y trompetas', familias: { trompetas: 2, trombones: 1, saxos: 2 } },
     // la trombanga vive más abajo que un trombón de salsa: los riffs de Colón, de La2 a Mi♭4 (investigación de Willie Colón, R3)
     trombanga: { n: 'Trombanga (2 trombones)', d: 'Willie Colón, Barry Rogers: los trombones al frente, la salsa brava', familias: { trombones: 2 }, centro: { trombones: 57 } },
     fania: { n: 'Fania (2 trompetas y trombón)', d: 'la orquesta de salsa de los 70', familias: { trompetas: 2, trombones: 1 } },
     bigband: { n: 'Big band de mambo', d: 'Machito, Puente, Pérez Prado: trompetas, trombones y saxos', familias: { trompetas: 3, trombones: 2, saxos: 2 } },
     salsa90: { n: 'Salsa de los 90 (2 trompetas, trombón y tenor)', d: 'la orquesta de la salsa romántica', familias: { trompetas: 2, trombones: 1, saxos: 1 } },
     timba: { n: 'Timba (2 trompetas, trombón y saxo)', d: 'NG La Banda, Issac Delgado: los «metales de terror»', familias: { trompetas: 2, trombones: 1, saxos: 1 } },
-    vanvan: { n: 'Van Van (3 trombones)', d: 'los trombones de Los Van Van desde 1980', familias: { trombones: 3 } }
+    vanvan: { n: '3 trombones (Van Van, Dimensión Latina)', d: 'los trombones de Los Van Van desde 1980; en Venezuela, la Dimensión Latina con trombones solos', familias: { trombones: 3 } }
   };
   const FAMILIAS = ['trompetas', 'trombones', 'saxos'];
   // registro de cada familia (del corpus): el centro de la voz de arriba y los bordes

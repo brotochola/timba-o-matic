@@ -172,6 +172,13 @@
         Object.assign(fin, { ligaAl1: anticipaFin && on.piano, entraSolo: !anticipaFin }); pend = [];
         if (tr === 'golpe' && L === 16) pend = [...GOLPE, ['crash', 0.85]].map(([d, v]) => ({ p: 0, d, v }));
       }
+      // ---------- un corte de toda la banda se anuncia con un redoble de timbal en el compás de antes (Cárdenas 2008, en
+      // investigacion_vientos_generos.md: «el compás anterior a todo corte en tutti contiene un relleno de timbal»)
+      if ((tr === 'corte' || GOLPES_FIN[tr]) && nb >= 2 && on.timbales && (r.mix.timbales ?? 1) > 0) {
+        const RD = RELLENOS.redoble, quita = e => e.p >= RD.desde && RD.fam.includes(TM.familiaPerc(e.d));
+        perc[nb - 2] = (perc[nb - 2] || []).filter(e => !quita(e)); extra[nb - 2] = (extra[nb - 2] || []).filter(e => !quita(e));
+        for (const [p, d, v] of RD.golpes) perc[nb - 2].push({ p, d, v: +(0.85 * v * (r.mix.timbales ?? 1)).toFixed(3) });
+      }
       // ---------- relleno de percusión en el último compás (si la banda sigue derecho)
       const RL = RELLENOS[s.relleno];
       if (RL && tr === 'ninguna' && on[RL.toca] && (r.mix[RL.toca] ?? 1) > 0) {
