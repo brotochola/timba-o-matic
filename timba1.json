@@ -1,0 +1,359 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 1,
+ "cancion": {
+  "version": 1,
+  "titulo": "",
+  "clave": "son 2-3",
+  "mezcla": {
+   "piano": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "bajo": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "clave": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "congas": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "bongo": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "campanas": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "timbales": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "guiro": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   },
+   "bateria": {
+    "mute": false,
+    "solo": false,
+    "vol": 1
+   }
+  },
+  "secciones": [
+   {
+    "id": "smy0yc7",
+    "nombre": "",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": {
+       "r": 8,
+       "q": "dim7"
+      }
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "marcha": "mambo",
+    "onda": "salsa",
+    "perillas": {
+     "lh": "auto",
+     "b_estilo": "salsa",
+     "b_reg": "medio"
+    },
+    "pistas": {},
+    "transicion": "cierre",
+    "semilla": 4199,
+    "entrada": "plato"
+   },
+   {
+    "id": "6xlftqn",
+    "nombre": "",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": {
+       "r": 10,
+       "q": "7"
+      }
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "marcha": "presion",
+    "onda": "pupy",
+    "perillas": {
+     "gancho": 0.9,
+     "var": 0.15,
+     "lh": "contrario",
+     "crom": 0.6,
+     "dim": 0.35,
+     "semi": 6,
+     "dens": 1.5,
+     "blq": 1.95,
+     "int": 1.6,
+     "amb": 12,
+     "reg": 12
+    },
+    "pistas": {
+     "bongo": false,
+     "congas": false
+    },
+    "transicion": "abanico",
+    "semilla": 2211,
+    "entrada": "plato"
+   },
+   {
+    "id": "ml2tkbc",
+    "nombre": "",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "marcha": "despelote",
+    "onda": "libre",
+    "perillas": {
+     "b_estilo": "deslizado",
+     "dens": 0.85,
+     "m_clave": 0.85,
+     "m_congas": 1.15,
+     "m_bateria": 1.1
+    },
+    "pistas": {},
+    "transicion": "abanico",
+    "semilla": 4876,
+    "entrada": "plato"
+   },
+   {
+    "id": "cfbl8zn",
+    "nombre": "",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 10,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": "m"
+      },
+      "b": null
+     }
+    ],
+    "vueltas": 1,
+    "marcha": "despelote",
+    "onda": "libre",
+    "perillas": {
+     "b_estilo": "deslizado",
+     "dens": 0.85
+    },
+    "pistas": {},
+    "transicion": "ninguna",
+    "semilla": 4876,
+    "entrada": "plato"
+   }
+  ],
+  "bpm": 190
+ },
+ "perillas": {
+  "dens": 0.5,
+  "oct": 2,
+  "blq": 1,
+  "int": 1,
+  "semi": 3.25,
+  "leg": 0.6,
+  "ten": 0,
+  "crom": 3,
+  "salto": 1,
+  "zig": 2,
+  "rep": 0.7,
+  "reg": 0,
+  "amb": 7,
+  "lh": "auto",
+  "ant": 1,
+  "liga": 1,
+  "dim": 0,
+  "gancho": 0.75,
+  "var": 0.35,
+  "largo": "auto",
+  "mezcla": 0.15,
+  "temp": 0.6,
+  "acc": 1,
+  "b_estilo": "pedal",
+  "b_ant": "auto",
+  "b_aprox": 0,
+  "b_dens": 1.5,
+  "b_reg": "grave",
+  "b_gliss": 33,
+  "p_fuente": "aprendida",
+  "p_int": 1,
+  "p_cambio": "4",
+  "p_relleno": 1,
+  "m_clave": 1.25,
+  "m_congas": 1,
+  "m_bongo": 1,
+  "m_campanas": 1,
+  "m_timbales": 1,
+  "m_guiro": 1,
+  "m_bateria": 0.8
+ }
+}
