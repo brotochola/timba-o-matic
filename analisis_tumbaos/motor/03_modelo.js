@@ -170,6 +170,8 @@
         : h('campanas') >= 4 ? 'marcha' : h('bongo') >= 8 ? 'cuerpo' : h('congas') >= 6 ? 'marcha' : 'otro';
       M.perc.juegos.push({ f: f.id, n: j.n, k: j.k, densidad: tot, tipo, lado: (f.analisis || {}).ladoFuente || 'sin' });
     }
+    // los vientos (08_vientos.js), de las mismas fuentes; quien llama puede darle más (todos los temas con vientos)
+    if (TM.construirVientos) M.vientos = TM.construirVientos(fuentes);
     M.resumen = {
       fuentes: fuentes.length, ciclosPiano: P.ciclos.length, ciclosBajo: B.ciclos.length, juegosPerc: M.perc.juegos.length,
       compasesPiano: P.ciclos.length * 2

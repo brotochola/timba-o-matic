@@ -37,6 +37,8 @@ function original(archivo, desde, n, perfil, meta = {}) {
     piano: pt ? pt.compases[b.i].as.map(a => ({ pos: a.pos, ps: a.ps.slice().sort((x, y) => x - y), v: a.vel })) : [],
     bajo: det.bajoAt.filter(a => a.q16 >= 2 * b.x && a.q16 < 2 * b.x + 16).map(a => ({ pos: a.q16 - 2 * b.x, ps: [a.p], v: a.vel })),
     // la clave del original (si la tocó otro instrumento, p. ej. un bloque) cuenta como clave
+    // vientos: cada nota con su posición, duración, altura e instrumento (tpt, tbn, sax, met)
+    vientos: (det.vientosAt || []).filter(a => a.q16 >= 2 * b.x && a.q16 < 2 * b.x + 16).map(a => ({ pos: a.q16 - 2 * b.x, d: a.d, m: a.p, ins: a.ins })),
     perc: det.bateria.map(h => ({ pos: Math.round(h.u * 2) - 2 * b.x, gm: det.clave && h.alt === det.clave.instrumento ? 75 : h.alt, v: h.v })).filter(h => h.pos >= 0 && h.pos < 16)
   }));
   return { det, bares, clave: det.clave ? det.clave.tipo : null };
@@ -53,7 +55,9 @@ function recrear(ref, opciones, M, ctx) {
   const { parse, evaluate, buildNotes } = ctx.__api;
   const score = evaluate(parse(TM.aLilyPond(r, { clave, bpm: 190, percusionId: 'motor-c' }))), notas = buildNotes(score);
   const ms = score.measures, barOf = t => ms.findIndex(m => t >= m.start && t < m.end);
-  const bares = r.lados.map((lado, b) => ({ lado, acordes: r.acordes[b].map(c => c.nombre), piano: [], bajo: [], perc: [] }));
+  const bares = r.lados.map((lado, b) => ({ lado, acordes: r.acordes[b].map(c => c.nombre), piano: [], bajo: [], perc: [], vientos: [] }));
+  const INS = { trompetas: 'tpt', trombones: 'tbn', saxos: 'sax' };
+  for (const [fam, evs] of Object.entries(r.vientos || {})) for (const e of evs) { const b = Math.floor(e.p / 16); if (bares[b]) for (const m of e.ps) bares[b].vientos.push({ pos: e.p % 16, d: e.L, m, ins: INS[fam] }); }
   const mano = {};
   for (const e of r.der.concat(r.izq)) { const k = e.p; (mano[k] = mano[k] || { pos: e.p % 16, b: Math.floor(e.p / 16), ps: [], v: 0 }); mano[k].ps.push(...e.ps); mano[k].v = Math.max(mano[k].v, e.v); }
   for (const a of Object.values(mano)) if (bares[a.b]) bares[a.b].piano.push({ pos: a.pos, ps: a.ps.sort((x, y) => x - y), v: a.v });
@@ -124,6 +128,18 @@ function comparar(ref, app, ver, detalle) {
     const reg = bs => nm(mediana(bs.flatMap(b => b.bajo.map(a => a.ps[0]))));
     out.push(`  densidad ${media(ref.bares.map(b => b.bajo.length)).toFixed(1)} → ${media(app.bares.map(b => b.bajo.length)).toFixed(1)} · registro ${reg(ref.bares)} → ${reg(app.bares)} · anticipos: ${ant(ref.bares)} → ${ant(app.bares)}`);
     notas.bajo = s;
+  }
+  if (ver.includes('vientos')) {
+    out.push('VIENTOS');
+    const s = filas('ataques', b => b.vientos.map(a => a.pos), b => b.vientos.map(a => a.pos));
+    const con = bs => bs.filter(b => b.vientos.length).length + '/' + bs.length;
+    const ataques = bs => bs.flatMap(b => Object.values(b.vientos.reduce((o, a) => ((o[a.pos] = o[a.pos] || []).push(a), o), {})));
+    const notasPor = bs => { const a = ataques(bs); return a.length ? (media(a.map(x => new Set(x.map(n => n.m % 12)).size))).toFixed(1) : '-'; };
+    const cortas = bs => { const a = bs.flatMap(b => b.vientos); return a.length ? Math.round(100 * a.filter(x => x.d <= 2).length / a.length) + '%' : '-'; };
+    const reg = (bs, ins) => nm(mediana(bs.flatMap(b => b.vientos.filter(a => a.ins === ins).map(a => a.m))));
+    out.push(`  compases con vientos ${con(ref.bares)} → ${con(app.bares)} · notas distintas por golpe ${notasPor(ref.bares)} → ${notasPor(app.bares)} · cortas ${cortas(ref.bares)} → ${cortas(app.bares)}`);
+    out.push(`  registro (mediana): trompetas ${reg(ref.bares, 'tpt')} → ${reg(app.bares, 'tpt')} · trombones ${reg(ref.bares, 'tbn')} → ${reg(app.bares, 'tbn')} · saxos ${reg(ref.bares, 'sax')} → ${reg(app.bares, 'sax')}`);
+    notas.vientos = s;
   }
   if (ver.includes('perc')) {
     out.push('PERCUSIÓN (notas General MIDI)');

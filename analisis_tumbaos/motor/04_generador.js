@@ -70,28 +70,29 @@
     { g: 'Mezcla de percusión', id: 'm_bateria', l: 'Batería', min: 0, max: 1.5, st: 0.05, def: 0.8, f: 'x', h: 'Volumen de la batería: bombo, caja, charles y platillos (0 = no suena)' }
   ];
   const PERILLAS = Object.fromEntries(PERILLAS_UI.map(k => [k.id, k.def]));
-  // los estilos: cómo toca toda la banda en una sección. piano: sus perillas (el piano puede tocar como otro estilo);
+  // los estilos: cómo toca toda la banda en una sección. vientos: el formato de entrada de la canción, la armonía y qué tocan en
+  // cada marcha (la timba calla en los coros y toca el mambo después; investigación de vientos de timba y de salsa) piano: sus perillas (el piano puede tocar como otro estilo);
   // estilo y grupo: de qué temas de la base aprende el piano (grupo: los estilos de Toontrack, si están en la base local);
   // banda: la percusión de entrada (07_percusion.js); cambio: el cambio de acorde; bajo: el tumbao en cuerpo, coro y mambo
   const ESTILOS = {
     sonmontuno: { n: 'Son montuno', d: 'El conjunto de los años 40 y 50 (Arsenio, Lilí Martínez): piano en octavas con la izquierda doblando, el bajo anticipado en el 4, una conga y bongó, sin timbal.',
-      banda: 'son', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'], piano: { lh: 'dobla8', oct: 1.2, blq: 0.6, semi: 0.5, crom: 0.6 } },
+      banda: 'son', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'], vientos: { formato: 'conjunto', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'mambo' }, piano: { lh: 'dobla8', oct: 1.2, blq: 0.6, semi: 0.5, crom: 0.6 } },
     mambo: { n: 'Mambo', d: 'Los años 50: el montuno más cargado, con bloques, para que entren los metales; campana de mambo y bajo anticipado en el 4.',
-      banda: 'mambo', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['mambo'], piano: { lh: 'auto', blq: 1.4, oct: 0.9 } },
+      banda: 'mambo', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['mambo'], vientos: { formato: 'bigband', armonia: 'bloque', toca: { cuerpo: 'fondo', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'mambo' }, piano: { lh: 'auto', blq: 1.4, oct: 0.9 } },
     charanga: { n: 'Charanga', d: 'La orquesta de flauta y violines (Aragón, «Pare cochero»): el piano de notas sueltas con la izquierda doblando, timbal y conga sin bongó.',
-      banda: 'charanga', cambio: '4', bajo: 'salsa', estilo: 'salsa', piano: { oct: 0.25, blq: 0.6, lh: 'dobla16', semi: 0.6, crom: 0.6 } },
+      banda: 'charanga', cambio: '4', bajo: 'salsa', estilo: 'salsa', vientos: { formato: null, armonia: 'unisono', toca: { cuerpo: 'nada', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { oct: 0.25, blq: 0.6, lh: 'dobla16', semi: 0.6, crom: 0.6 } },
     salsabrava: { n: 'Salsa brava', d: 'Nueva York en los 70 (Palmieri, Fania): montuno en octavas con la izquierda a dos octavas, percusivo; bajo en el 2& y el 4, campanas al frente.',
-      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_media'], piano: { lh: 'dobla16', oct: 1.4, blq: 0.7, ten: 0.8 } },
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_media'], vientos: { formato: 'trombanga', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'mambo' }, piano: { lh: 'dobla16', oct: 1.4, blq: 0.7, ten: 0.8 } },
     salsa: { n: 'Salsa de los 90', d: 'La salsa romántica (Gilberto, Marc Anthony): más aire, la izquierda a la décima, tensiones; bajo en el 2& y el 4.',
-      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_rapida', 'salsa_media'], piano: { lh: 'decima', ten: 1.2 } },
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_rapida', 'salsa_media'], vientos: { formato: 'salsa90', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'mambo' }, piano: { lh: 'decima', ten: 1.2 } },
     songo: { n: 'Songo (Van Van)', d: 'Los 70 y 80: más aire, la derecha en los tiempos y sostenida, la izquierda a la octava; batería de Changuito y el bajo de Formell.',
-      banda: 'songo', cambio: '4y', bajo: 'songo', estilo: 'cubano', grupo: ['songo'], piano: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8' } },
+      banda: 'songo', cambio: '4y', bajo: 'songo', estilo: 'cubano', grupo: ['songo'], vientos: { formato: 'vanvan', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8' } },
     pupy: { n: 'Timba · Pupy', d: 'Gancho que se repite igual en cada clave, manos en movimiento contrario y disminuidos de paso; el bajo en motivo con el piano.',
-      banda: 'timba', cambio: '4y', bajo: 'motivo', estilo: 'timba', piano: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5 } },
+      banda: 'timba', cambio: '4y', bajo: 'motivo', estilo: 'timba', vientos: { formato: 'timba', armonia: 'unisono', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5 } },
     melon: { n: 'Timba · Melón', d: 'Chorro continuo con corridas hacia las notas de referencia y la izquierda que mete notas entre las de la derecha; el bajo de timba.',
-      banda: 'timba', cambio: '4y', bajo: 'timba', estilo: 'timba', piano: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8 } },
+      banda: 'timba', cambio: '4y', bajo: 'timba', estilo: 'timba', vientos: { formato: 'timba', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8 } },
     tirso: { n: 'Timba · Tirso', d: 'Células de 3+4 pulsos, terceras paralelas y saltos de registro; la izquierda ancla en el grave; el bajo timbero.',
-      banda: 'timba', cambio: '4y', bajo: 'timbero', estilo: 'timba', piano: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4' } }
+      banda: 'timba', cambio: '4y', bajo: 'timbero', estilo: 'timba', vientos: { formato: 'timba', armonia: 'cuartas', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4' } }
   };
   // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
   const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };

@@ -106,7 +106,8 @@ ok(mb.info.piano === co.info.piano && JSON.stringify(mb.info.celulas) === JSON.s
 console.log('10. salidas');
 const ly = TM.aLilyPond(r, { clave: 'son 2-3', bpm: 190 });
 ok((ly.match(/\\mark "/g) || []).length === secs.length, 'una marca por sección');
-ok((ly.match(/\\bar "\|\|"/g) || []).length === 3 * (secs.length - 1), 'doble barra en los tres pentagramas');
+const pentagramas = 3 + TM.PISTAS_VIENTOS.filter(f => r.vientos[f].length).length;   // piano (dos), bajo y los vientos que tocan
+ok((ly.match(/\\bar "\|\|"/g) || []).length === pentagramas * (secs.length - 1), 'doble barra en todos los pentagramas');
 const mid = TM.leerMidi(TM.aMidi(r, 190, { porFamilia: true }));
 ok(secs.every(s => mid.textos.includes(s.texto)), 'marcadores de sección en el MIDI');
 ok(mid.pistas.some(p => p.nombre === 'congas') && !mid.pistas.some(p => p.nombre === 'percusión'), 'una pista de percusión por familia');

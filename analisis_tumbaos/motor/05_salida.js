@@ -75,6 +75,11 @@
     const marcar = (a, conMarca) => { for (const s of secs.slice(1)) a[s.inicio] = `\\bar "||" ${conMarca ? `\\mark "${s.texto}" ` : ''}` + a[s.inicio]; return a; };
     const lineas = a => { const out = []; for (let i = 0; i < a.length; i += 4) out.push('  ' + a.slice(i, i + 4).join(' | ') + ' |'); return out.join('\n'); };
     const D = compases(res.der, nb, ly), I = compases(res.izq, nb, ly), B = compases(res.bajo, nb, ly);
+    // vientos: un pentagrama por familia que toca algo (trompetas y saxos en clave de sol, trombones en clave de fa)
+    const VI = [['trompetas', 'Trompetas', 'trumpet', 'treble'], ['trombones', 'Trombones', 'trombone', 'bass'], ['saxos', 'Saxos', 'tenor sax', 'treble']]
+      .filter(([k]) => res.vientos && res.vientos[k] && res.vientos[k].length).map(([k, nom, midi, clef]) => ({ k, nom, midi, clef, a: compases(res.vientos[k], nb, ly) }));
+    const vientosDef = VI.map(v => `${v.k} = {\n  \\global \\clef ${v.clef}\n${lineas(marcar(conDin(v.a)))}\n}\n`).join('');
+    const vientosStaff = VI.map(v => `    \\new Staff \\with { instrumentName = "${v.nom}" midiInstrument = "${v.midi}" } \\${v.k}\n`).join('');
     const progTxt = res.secciones ? res.secciones.map(s => (s.nombre || s.marca) + (s.vueltas > 1 ? ' ×' + s.vueltas : '')).join(' · ') : res.prog.map(cs => cs.map(c => c.nombre).join('+')).join(' | ');
     const fuentes = o.fuentesTxt ? ` · ${o.fuentesTxt}` : '';
     const titulo = res.secciones ? (res.titulo || 'Canción').replace(/["\\]/g, '') : `Tumbao ${o.etiqueta ? o.etiqueta + " " : ""}(nuevo) · ${res.marca}`;
@@ -100,10 +105,10 @@ bajo = {
   \\global \\clef bass
 ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
 }
-\\score {
+${vientosDef}\\score {
   <<
     \\new ChordNames \\cifrado
-    \\new PianoStaff <<
+${vientosStaff}    \\new PianoStaff <<
       \\new Staff \\with { instrumentName = "Piano" midiInstrument = "acoustic grand" } \\pianoDer
       \\new Staff \\with { midiInstrument = "acoustic grand" } \\pianoIzq
     >>
@@ -126,7 +131,9 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     const notas = evs => evs.flatMap(e => e.ps.map(m => ({ t: e.p * T, d: e.L * T - 6, m, v: e.v || 90 })));
     const pistas = [
       { nombre: 'piano', canal: 0, programa: 0, notas: [...notas(res.der), ...notas(res.izq)] },
-      { nombre: 'bajo', canal: 1, programa: 32, notas: notas(res.bajo) }
+      { nombre: 'bajo', canal: 1, programa: 32, notas: notas(res.bajo) },
+      // vientos: una pista por familia (trompeta 56, trombón 57, saxo tenor 66)
+      ...[['trompetas', 2, 56], ['trombones', 3, 57], ['saxos', 4, 66]].filter(([k]) => res.vientos && res.vientos[k] && res.vientos[k].length).map(([k, canal, programa]) => ({ nombre: k, canal, programa, notas: notas(res.vientos[k]) }))
     ];
     const golpes = (o.perc || res.perc || []).flatMap((evs, b) => (evs || []).concat((res.extra || [])[b] || []).filter(e => APP_GM[e.d]).map(e => ({ t: (b * 16 + e.p) * T, d: T, m: APP_GM[e.d], v: Math.round(Math.min(127, 100 * e.v)), d0: e.d })));
     if (golpes.length && o.porFamilia) {
