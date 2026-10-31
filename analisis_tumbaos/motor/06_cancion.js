@@ -78,7 +78,7 @@
         const vs = TM.soplar({ nb: r.compases, lado: b => r.lados[((b % r.compases) + r.compases) % r.compases], acordesDe: acDe, acordeEn: (b, p) => { const c = acDe(b); return c.length > 1 && p >= 8 ? c[1] : c[0]; },
           anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, toca: tocaV, formato: formatoV, armonia: sv.armonia || EVi.armonia || 'unisono', entrada: sv.entrada || 'capas',
           largo: prog.length, estilo: EP.estilo, campana: ['marcha', 'mambo'].includes(marcha), R: rng((s.semillaVientos || (s.semilla || (i + 1) * 7919) * 31 + 5) >>> 0),
-          gancho: s.ganchoDe != null ? ganchosV[s.ganchoDe] : null }, V);
+          gancho: s.ganchoDe != null ? ganchosV[s.ganchoDe] : null, forma: EVi.forma, k: perillas }, V);
         for (const f of VIENTOS) if (on[f]) vientos[f] = vs[f];
         ganchosV[s.id != null ? s.id : i] = vs.info.gancho; infoV = vs.info;
       }

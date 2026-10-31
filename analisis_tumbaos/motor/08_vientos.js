@@ -28,6 +28,8 @@
   };
   const FAMILIAS = ['trompetas', 'trombones', 'saxos'];
   // registro de cada familia (del corpus): el centro de la voz de arriba y los bordes
+  // el techo de cada familia, aun con el registro corrido o la trompeta al agudo (investigación de timba: el clímax, cerca del La5)
+  const TECHO = { trompetas: 85, trombones: 74, saxos: 78 };
   const REG = { trompetas: { lo: 58, hi: 84, centro: 73 }, trombones: { lo: 45, hi: 72, centro: 62 }, saxos: { lo: 46, hi: 76, centro: 60 } };
   const TOCA = { nada: 'nada', bloques: 'bloques (golpes con la banda)', respuesta: 'respuestas en los huecos', moña: 'moña (un riff que se repite)', mambo: 'mambo (una línea que cambia)', fondo: 'fondo (notas largas)' };
   const ARMONIA = { fuente: 'como en el tema de la base', unisono: 'unísono y octavas', terceras: 'terceras y sextas', bloque: 'bloque (acordes cerrados)', cuartas: 'cuartas (timba)' };
@@ -102,47 +104,65 @@
     return notas;
   }
   // la línea de arriba a un registro: la octava más cerca del centro de la familia
-  const aRegistro = (m, fam) => { const r = REG[fam]; let x = m; while (x > r.hi) x -= 12; while (x < r.lo) x += 12; while (Math.abs(x - 12 - r.centro) < Math.abs(x - r.centro) && x - 12 >= r.lo) x -= 12; while (Math.abs(x + 12 - r.centro) < Math.abs(x - r.centro) && x + 12 <= r.hi) x += 12; return x; };
+  const aRegistro = (m, fam, off = 0) => { const r = REG[fam], c = r.centro + off, lo = r.lo + Math.min(0, off), hi = Math.min(TECHO[fam], r.hi + Math.max(0, off)); let x = m; while (x > hi) x -= 12; while (x < lo) x += 12; while (Math.abs(x - 12 - c) < Math.abs(x - c) && x - 12 >= lo) x -= 12; while (Math.abs(x + 12 - c) < Math.abs(x - c) && x + 12 <= hi) x += 12; return x; };
 
   // ---------- la sección
   // opc: { nb, lado(b), acordesDe(b), acordeEn(b, pos), anticipa, posAnt, toca, formato, armonia, entrada ('juntos'|'capas'),
-  //        largo (compases de la progresión), estilo ('salsa'|'cubano'|'timba'), R, gancho (de otra sección) }
+  //        forma, largo (compases de la progresión), estilo ('salsa'|'cubano'|'timba'), campana, R, gancho (de otra sección),
+  //        k: las perillas de los vientos (v_*) }
   function soplar(opc, V) {
-    const { nb, lado, acordesDe, acordeEn, R } = opc, F = (FORMATOS[opc.formato] || {}).familias || {};
+    const { nb, lado, acordesDe, acordeEn, R } = opc, F = (FORMATOS[opc.formato] || {}).familias || {}, k = opc.k || {};
     const fams = FAMILIAS.filter(f => F[f]);
     const out = { trompetas: [], trombones: [], saxos: [] }, info = { toca: opc.toca, fuentes: [] };
     if (!fams.length || !opc.toca || opc.toca === 'nada') return { ...out, info };
+    const kv = (id, d) => k[id] == null || k[id] === 'auto' ? d : k[id];
+    const dens = +kv('v_dens', 1), regOff = +kv('v_reg', 0), art = +kv('v_art', 1), crom = +kv('v_crom', 0.7), cresc = +kv('v_cresc', 0.3), agudo = +kv('v_agudo', 0), repite = +kv('v_repite', 0.5);
+    let forma = kv('v_forma', opc.forma || 'bloque');
+    const total = nb * 16, subir = agudo > 0 && R() < agudo;   // la trompeta al agudo en el último tercio
     // al final: cada familia en orden, sin pisarse consigo misma (una nota termina donde empieza la siguiente) y dentro de la sección
     const listo = () => {
       for (const fam of fams) {
-        const a = out[fam].filter(e => e.p >= 0 && e.p < nb * 16).sort((x, y) => x.p - y.p).filter((e, i, x) => !i || e.p > x[i - 1].p);
-        for (let i = 0; i < a.length; i++) a[i].L = Math.max(1, Math.min(a[i].L, (a[i + 1] ? a[i + 1].p : nb * 16 + 4) - a[i].p));
+        const a = out[fam].filter(e => e.p >= 0 && e.p < total).sort((x, y) => x.p - y.p).filter((e, i, x) => !i || e.p > x[i - 1].p);
+        for (let i = 0; i < a.length; i++) a[i].L = Math.max(1, Math.min(a[i].L, (a[i + 1] ? a[i + 1].p : total + 4) - a[i].p));
         out[fam] = a;
       }
       return { ...out, info };
     };
-    const lider = fams[0];   // la familia que lleva la línea de arriba (trompetas si hay)
-    const vel = x => Math.max(40, Math.min(120, Math.round(x)));
-    // voces de un ataque repartidas por familia: la de arriba para la primera, las de abajo para las demás
-    const poner = (p, L, top, ch, modoPedido, debajo, v, art) => {
+    const vel = (x, p) => Math.max(36, Math.min(122, Math.round(x * (1 - 0.3 * cresc + 0.4 * cresc * (p / total)))));
+    // voces de un ataque repartidas por familia (o solo por las de un grupo): la de arriba para la primera, las de abajo para las demás
+    const poner = (p, L, top, ch, modoPedido, debajo, v, art_, solo) => {
       // cada golpe va como en el riff del tema de la base: si ahí era unísono u octavas, así; si era armonizado, con la
       // armonía elegida (corpus: 56% de los ataques en unísono u octavas; investigación de salsa, regla 9). Bloques y cierres: acordes
       const unis = debajo && debajo.every(d => d % 12 === 0);
       const modo = modoPedido === 'bloque-fijo' ? 'bloque' : modoPedido !== 'fuente' && unis ? 'unisono' : modoPedido;
+      // en los golpes de bloque (los anticipos, los cierres, el remate) la nota de arriba es del acorde: la más cercana
+      if (modoPedido === 'bloque-fijo' && !ch.pcs.includes(pc(top))) { for (let d = 1; d <= 6; d++) { if (ch.pcs.includes(pc(top - d))) { top -= d; break; } if (ch.pcs.includes(pc(top + d))) { top += d; break; } } }
+      const fs_ = solo || fams, cabeza = fs_[0];
       // en los riffs, no más de 3 notas distintas por golpe; 4 en las notas largas y los cierres (investigación de salsa, regla 10)
-      const nTot = Math.min(L >= 6 ? 4 : 3, fams.reduce((a, f) => a + F[f], 0));
-      const pila = apilar(aRegistro(top, lider), ch, modo, nTot, debajo);
-      fams.forEach((fam, i) => {
+      const nTot = Math.min(L >= 6 ? 4 : 3, fs_.reduce((a, f) => a + F[f], 0));
+      const alto = subir && p >= total * 2 / 3 && cabeza === 'trompetas' ? 12 : 0;
+      const pila = apilar(aRegistro(top, cabeza, regOff + alto), ch, modo, nTot, debajo);
+      const Lf = Math.max(1, Math.round(L * art));
+      fs_.forEach((fam, i) => {
         let ps;
-        if (modo === 'unisono' || pila.length === 1) ps = [aRegistro(pila[0], fam)];
+        if (modo === 'unisono' || pila.length === 1) ps = [i === 0 ? pila[0] : aRegistro(pila[0], fam, regOff)];
         else if (i === 0) ps = pila.slice(0, Math.min(F[fam], pila.length));
-        else { const resto = pila.slice(Math.min(F[fams[0]], pila.length)); ps = (resto.length ? resto : pila).slice(0, F[fam]).map(m => aRegistro(m, fam)); }
+        else { const resto = pila.slice(Math.min(F[cabeza], pila.length)); ps = (resto.length ? resto : pila).slice(0, F[fam]).map(m => aRegistro(m, fam, regOff)); }
         ps = [...new Set(ps)].sort((a, b) => a - b);
-        out[fam].push({ p, L, ps, v: vel(v), art: art || (v >= 100 ? '->' : ''), ch });
+        out[fam].push({ p, L: Lf, ps, v: vel(v, p), art: art_ || (v >= 100 ? '->' : ''), ch });
       });
     };
     const modo = opc.armonia || 'unisono';
     const anticipaEn = opc.anticipa ? (opc.posAnt || 14) : null;
+    // el remate al final de la sección: un golpe con la banda en el anticipo, contratiempos hasta el golpe, o una nota larga
+    const rematar = () => {
+      const r = kv('v_remate', 'nada'); if (r === 'nada') return;
+      const b = nb - 1, sig = acordesDe(nb)[0], pos = anticipaEn ?? 14, desde = r === 'larga' ? 8 : r === 'pickups' ? 6 : pos;
+      for (const fam of fams) out[fam] = out[fam].filter(e => e.p < b * 16 + desde);
+      if (r === 'larga') { poner(b * 16 + 8, 8, 76, acordeEn(b, 8), 'bloque-fijo', null, 96, '->'); return; }
+      if (r === 'pickups') for (const q of [6, 10]) poner(b * 16 + q, 1, 76, acordeEn(b, q), 'bloque-fijo', null, 92, '-.');
+      poner(b * 16 + pos, 16 - pos + 2, 76, sig, 'bloque-fijo', null, 110, '->');
+    };
 
     if (opc.toca === 'bloques') {
       // golpes con la banda: en cada cambio de acorde, en el 4& (o el 4) con el acorde que viene, ligado al 1; al final de la
@@ -161,53 +181,79 @@
         const guia = ch.raiz + (ch.fun.s != null ? ch.fun.s : ch.fun.t ?? 4);
         poner(b * 16 + q, acordesDe(b).length > 1 ? 8 : 16, 60 + pc(guia), ch, modo === 'unisono' ? 'terceras' : modo, null, 72, '');
       }
+      rematar();
       return listo();
     }
-    // del corpus: ciclos del tipo pedido, prefiriendo el estilo y la campana (coro o mambo) si la sección la tiene
+    // del corpus: ciclos del tipo pedido, prefiriendo la tradición (salsa o cubano), la campana si la sección la tiene y la densidad pedida
     const cub = e => e === 'cubano' || e === 'timba';
+    const fuente = kv('v_fuente', 'estilo'), tradicion = fuente === 'estilo' ? opc.estilo : fuente === 'todo' ? null : fuente;
     const pool = (V.porTipo[opc.toca] || []).filter(x => x.n <= 24);
-    const peso = x => (opc.estilo ? (cub(opc.estilo) === cub(x.estilo) ? 1 : 0.35) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4) * (x.voces >= 2 || modo !== 'fuente' ? 1 : 0.5);
     if (!pool.length) return listo();
-    const tocarCiclo = (cy, b0, fam) => {
-      // el ciclo cubre dos compases (lado 3 | lado 2): cada mitad va al compás de su lado
+    const nMed = pool.map(x => x.n).sort((a, b) => a - b)[pool.length >> 1], meta = nMed * dens;
+    const peso = x => (tradicion ? (cub(tradicion) === cub(x.estilo) ? 1 : 0.25) : 1) * (opc.campana == null || opc.campana === x.campana ? 1 : 0.4)
+      * (x.voces >= 2 || modo !== 'fuente' ? 1 : 0.5) * (Math.abs(dens - 1) < 0.02 ? 1 : Math.exp(-(((x.n - meta) / (meta * 0.45 + 1)) ** 2)));
+    // un ciclo (dos compases: lado 3 | lado 2) en los compases b0 y b0+1, para todas las familias o un grupo
+    const tocarCiclo = (cy, b0, solo, unisono, soloCompas) => {
       for (let b = Math.max(0, b0); b < Math.min(nb, b0 + 2); b++) {   // b0 puede ser -1: el ciclo empezó antes de la sección
+        if (soloCompas != null && b !== soloCompas) continue;
         const L_ = lado(b), mitad = cy.ev.filter(e => (e.p < 16) === (L_ === 'A'));
         for (const e of mitad) {
           const pos = e.p % 16;
+          // menos densidad: se caen los golpes cortos que no son ni el 1, ni el anticipo, ni un acento
+          if (dens < 1 && e.d <= 1 && pos !== 0 && pos !== 14 && e.v < 110 && R() > dens) continue;
           const T = e.antic && opc.anticipa ? (pos >= 12 ? acordesDe(b + 1)[0] : acordeEn(b, pos)) : acordeEn(b, pos);
-          const top = mapearNota(e.top, e.ch, T, e.d >= 2 || e.debajo.length > 0);
+          const top = mapearNota(e.top, e.ch, T, e.d >= 2 || e.debajo.length > 0 || R() > crom);
           const L = Math.max(1, Math.min(e.d, 16 - pos + (e.antic ? 4 : 0)));
-          if (fam) { out[fam].push({ p: b * 16 + pos, L, ps: [aRegistro(top, fam)], v: vel(e.v * 0.9), art: e.v >= 110 ? '->' : '', ch: T }); }
-          else poner(b * 16 + pos, L, top, T, modo, e.debajo, e.v, '');
+          poner(b * 16 + pos, L, top, T, unisono ? 'unisono' : modo, unisono ? [] : e.debajo, e.v, '', solo);
         }
       }
     };
     const desfase = lado(0) === 'B' ? 1 : 0;   // el ciclo arranca en el lado 3
-    if (opc.toca === 'moña') {
-      // un riff de dos claves (4 compases) que se repite; en capas lo arranca el trombón y cada familia entra una vuelta
-      // después con su riff, que llena los huecos del primero (investigación de salsa: reglas 4 y 5; Guatacando)
-      const dos = cy => [cy, cy.siguiente && cy.siguiente.tipo === 'moña' ? cy.siguiente : cy];
-      const r1 = opc.gancho && opc.gancho.riff || dos(elegir(R, pool, peso));
-      info.fuentes.push(r1[0].f);
-      const orden = opc.entrada === 'capas' && fams.length > 1 ? [...fams.filter(f => f === 'trombones'), ...fams.filter(f => f !== 'trombones')] : [null];
-      const ritmo4 = r => r[0].ritmo + r[1].ritmo;
-      const largo = Math.max(4, opc.largo || 4);
-      orden.forEach((fam, i) => {
-        const hueco = r => { let c = 0; const a = ritmo4(r), b = ritmo4(r1); for (let q = 0; q < 64; q++) if (a[q] === 'x' && b[q] === 'x') c++; return 1 / (1 + c); };
-        const riff = i === 0 ? r1 : dos(elegir(R, pool.filter(x => x !== r1[0]), x => peso(x) * hueco(dos(x))));
-        if (i) info.fuentes.push(riff[0].f);
-        for (let b = i * largo - desfase; b < nb; b += 4) { tocarCiclo(riff[0], b, fam); tocarCiclo(riff[1], b + 2, fam); }
+    // el material de una frase: ciclos seguidos de un tema; el material siguiente sigue al anterior (o empieza otro del mismo tema)
+    const claves = +kv('v_largo', opc.toca === 'respuesta' ? 1 : 2);
+    const seguir = (cy, n) => { const m = [cy]; while (m.length < n) { const u = m[m.length - 1]; m.push(u.siguiente && u.siguiente.tipo !== 'fondo' ? u.siguiente : m[m.length % m.length]); } return m; };
+    const otroDe = (u, n) => seguir(u.siguiente && u.siguiente.tipo !== 'fondo' ? u.siguiente : elegir(R, pool.filter(x => x.f === u.f), peso) || elegir(R, pool, peso), n);
+    const huecoCon = m => x => { const a = m.map(c => c.ritmo).join(''), b = seguir(x, m.length).map(c => c.ritmo).join(''); let c = 0; for (let q = 0; q < a.length; q++) if (a[q] === 'x' && b[q] === 'x') c++; return 1 / (1 + c); };
+    let mat = opc.gancho && opc.gancho.material || seguir(elegir(R, pool, peso), claves);
+    info.fuentes.push(mat[0].f); info.gancho = { material: mat };
+    // grupos para la pregunta y respuesta y el contrapunto: trompetas (y saxos) contra trombones
+    const A = fams.filter(f => f !== 'trombones'), B = fams.filter(f => f === 'trombones');
+    if (fams.length < 2 && ['pregunta', 'contrapunto', 'champola', 'escalonado'].includes(forma)) forma = 'bloque';
+    if (opc.toca === 'moña' && opc.entrada !== 'juntos' && fams.length > 1 && forma === 'bloque') forma = 'capas';
+    const grupoA = A.length ? A : [fams[0]], grupoB = B.length ? B : fams.filter(f => !grupoA.includes(f));
+    let mat2 = null, mat3 = null;
+    if (['contrapunto', 'champola', 'capas'].includes(forma)) { mat2 = seguir(elegir(R, pool.filter(x => x !== mat[0]), x => peso(x) * huecoCon(mat)(x)), claves); info.fuentes.push(mat2[0].f); }
+    if (forma === 'champola' && fams.length > 2) { mat3 = seguir(elegir(R, pool.filter(x => x !== mat[0] && x !== mat2[0]), x => peso(x) * huecoCon(mat)(x) * huecoCon(mat2)(x)), claves); info.fuentes.push(mat3[0].f); }
+    const capasOrden = [...fams.filter(f => f === 'trombones'), ...fams.filter(f => f !== 'trombones')];
+    info.forma = forma;
+    for (let f0 = -desfase, frase = 0; f0 < nb; f0 += 2 * claves, frase++) {
+      // ¿la frase repite la anterior o sigue con material nuevo? (la moña casi siempre repite)
+      if (frase > 0 && R() >= (opc.toca === 'moña' ? Math.max(repite, 0.85) : repite)) {
+        mat = otroDe(mat[mat.length - 1], claves);
+        if (mat2) mat2 = otroDe(mat2[mat2.length - 1], claves);
+        if (mat3) mat3 = otroDe(mat3[mat3.length - 1], claves);
+      }
+      mat.forEach((cy, j) => {
+        const b0 = f0 + 2 * j, ultima = j === mat.length - 1;
+        if (forma === 'bloque') tocarCiclo(cy, b0, null);
+        // pregunta y respuesta: un compás cada grupo (el lado 3 pregunta, el lado 2 contesta)
+        else if (forma === 'pregunta') for (let b = b0; b < b0 + 2; b++) tocarCiclo(cy, b0, lado(Math.max(0, b)) === 'A' ? grupoA : grupoB, false, b);
+        else if (forma === 'contrapunto') { tocarCiclo(cy, b0, grupoA); tocarCiclo(mat2[j], b0, grupoB); }
+        else if (forma === 'champola') {
+          // tres líneas distintas; en la última clave de la frase, todas juntas en unísono (NG La Banda, «En crisis»)
+          if (ultima && mat.length > 1) tocarCiclo(cy, b0, null, true);
+          else { tocarCiclo(cy, b0, [fams[0]]); tocarCiclo(mat2[j], b0, [fams[1]]); if (fams[2]) tocarCiclo((mat3 || mat2)[j], b0, [fams[2]]); }
+        } else if (forma === 'escalonado') {
+          // en la primera frase cada familia entra un compás después; después, todas juntas
+          if (frase === 0) for (let b = b0; b < b0 + 2; b++) { const dentro = fams.filter((f, i) => b >= i); tocarCiclo(cy, b0, dentro.length ? dentro : [fams[0]], false, b); }
+          else tocarCiclo(cy, b0, null);
+        } else if (forma === 'capas') {
+          // la moña en capas: arranca el trombón y cada familia entra una frase después con su riff, que llena los huecos del primero
+          capasOrden.forEach((fam, i) => { if (frase >= i) tocarCiclo(i % 2 ? mat2[j] : cy, b0, [fam]); });
+        }
       });
-      info.gancho = { riff: r1 };
-      return listo();
     }
-    // mambo y respuestas: los ciclos seguidos de un tema de la base (como la frase real del piano)
-    let cy = opc.gancho && opc.gancho.inicio || elegir(R, pool, peso);
-    info.fuentes.push(cy.f); info.gancho = { inicio: cy };
-    for (let b = -desfase; b < nb; b += 2) {
-      tocarCiclo(cy, b, null);
-      cy = cy.siguiente && (cy.siguiente.tipo === opc.toca || opc.toca === 'mambo') ? cy.siguiente : elegir(R, pool.filter(x => x.f === cy.f), peso) || cy;
-    }
+    rematar();
     return listo();
   }
 

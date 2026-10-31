@@ -79,6 +79,7 @@ if (solo !== 'temas') {
     for (const t of r.vientos.trompetas) { const b = r.vientos.trombones.find(x => x.p === t.p); if (b && Math.max(...b.ps) > Math.max(...t.ps)) { falla('trombones por encima de las trompetas', `${caso} ${t.p}`); break; } }
     const golpes = {}; for (const f of TM.PISTAS_VIENTOS) for (const e of r.vientos[f]) if (e.L <= 2) (golpes[e.p] = golpes[e.p] || new Set()), e.ps.forEach(m => golpes[e.p].add(m % 12));
     if (Object.values(golpes).some(s => s.size > 3)) falla('golpe corto con más de 3 notas distintas', caso);
+    for (const f of TM.PISTAS_VIENTOS) if (['bomba', 'despelote'].includes(marcha) && r.vientos[f].some(e => e.ps.some(m => TM.funcion(m, e.ch) === 'X'))) { falla('bloques con notas fuera del acorde', `${caso} ${f}`); break; }
     if (E.banda === 'timba' && marcha === 'marcha' && TM.PISTAS_VIENTOS.some(f => r.vientos[f].length)) falla('la timba con vientos en el coro', caso);
     if (['bomba', 'despelote'].includes(marcha) && (E.vientos || {}).formato) for (let b = 0; b < nb; b++) {
       const sig = r.acordes[(b + 1) % nb][0]; if (sig.nombre === r.acordes[b].at(-1).nombre) continue;
