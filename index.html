@@ -4471,7 +4471,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
       if(!f.piano.length&&!f.bajo.length&&!f.perc.length)rec.error='No encontré compases de montuno, de bajo ni de percusión con la grilla clara.';
     }catch(e){Object.assign(rec,{analisis:null,piano:[],bajo:[],perc:[],error:e.message,version:Date.now()})}
   }
-  let modelo=null,firma='';
+  let modelo=null,firma=null;   // null: todavía no se armó (aunque no haya ninguna fuente marcada)
   function modeloActual(){
     const fs=todas().filter(activa),f=fs.map(x=>x.id+':'+(x.version||0)).join('|');
     if(f!==firma){modelo=TM.construirModelo(fs);firma=f}
