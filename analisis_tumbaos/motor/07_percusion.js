@@ -49,10 +49,7 @@
       negrasBoca: { n: 'campana en negras', f: 'corpus: boca en los cuatro tiempos (Lloraras, Mambo All Stars «Perfidia»)', ...L({ bongoBell: '9...7...8...7...' }) },
       empujes: { n: 'campana con empujes', f: 'corpus, Yumbambe: los talones del 2& y el 4& más fuertes que los del 2 y el 4',
         A: { bongoBell: '9.......8.......', bongoBellC: '....3.6.....3.6.' },
-        B: { bongoBell: '9.......8.......', bongoBellC: '....4.5.....3.6.' } },
-      corcheas: { n: 'campana en corcheas (para el mambo de los vientos)', f: 'boca en los tiempos y talón en los contratiempos, para la sección de mambo (sin verificar en el corpus)',
-        A: { bongoBell: '9...7...8...7...', bongoBellC: '..4...6...4...5.' },
-        B: { bongoBell: '9...7...8...7...', bongoBellC: '..4...4...4...5.' } }
+        B: { bongoBell: '9.......8.......', bongoBellC: '....4.5.....3.6.' } }
     },
     timbal: {
       cascara: { n: 'cáscara', f: 'Moore: lado 2 en 1, 2, 3, 3& y 4&; lado 3 en 1, 2, 2&, 3& y 4&; la izquierda en el timbal grave hace el bombo (2&) y el ponche (4)',

@@ -5419,7 +5419,9 @@ ${vientosStaff}    \\new PianoStaff <<
   const antesDe=i=>{const lp=loopDe();return i>0?i-1:lp&&i===lp.desde?lp.hasta:null};
   const despuesDe=i=>{const lp=loopDe();return lp&&i===lp.hasta?lp.desde:i+1<song.secciones.length?i+1:null};
   const cambioDeSec=s=>s.cambio||(TM.ESTILOS[s.estilo]||{}).cambio||'4y';
-  const entraDe=i=>{const s=song.secciones[i];if(ENTRA_TXT[s.entra])return s.entra;const a=antesDe(i);return a!=null?cambioDeSec(song.secciones[a]):'1'};
+  // sin elegir: como cambia el acorde la de antes; después de un corte (golpe en el 1 y silencio), en el 1 (como el motor)
+  const entraPorDefecto=s=>s.transicion==='corte'?'1':cambioDeSec(s);
+  const entraDe=i=>{const s=song.secciones[i];if(ENTRA_TXT[s.entra])return s.entra;const a=antesDe(i);return a!=null?entraPorDefecto(song.secciones[a]):'1'};
   const GOLPES_TXT={ninguna:'',cierre:'cierre sobre la clave',parada:'parada en clave',contratiempos:'bloque de contratiempos',tresxcuatro:'tres contra cuatro',golpe:'un golpe',corte:'corte'};
   const MARCHA_TXT={cuerpo:'Cuerpo',marcha:'Coro',mambo:'Mambo',presion:'Presión',bomba:'Bomba',despelote:'Despelote',muela:'Muela'};
   // tipos de sección: marcha, cómo entra, cómo termina y qué pistas no tocan. En salsa el bongó y el timbal pasan a las campanas
@@ -5497,13 +5499,13 @@ ${vientosStaff}    \\new PianoStaff <<
     const DETALLE={'4y':' (anticipada: piano, bajo y golpes en el 4&)','4':' (el bajo y los golpes en el 4; el piano en el 4&)','1':' (sin anticipo)'};
     if(ia==null){em.appendChild(el('option',null,'en el 1 (arranca la canción)')).value='';em.disabled=true}
     else{const a=song.secciones[ia];em.disabled=false;
-      em.appendChild(el('option',null,'como cambia «'+nombreDe(a)+'» ('+ENTRA_TXT[cambioDeSec(a)]+')')).value='';
+      em.appendChild(el('option',null,a.transicion==='corte'?'después del corte de «'+nombreDe(a)+'» (en el 1)':'como cambia «'+nombreDe(a)+'» ('+ENTRA_TXT[cambioDeSec(a)]+')')).value='';
       for(const [v,t] of Object.entries(ENTRA_TXT))em.appendChild(el('option',null,t+DETALLE[v])).value=v;
       em.value=ENTRA_TXT[s.entra]?s.entra:''}
     em.closest('label').classList.toggle('mod',ia!=null&&!!ENTRA_TXT[s.entra]);
     if(id==null){te.appendChild(el('option',null,'fin de la canción')).value='';te.disabled=true;te.closest('label').classList.remove('mod')}
     else{const b=song.secciones[id],nb=nombreDe(b)+(id===cur?' (vuelve al principio)':'');te.disabled=false;
-      te.appendChild(el('option',null,'como cambia esta ('+{'4y':'en el 4&','4':'en el 4','1':'en el 1 de «'+nb+'»'}[cambioDeSec(s)]+')')).value='';
+      te.appendChild(el('option',null,s.transicion==='corte'?'después del corte (en el 1 de «'+nb+'»)':'como cambia esta ('+{'4y':'en el 4&','4':'en el 4','1':'en el 1 de «'+nb+'»'}[cambioDeSec(s)]+')')).value='';
       for(const [v,t] of Object.entries({'4y':'en el 4& (anticipa «'+nb+'»)','4':'en el 4 (anticipa «'+nb+'»)','1':'en el 1 de «'+nb+'»'}))te.appendChild(el('option',null,t)).value=v;
       te.value=ENTRA_TXT[b.entra]?b.entra:'';te.closest('label').classList.toggle('mod',!!ENTRA_TXT[b.entra])}
     const e0=entraDe(cur);
@@ -5709,10 +5711,10 @@ ${vientosStaff}    \\new PianoStaff <<
       const DONDE={'4y':'en el 4& de «'+nA+'»: anticipada (piano, bajo y golpes)','4':'en el 4 de «'+nA+'»: el bajo y los golpes (el piano en el 4&)','1':'en el 1 de «'+nB+'»: sin anticipo'};
       const u=el('span','mt-union'+(propia?' mod':'')+(e!=='1'?' ant':'')+(vuelta?' loop':''),(vuelta?'↺':'')+ENTRA_CORTO[e]);u.style.left=px+'px';
       const s=el('select');
-      s.appendChild(el('option',null,pre+'como cambia el acorde «'+nA+'» ('+ENTRA_CORTO[cambioDeSec(ts[a].s)]+')')).value='';
+      s.appendChild(el('option',null,pre+(ts[a].s.transicion==='corte'?'después del corte de «'+nA+'» (1)':'como cambia el acorde «'+nA+'» ('+ENTRA_CORTO[cambioDeSec(ts[a].s)]+')'))).value='';
       for(const v of ['4y','4','1'])s.appendChild(el('option',null,pre+DONDE[v])).value=v;
       s.value=propia?x.s.entra:'';
-      u.title='Dónde entra «'+nB+'»'+(vuelta?' al volver del loop':'')+': '+DONDE[e]+(e==='1'?'':'. Ahí caen el acorde nuevo, los golpes y el plato')+(tr?' · al final de «'+nA+'»: '+tr:'')+(propia?'':' · como cambia el acorde «'+nA+'»')+' · clic para cambiarlo';
+      u.title='Dónde entra «'+nB+'»'+(vuelta?' al volver del loop':'')+': '+DONDE[e]+(e==='1'?'':'. Ahí caen el acorde nuevo, los golpes y el plato')+(tr?' · al final de «'+nA+'»: '+tr:'')+(propia?'':ts[a].s.transicion==='corte'?' · después del corte, en el 1':' · como cambia el acorde «'+nA+'»')+' · clic para cambiarlo';
       s.setAttribute('aria-label','Dónde entra «'+nB+'»');
       u.onclick=ev=>ev.stopPropagation();
       s.onchange=()=>{if(s.value)x.s.entra=s.value;else delete x.s.entra;if(i!==cur)elegir(i);changed()};
