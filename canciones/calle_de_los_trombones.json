@@ -62,7 +62,7 @@
     "semilla": 501,
     "vientos": {
      "toca": "moña",
-     "armonia": "unisono",
+     "armonia": "trombanga",
      "entrada": "juntos"
     }
    },
@@ -241,7 +241,7 @@
     "semilla": 504,
     "vientos": {
      "toca": "mambo",
-     "armonia": "terceras"
+     "armonia": "trombanga"
     },
     "plato": "1"
    },
@@ -339,7 +339,7 @@
     "semilla": 506,
     "vientos": {
      "toca": "moña",
-     "armonia": "terceras"
+     "armonia": "trombanga"
     },
     "plato": "1"
    },

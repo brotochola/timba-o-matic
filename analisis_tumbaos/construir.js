@@ -78,7 +78,7 @@ datos.forEach((d, i) => {
   const id = 'b:' + (d.coleccion ? d.coleccion + '/' : '') + d.nombre;
   if (!f.piano.length && !f.bajo.length && !f.perc.length) { console.log(`${id.slice(2).padEnd(34)} sin compases usables de piano, bajo ni percusión: queda afuera`); return; }
   fuentes.push({ id, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...(d.coleccion ? { coleccion: d.coleccion } : {}),
-    ...(d.meta.grupo ? { grupo: d.meta.grupo } : {}), ...(d.meta.seccion ? { seccion: d.meta.seccion } : {}), ...f });
+    ...(d.meta.grupo ? { grupo: d.meta.grupo } : {}), ...(d.meta.seccion ? { seccion: d.meta.seccion } : {}), ...(d.meta.genero ? { genero: d.meta.genero } : {}), ...f });
   const a = f.analisis;
   console.log(`${(d.coleccion ? d.coleccion + '/' : '') + d.nombre.padEnd(34)} ${String(f.piano.length).padStart(4)} ciclos de piano · ${String(f.bajo.length).padStart(4)} de bajo · ${String(f.perc.length).padStart(3)} juegos de percusión · lado: ${a.ladoFuente}${a.conflicto ? ' (' + a.conflicto + ' compases en contra)' : ''}`);
 });
@@ -114,7 +114,7 @@ function meterEnHtml(json) {
   // la página aprende el piano, el bajo y la percusión de la base original y de las colecciones encendidas; de las demás solo usa
   // los vientos, así que de esas va nada más eso (el resto queda en base_tumbaos.json, para los análisis)
   const B = JSON.parse(json), encendida = c => !c || !!((B.colecciones || {})[c] || {}).encendida;
-  const pagina = JSON.stringify({ ...B, fuentes: B.fuentes.map(f => encendida(f.coleccion) ? f : f.vientos && f.vientos.length ? { id: f.id, archivo: f.archivo, titulo: f.titulo, estilo: f.estilo, coleccion: f.coleccion, vientos: f.vientos } : null).filter(Boolean) });
+  const pagina = JSON.stringify({ ...B, fuentes: B.fuentes.map(f => encendida(f.coleccion) ? f : f.vientos && f.vientos.length ? { id: f.id, archivo: f.archivo, titulo: f.titulo, estilo: f.estilo, ...(f.genero ? { genero: f.genero } : {}), coleccion: f.coleccion, vientos: f.vientos } : null).filter(Boolean) });
   const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera analisis_tumbaos/construir.js a partir de analisis_tumbaos/motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(pagina)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${Z}`;
   const nuevo = html.slice(0, i0) + bloque + html.slice(i1 + Z.length);
   if (nuevo !== html) { fs.writeFileSync(HTML_F, nuevo); console.log(`index.html actualizado (motor ${(codigo.length / 1024).toFixed(0)} kB + base)`); }
