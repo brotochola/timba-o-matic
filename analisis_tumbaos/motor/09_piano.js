@@ -236,7 +236,7 @@
         else if (o.dim && cambia && q === 12 && X.RA() < o.dim) T = TM.acorde(TM.NOM[(sigT.raiz + 11) % 12] + 'dim7');
         const solaIzq = top < medTop - 9;
         const der = solaIzq ? [] : e.ps.filter(x => x >= top - 12), izq = solaIzq ? e.ps.slice() : e.ps.filter(x => x < top - 12);
-        evs.push({ p: b * 16 + q, b, q, d: e.d, v: e.v, der, izq, S, T, antic, fuerte: q === 6 || q === 14 || (lado(b) === 'B' && q === 0) || e.d >= 3, clave: o.clave ? o.clave(b, q) : null });
+        evs.push({ p: b * 16 + q, b, q, d: e.d, v: e.v, der, izq, S, T, antic, anticF, fuerte: q === 6 || q === 14 || (lado(b) === 'B' && q === 0) || e.d >= 3, clave: o.clave ? o.clave(b, q) : null });
       }
       // el anticipo de la sección cae en el 4&. Si ahí no ataca nadie con el acorde nuevo, se agrega el golpe (con el voicing del
       // último ataque): siempre (Opus, como pide el cambio de acorde de la sección) o solo si lo que suena de antes lo taparía
@@ -252,6 +252,18 @@
       }
     }
     evs.sort((a, b) => a.p - b.p);
+    // el anticipo queda ligado al 1: si el acorde nuevo llega en el 4& porque lo pide la sección (el pianista de la fuente no
+    // anticipaba ahí), el 1 que él atacaba se liga siempre hacia el lado 3 y la mitad de las veces hacia el lado 2, como en la base
+    // (95% y 55%). Se decide por lugar del gancho, así las vueltas quedan iguales
+    if (o.ligar) {
+      const dec = new Map();
+      for (const a of evs.filter(e => e.antic && e.q >= 14 && !e.anticF)) {
+        const uno = evs.find(e => e.b === a.b + 1 && e.q === 0); if (!uno) continue;
+        const key = o.clave ? o.clave(a.b + 1, 0) : a.b + 1;
+        if (!dec.has(key)) dec.set(key, lado(a.b + 1) === 'A' || X.RA() < 0.5);
+        if (dec.get(key)) evs.splice(evs.indexOf(uno), 1);
+      }
+    }
     // el registro: el del pianista (más la perilla). Opus solo corre la plantilla de a octavas si quedó lejos (más de una sexta) del
     // centro de la base: un pianista que toca grave en el soneo no tiene por qué tocar grave el coro
     const lejos = X.M.piano.registro.p50 - medTop, reg = (k.reg || 0) + (o.centrar && Math.abs(lejos) > 8 ? 12 * Math.round(lejos / 12) : 0);
@@ -494,7 +506,7 @@
       barraDe.push(ajustada(br));
     }
     const memoria = new Map(G0 ? G0.memoria : []);
-    const res = tocar(X, b => barraDe[b], { anticipoForzado: 'siempre', centrar: true, cromSola: true, memoria, clave: (b, q) => (b % H) + ':' + q, H, dim: k.dim });
+    const res = tocar(X, b => barraDe[b], { anticipoForzado: 'siempre', ligar: true, centrar: true, cromSola: true, memoria, clave: (b, q) => (b % H) + ':' + q, H, dim: k.dim });
     return { ...res, ganchoFin: X.ctx ? { opus: true, id: pl.id, H, memoria } : null };
   }
 
