@@ -17,7 +17,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {
      "frase": "frase"
     },
@@ -64,7 +63,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -136,7 +134,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {
      "frase": "frase"
     },
@@ -175,14 +172,14 @@
      }
     ],
     "vueltas": 6,
-    "semilla": 303
+    "semilla": 303,
+    "plato": "1"
    },
    {
     "id": "s21",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "plato",
     "perillas": {
      "frase": "frase"
     },
@@ -221,14 +218,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 304
+    "semilla": 304,
+    "plato": "1"
    },
    {
     "id": "s22",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {
      "frase": "frase"
     },
@@ -267,14 +264,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 305
+    "semilla": 305,
+    "plato": "1"
    },
    {
     "id": "s23",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

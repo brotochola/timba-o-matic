@@ -19,7 +19,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {
      "frase": "frase"
     },
@@ -68,7 +67,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -145,7 +143,6 @@
     },
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {},
     "nombre": "Puente",
     "tipo": "cuerpo",
@@ -189,7 +186,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -226,14 +222,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 4242
+    "semilla": 4242,
+    "plato": "entra"
    },
    {
     "id": "g5",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "plato4y",
     "perillas": {
      "frase": "frase"
     },
@@ -275,14 +271,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 906
+    "semilla": 906,
+    "plato": "entra"
    },
    {
     "id": "g6",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {},
     "nombre": "Presión",
     "tipo": "presion",
@@ -326,7 +322,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro bomba",
     "tipo": "coro",
@@ -365,14 +360,14 @@
     ],
     "vueltas": 4,
     "semilla": 4243,
-    "ganchoDe": "g4"
+    "ganchoDe": "g4",
+    "plato": "entra"
    },
    {
     "id": "g8",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",
@@ -409,7 +404,8 @@
      }
     ],
     "vueltas": 1,
-    "semilla": 4244
+    "semilla": 4244,
+    "plato": "entra"
    }
   ],
   "letra": {

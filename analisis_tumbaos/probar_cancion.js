@@ -132,19 +132,53 @@ const t0 = Date.now(), rl = TM.generarCancion(larga, M), ms = Date.now() - t0;
 console.log(`   ${rl.compases} compases en ${ms} ms`);
 ok(ms < 1000, 'una canción de ~100 compases en menos de 1 s');
 
-console.log('13. finales con golpes de toda la banda y rellenos de percusión');
-const POS_FIN = { cierre: { A: [0, 6, 12, 14], B: [4, 8, 14] }, parada: { A: [0, 6, 12], B: [4, 8] }, contratiempos: { A: [2, 6, 10, 14], B: [2, 6, 10, 14] }, tresxcuatro: { A: [0, 3, 6, 9, 12, 15], B: [0, 3, 6, 9, 12, 15] }, golpe4y: { A: [14], B: [14] } };
-for (const [tr, pos] of Object.entries(POS_FIN)) {
+console.log('13. finales con golpes de toda la banda (caen en la llegada de lo que sigue) y rellenos de percusión');
+// las figuras, en cada lado y con lo que sigue entrando en el 4&, en el 4 o en el 1 (la llegada: 14, 12 o el 1 que viene)
+const FIG = { cierre: { A: { 14: [0, 6, 12, 14], 12: [0, 6, 12], 16: [0, 6, 12] }, B: { 14: [4, 8, 14], 12: [4, 8, 12], 16: [4, 8, 12] } },
+  parada: { A: { 14: [0, 6, 12], 12: [0, 6, 12], 16: [0, 6, 12] }, B: { 14: [4, 8], 12: [4, 8], 16: [4, 8] } },
+  contratiempos: { A: { 14: [2, 6, 10, 14], 12: [2, 6, 10, 12], 16: [2, 6, 10, 14] } },
+  tresxcuatro: { A: { 14: [2, 5, 8, 11, 14], 12: [0, 3, 6, 9, 12], 16: [1, 4, 7, 10, 13] } },
+  golpe: { A: { 14: [14], 12: [12], 16: [] } } };
+for (const [tr, lados] of Object.entries(FIG)) for (const [lado, porL] of Object.entries(lados)) for (const [entra, L] of [['4y', 14], ['4', 12], ['1', 16]]) {
+  if (TM.GOLPES_FIN[tr](lado, 'son', L).join() !== porL[L].join()) { ok(false, `${tr} lado ${lado} hacia ${entra}: la figura es ${TM.GOLPES_FIN[tr](lado, 'son', L).join(',')}, no ${porL[L].join(',')}`); continue; }
+  if (lado === 'B') continue;   // en la canción de prueba el último compás es del lado 3; el lado 2 se prueba con la figura
   const c2 = { titulo: '', clave: 'son 2-3', perillas: {}, vientos: { formato: 'timba' }, secciones: [
-    { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 1, semilla: 3, transicion: tr }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4 }] };
-  const rf = TM.generarCancion(c2, M), u = 3, S = u * 16, lado = rf.lados[u], esp = pos[lado], desde = tr === 'golpe4y' ? 14 : 0;
+    { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 1, semilla: 3, transicion: tr }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4, entra, plato: 'entra' }] };
+  const rf = TM.generarCancion(c2, M), u = 3, S = u * 16, esp = porL[L], desde = tr === 'golpe' ? Math.min(L, 14) : 0;
+  if (rf.lados[u] !== 'A') { ok(false, `${tr}: el último compás de la prueba tendría que ser del lado 3`); continue; }
   const ataques = evs => [...new Set(evs.filter(e => e.p >= S + desde && e.p < S + 16).map(e => e.p - S))].sort((a, b) => a - b).join();
-  ok(ataques(rf.der) === esp.join() && ataques(rf.bajo) === esp.join(), `${tr}: piano y bajo golpean en ${esp.join(',')} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
-  ok(ataques(rf.vientos.trompetas) === esp.join(), `${tr}: los vientos golpean con la banda (${ataques(rf.vientos.trompetas)})`);
-  ok([...new Set(rf.perc[u].filter(e => e.p >= desde).map(e => e.p))].every(q => esp.includes(q)), `${tr}: la percusión solo en los golpes`);
+  const caso = `${tr} hacia ${entra === '4y' ? 'el 4&' : 'el ' + entra}`;
+  ok(ataques(rf.der) === esp.join() && ataques(rf.bajo) === esp.join(), `${caso}: piano y bajo golpean en ${esp.join(',') || 'nada'} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
+  ok(ataques(rf.vientos.trompetas) === esp.join(), `${caso}: los vientos golpean con la banda (${ataques(rf.vientos.trompetas)})`);
+  ok([...new Set(rf.perc[u].filter(e => e.p >= desde && e.d !== 'plato').map(e => e.p))].every(q => esp.includes(q)), `${caso}: la percusión solo en los golpes`);
   const ult = esp[esp.length - 1], e = rf.der.find(x => x.p === S + ult);
-  if (ult >= 12) ok(e && e.ch.nombre === 'Dm', `${tr}: el último golpe (en ${ult}) ya trae el acorde que viene`);
+  if (ult === L) ok(e && e.ch.nombre === 'Dm', `${caso}: el golpe de la llegada (en ${ult}) ya trae el acorde que viene`);
+  else if (ult != null) ok(e && e.ch.nombre !== 'Dm', `${caso}: el último golpe (en ${ult}) es del acorde de ahora`);
+  if (L === 16) ok(rf.bajo.some(x => x.p === (u + 1) * 16) && (rf.perc[u + 1] || []).some(x => x.p === 0 && x.d === 'plato'), `${caso}: lo que sigue cae en el 1 (raíz del bajo y plato)`);
+  else ok(rf.perc[u].some(x => x.p === L && x.d === 'plato'), `${caso}: el plato cae con la entrada, en ${L}`);
 }
+
+console.log('14. la unión entre secciones: dónde entra la que sigue (sin golpes al final)');
+for (const [entra, L] of [['4y', 14], ['4', 12], ['1', 16]]) {
+  const c2 = { titulo: '', clave: 'son 2-3', perillas: {}, vientos: { formato: 'timba' }, secciones: [
+    { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 1, semilla: 3, vientos: { toca: 'bloques' } }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'salsa', semilla: 4, entra, plato: 'entra' }] };
+  const rf = TM.generarCancion(c2, M), u = 3, S = u * 16, caso = `entra ${entra === '4y' ? 'en el 4&' : 'en el ' + entra}`;
+  const conDm = evs => evs.filter(e => e.p >= S && e.p < S + 16 && e.ch && e.ch.nombre === 'Dm').map(e => e.p - S);
+  if (L < 16) {
+    ok(conDm(rf.der).includes(14) && conDm(rf.der).every(q => q >= 12), `${caso}: el piano trae el acorde nuevo en el 4& (${conDm(rf.der).join(',')})`);
+    ok(conDm(rf.bajo).includes(L) && conDm(rf.bajo).every(q => q >= L - 2), `${caso}: el bajo trae la raíz nueva en ${L} (${conDm(rf.bajo).join(',')})`);
+    ok(conDm(rf.vientos.trompetas).includes(L), `${caso}: los bloques de los vientos golpean en ${L} con el acorde nuevo (${conDm(rf.vientos.trompetas).join(',')})`);
+    ok(rf.perc[u].some(x => x.p === L && x.d === 'plato'), `${caso}: el plato en ${L}`);
+    ok(!rf.bajo.some(x => x.p === (u + 1) * 16), `${caso}: el bajo no vuelve a atacar el 1 (viene ligado)`);
+  } else {
+    ok(!conDm(rf.der).length && !conDm(rf.bajo).length && !conDm(rf.vientos.trompetas).length, `${caso}: nadie anticipa el acorde nuevo`);
+    ok(rf.bajo.some(x => x.p === (u + 1) * 16) && (rf.perc[u + 1] || []).some(x => x.p === 0 && x.d === 'plato'), `${caso}: el bajo entra con la raíz en el 1 y el plato cae en el 1`);
+  }
+  ok(rf.secciones[1].entra === entra && rf.secciones[0].llegaSig === entra, `${caso}: la canción dice dónde entra cada sección`);
+}
+// sin decir nada, la sección entra como cambia el acorde la de antes (salsa: el bajo en el 4; timba: en el 4&)
+const sinDecir = e => TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: e, semilla: 3 }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4 }] }, M).secciones[1].entra;
+ok(sinDecir('salsa') === '4' && sinDecir('pupy') === '4y', `sin decir: entra como cambia la de antes (salsa ${sinDecir('salsa')}, timba ${sinDecir('pupy')})`);
 for (const [rel, d] of [['abanico', 'timbalH'], ['redoble', 'timbalL'], ['floreo', 'quintoS'], ['toms', 'tomL']]) {
   const c2 = { titulo: '', clave: 'son 2-3', perillas: {}, secciones: [
     { id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'pupy', vueltas: 1, semilla: 3, relleno: rel }, { id: 'b', prog: 'Dm G C A7', marcha: 'marcha', estilo: 'pupy', semilla: 4 }] };

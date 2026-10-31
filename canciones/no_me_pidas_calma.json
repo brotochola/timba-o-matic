@@ -68,7 +68,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Intro",
     "tipo": "intro",
@@ -116,7 +115,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -194,7 +192,6 @@
     },
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {},
     "nombre": "Puente",
     "tipo": "cuerpo",
@@ -238,7 +235,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -275,7 +271,8 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 104
+    "semilla": 104,
+    "plato": "entra"
    },
    {
     "id": "s5",
@@ -287,7 +284,6 @@
      "piano": 0.45
     },
     "transicion": "cierre",
-    "entrada": "plato4y",
     "perillas": {
      "frase": "frase",
      "v_largo": "1",
@@ -342,14 +338,14 @@
     ],
     "vueltas": 4,
     "semilla": 105,
-    "semillaVientos": 8127
+    "semillaVientos": 8127,
+    "plato": "entra"
    },
    {
     "id": "s6",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {},
     "nombre": "Presión",
     "tipo": "presion",
@@ -393,7 +389,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {
      "v_forma": "contrapunto"
     },
@@ -432,14 +427,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 107
+    "semilla": 107,
+    "plato": "entra"
    },
    {
     "id": "s8",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {},
     "nombre": "Bomba",
     "tipo": "bomba",
@@ -484,7 +479,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro final",
     "tipo": "coro",
@@ -521,14 +515,14 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 109
+    "semilla": 109,
+    "plato": "entra"
    },
    {
     "id": "s10",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

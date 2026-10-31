@@ -20,7 +20,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {
      "v_largo": "4",
      "v_repite": 0,
@@ -103,7 +102,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Verso",
     "tipo": "cuerpo",
@@ -178,8 +176,7 @@
     "id": "s17",
     "pistas": {},
     "vol": {},
-    "transicion": "golpe4y",
-    "entrada": "",
+    "transicion": "golpe",
     "perillas": {},
     "nombre": "Pre-coro",
     "tipo": "cuerpo",
@@ -255,7 +252,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -296,14 +292,15 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "terceras"
-    }
+    },
+    "entra": "4y",
+    "plato": "entra"
    },
    {
     "id": "s19",
     "pistas": {},
     "vol": {},
     "transicion": "contratiempos",
-    "entrada": "plato4y",
     "perillas": {
      "v_forma": "bloque",
      "v_cresc": 0.7,
@@ -348,14 +345,15 @@
     "vientos": {
      "toca": "mambo",
      "armonia": "bloque"
-    }
+    },
+    "plato": "entra",
+    "entra": "4y"
    },
    {
     "id": "s20",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro y soneos",
     "tipo": "coro",
@@ -396,14 +394,15 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "terceras"
-    }
+    },
+    "plato": "entra",
+    "entra": "4y"
    },
    {
     "id": "s21",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Moña",
     "tipo": "mona",
@@ -445,14 +444,15 @@
      "toca": "moña",
      "armonia": "terceras",
      "entrada": "capas"
-    }
+    },
+    "plato": "entra",
+    "entra": "4y"
    },
    {
     "id": "s22",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

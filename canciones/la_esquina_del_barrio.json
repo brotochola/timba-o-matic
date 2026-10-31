@@ -17,7 +17,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Intro",
     "tipo": "intro",
@@ -54,7 +53,8 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 201
+    "semilla": 201,
+    "plato": "1"
    },
    {
     "id": "s12",
@@ -63,7 +63,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -136,7 +135,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -173,14 +171,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 203
+    "semilla": 203,
+    "plato": "1"
    },
    {
     "id": "s14",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "plato",
     "perillas": {
      "frase": "frase"
     },
@@ -219,14 +217,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 204
+    "semilla": 204,
+    "plato": "1"
    },
    {
     "id": "s15",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Coro y soneos",
     "tipo": "coro",
@@ -263,14 +261,14 @@
      }
     ],
     "vueltas": 4,
-    "semilla": 205
+    "semilla": 205,
+    "plato": "1"
    },
    {
     "id": "s16",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Moña",
     "tipo": "mona",
@@ -307,14 +305,14 @@
      }
     ],
     "vueltas": 2,
-    "semilla": 206
+    "semilla": 206,
+    "plato": "1"
    },
    {
     "id": "s17",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

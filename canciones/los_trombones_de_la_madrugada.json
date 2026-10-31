@@ -19,8 +19,7 @@
     "id": "s23",
     "pistas": {},
     "vol": {},
-    "transicion": "golpe4y",
-    "entrada": "",
+    "transicion": "golpe",
     "perillas": {
      "v_repite": 1
     },
@@ -71,7 +70,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -148,7 +146,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -189,14 +186,14 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "bloque"
-    }
+    },
+    "plato": "entra"
    },
    {
     "id": "s26",
     "pistas": {},
     "vol": {},
     "transicion": "tresxcuatro",
-    "entrada": "plato4y",
     "perillas": {
      "v_cresc": 0.7,
      "v_repite": 0.4
@@ -240,14 +237,14 @@
     "vientos": {
      "toca": "mambo",
      "armonia": "bloque"
-    }
+    },
+    "plato": "entra"
    },
    {
     "id": "s27",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato4y",
     "perillas": {},
     "nombre": "Coro 2",
     "tipo": "coro",
@@ -288,14 +285,14 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "unisono"
-    }
+    },
+    "plato": "entra"
    },
    {
     "id": "s28",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

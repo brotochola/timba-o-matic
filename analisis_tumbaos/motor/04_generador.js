@@ -137,6 +137,10 @@
     // cambio de acorde, de toda la sección (también hacia lo que sigue): '4y' piano y bajo traen el acorde nuevo en el 4& y lo
     // ligan al 1; '4' el bajo en el 4 y el piano en el 4& (salsa); '1' sin anticipo: el acorde cambia en el 1
     const cambio = ['4y', '4', '1'].includes(opc.cambio) ? opc.cambio : '4y', anticipa = cambio !== '1', posAnt = cambio === '4' ? 12 : 14;
+    // la unión con la sección que sigue (opc.cambioFin, de la canción: dónde entra la que viene) manda en el último compás
+    const cambioFin = ['4y', '4', '1'].includes(opc.cambioFin) ? opc.cambioFin : cambio;
+    const cambioDe = b => opc.contexto && b === nb - 1 ? cambioFin : cambio;
+    const antDe = b => cambioDe(b) !== '1', posDe = b => cambioDe(b) === '4' ? 12 : 14;
     // el piano y la percusión pueden ir en otra marcha que la sección (el bajo la sigue con su estilo «según la marcha»)
     const marP = MARCHAS[opc.marchaPiano] || mar, marC = MARCHAS[opc.marchaPerc] || mar;
     const prog = Array.isArray(opc.prog) ? opc.prog : TM.leerProgresion(opc.prog);
@@ -201,7 +205,7 @@
           for (const e of cy.ev) {
             if ((e.p < 16) !== (L_ === 'A')) continue;
             const pos = e.p % 16;
-            const T = !e.antic || !anticipa ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
+            const T = !e.antic || !antDe(b) ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
             // solo la nota de paso corta y sola queda libre; lo que dura o va doblado tiene que ser del acorde nuevo (o una tensión que le quede)
             const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 2 || e.ps.length > 1)))].sort((x, y) => x - y);
             evs.push({ p: b * 16 + pos, d: e.d, ps, v: e.v, ch: T, antic: !!e.antic && T.nombre !== acordeEn(b, pos).nombre });
@@ -299,7 +303,7 @@
         if (sigCh.nombre !== ult.nombre) {
           let cand = delCompas.find(e => e.pos === 14);
           // la sección anticipa: el acorde nuevo llega en el 4& (si la célula no ataca ahí, se agrega el golpe) y queda ligado al 1
-          if (anticipa) {
+          if (antDe(b)) {
             if (!cand && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
             if (cand) {
               cand.ch = sigCh; cand.antic = true; cand.liga = true; if (b === nb - 1) ligaFin = true;
@@ -487,10 +491,10 @@
       // deslizamientos (Feliciano Arango, NG La Banda): deja el tumbao. Golpes cortos y acentuados, como de tambor, y la mano que
       // se desliza por la cuerda grave desde la octava hasta la raíz; en el 4& llega la raíz que viene
       for (let b = 0; b < nb; b++) {
-        const o = b * 16, sig = anticipa ? acordesDe(b + 1)[0] : acordeEn(b, 14), fin = { p: o + posAnt, L: 16 - posAnt, ps: [grave(sig)], v: 104, art: '->', ch: sig };
+        const o = b * 16, pA = posDe(b), sig = antDe(b) ? acordesDe(b + 1)[0] : acordeEn(b, 14), fin = { p: o + pA, L: 16 - pA, ps: [grave(sig)], v: 104, art: '->', ch: sig };
         // con el anticipo en el 4 (salsa), el golpe del 4 es el anticipo y el deslizamiento del lado 2 termina antes
-        if (lado(b) === 'A') { const ch = acordeEn(b, 0), r = grave(ch); bajo.push({ p: o, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 6, L: 6, ps: [r + 12], v: 94, art: '\\glissando', ch }, ...(posAnt > 12 ? [{ p: o + 12, L: 2, ps: [r], v: 98, art: '', ch }] : []), fin); }
-        else { const ch = acordeEn(b, 4), r = grave(ch), c2 = acordeEn(b, 10); bajo.push({ p: o + 4, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 8, L: 1, ps: [r], v: 106, art: '->', ch }, { p: o + 10, L: posAnt - 10, ps: [grave(c2) + 12], v: 92, art: '\\glissando', ch: c2 }, fin); }
+        if (lado(b) === 'A') { const ch = acordeEn(b, 0), r = grave(ch); bajo.push({ p: o, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 6, L: 6, ps: [r + 12], v: 94, art: '\\glissando', ch }, ...(pA > 12 ? [{ p: o + 12, L: 2, ps: [r], v: 98, art: '', ch }] : []), fin); }
+        else { const ch = acordeEn(b, 4), r = grave(ch), c2 = acordeEn(b, 10); bajo.push({ p: o + 4, L: 1, ps: [r], v: 110, art: '->', ch }, { p: o + 8, L: 1, ps: [r], v: 106, art: '->', ch }, { p: o + 10, L: pA - 10, ps: [grave(c2) + 12], v: 92, art: '\\glissando', ch: c2 }, fin); }
       }
     } else if (estiloBajo !== 'ninguno') {
       let celula;
@@ -518,7 +522,8 @@
         const cs = acordesDe(b), sigCh = acordesDe(b + 1)[0], cambia = sigCh.nombre !== cs[cs.length - 1].nombre;
         // el anticipo del bajo es el cambio de acorde de la sección: la raíz que viene llega en el 4& (timba) o en el 4 (salsa) y
         // queda ligada al 1; sin anticipo, el compás sigue en el acorde de ahora y la raíz nueva entra en el 1
-        if (anticipa) {
+        if (antDe(b)) {
+          const posAnt = posDe(b);
           for (const x of evs) if (x.rol === 'R+' && (x.pos === 12 || x.pos === 14)) x.pos = posAnt;
           if (cambia) {
             let x = evs.find(e => e.rol === 'R+' && e.pos >= 12) || evs.filter(e => e.pos >= 12).pop();

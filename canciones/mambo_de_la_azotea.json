@@ -20,7 +20,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "tresxcuatro",
-    "entrada": "",
     "perillas": {
      "v_forma": "contrapunto",
      "v_largo": "2",
@@ -73,7 +72,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -150,7 +148,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Montuno",
     "tipo": "coro",
@@ -191,14 +188,14 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "bloque"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s11",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {
      "v_forma": "contrapunto",
      "v_cresc": 0.6,
@@ -243,14 +240,14 @@
     "vientos": {
      "toca": "mambo",
      "armonia": "bloque"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s12",
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {
      "v_forma": "champola",
      "v_cresc": 1,
@@ -304,7 +301,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Montuno final",
     "tipo": "coro",
@@ -346,14 +342,14 @@
      "toca": "moña",
      "armonia": "bloque",
      "entrada": "capas"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s14",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",

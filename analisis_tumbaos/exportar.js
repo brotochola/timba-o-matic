@@ -17,7 +17,7 @@ const prog = s => s.bars.map(b => R[b.a.r] + b.a.q + (b.b ? '+' + R[b.b.r] + b.b
 let secs = c.secciones.map(s => ({ ...s, prog: prog(s) }));
 if (args.includes('--muestrario')) {
   const coro = secs.find(s => s.tipo === 'coro') || secs[0];
-  secs = Object.entries(TM.ESTILOS).map(([e, E], i) => ({ id: 'm' + i, nombre: E.n, tipo: 'coro', marcha: 'marcha', estilo: e, prog: coro.prog, vueltas: 2, semilla: 7 + i, entrada: 'plato4y', perillas: {} }));
+  secs = Object.entries(TM.ESTILOS).map(([e, E], i) => ({ id: 'm' + i, nombre: E.n, tipo: 'coro', marcha: 'marcha', estilo: e, prog: coro.prog, vueltas: 2, semilla: 7 + i, plato: 'entra', perillas: {} }));
 }
 const { M } = C.modeloDeEntrada(), ctx = C.cadenaPagina(), { parse, evaluate, buildNotes } = ctx.__api;
 const r = TM.generarCancion({ titulo: c.titulo, clave: c.clave, perillas: J.perillas || {}, vientos: c.vientos, loop: loop ? { desde: 0, hasta: secs.length - 1 } : null, secciones: secs }, M);

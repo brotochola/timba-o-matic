@@ -124,7 +124,7 @@
   const PISO_LINEA = 8;   // semitonos debajo del centro
 
   // ---------- la sección
-  // opc: { nb, lado(b), acordesDe(b), acordeEn(b, pos), anticipa, posAnt, toca, formato, armonia, entrada ('juntos'|'capas'),
+  // opc: { nb, lado(b), acordesDe(b), acordeEn(b, pos), anticipa, posAnt, anticipaFin, posAntFin (la unión con lo que sigue), toca, formato, armonia, entrada ('juntos'|'capas'),
   //        forma, largo (compases de la progresión), estilo ('salsa'|'cubano'|'timba'), campana, R, gancho (de otra sección),
   //        k: las perillas de los vientos (v_*) }
   function soplar(opc, V) {
@@ -191,14 +191,18 @@
     };
     const modo = opc.armonia || 'unisono';
     const anticipaEn = opc.anticipa ? (opc.posAnt || 14) : null;
+    // la unión con la sección que sigue: dónde llega lo que viene en el último compás (null: en el 1, sin anticipo)
+    const llegaEn = 'anticipaFin' in opc ? (opc.anticipaFin ? (opc.posAntFin || 14) : null) : anticipaEn;
+    const antEn = b => b === nb - 1 ? llegaEn : anticipaEn;
     // el remate al final de la sección: un golpe con la banda en el anticipo, contratiempos hasta el golpe, o una nota larga
     const rematar = () => {
       const r = kv('v_remate', 'nada'); if (r === 'nada') return;
-      const b = nb - 1, sig = acordesDe(nb)[0], pos = anticipaEn ?? 14, desde = r === 'larga' ? 8 : r === 'pickups' ? 6 : pos;
+      // sin anticipo hacia lo que sigue, el golpe va en el 4 con el acorde de ahora y la sección siguiente entra en el 1
+      const b = nb - 1, sig = llegaEn != null ? acordesDe(nb)[0] : acordeEn(b, 12), pos = llegaEn ?? 12, desde = r === 'larga' ? 8 : r === 'pickups' ? 6 : pos;
       for (const fam of fams) out[fam] = out[fam].filter(e => e.p < b * 16 + desde);
       if (r === 'larga') { poner(b * 16 + 8, 8, 76, acordeEn(b, 8), 'bloque-fijo', null, 96, '->'); return; }
       if (r === 'pickups') for (const q of [6, 10]) poner(b * 16 + q, 1, 76, acordeEn(b, q), 'bloque-fijo', null, 92, '-.');
-      poner(b * 16 + pos, 16 - pos + 2, 76, sig, 'bloque-fijo', null, 110, '->');
+      poner(b * 16 + pos, 16 - pos + (llegaEn != null ? 2 : 0), 76, sig, 'bloque-fijo', null, 110, '->');
     };
 
     if (opc.toca === 'bloques') {
@@ -207,8 +211,9 @@
       for (let b = 0; b < nb; b++) {
         const sig = acordesDe(b + 1)[0], cs = acordesDe(b), fin = b === nb - 1;
         if (fin) for (const q of [6, 10]) poner(b * 16 + q, 1, 76, acordeEn(b, q), 'bloque-fijo', null, 92, '-.');
-        if ((sig.nombre !== cs.at(-1).nombre || fin) && anticipaEn != null) poner(b * 16 + anticipaEn, 16 - anticipaEn + 2, 76, sig, 'bloque-fijo', null, 108, '->');
-        else if (fin) poner(b * 16 + 14, 2, 76, sig, 'bloque-fijo', null, 108, '->');
+        const aE = antEn(b);
+        if ((sig.nombre !== cs.at(-1).nombre || fin) && aE != null) poner(b * 16 + aE, 16 - aE + 2, 76, sig, 'bloque-fijo', null, 108, '->');
+        else if (fin) poner(b * 16 + 14, 2, 76, acordeEn(b, 14), 'bloque-fijo', null, 108, '->');
       }
       return listo();
     }
@@ -260,7 +265,7 @@
           const pos = e.p % 16;
           // menos densidad: se caen los golpes cortos que no son ni el 1, ni el anticipo, ni un acento
           if (dens < 1 && e.d <= 1 && pos !== 0 && pos !== 14 && e.v < 110 && R() > dens) continue;
-          va.push({ e, b, pos, T: e.antic && opc.anticipa ? (pos >= 12 ? acordesDe(b + 1)[0] : acordeEn(b, pos)) : acordeEn(b, pos) });
+          va.push({ e, b, pos, T: e.antic && antEn(b) != null ? (pos >= 12 ? acordesDe(b + 1)[0] : acordeEn(b, pos)) : acordeEn(b, pos) });
         }
       }
       // la línea: las notas del acorde del tema (raíz, 3a, 5a, 7a) van a la misma función del acorde nuevo; las de paso, a la

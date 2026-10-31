@@ -15,20 +15,22 @@
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
   const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
   const PALABRA = { cuerpo: 'cuerpo', marcha: 'marcha', mambo: 'mambo', presion: 'presión', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
-  // transiciones, en semicorcheas del último compás de la sección. Cierre: toda la banda junta sobre la clave, el último golpe
-  // anticipado al acorde que viene. Corte: golpe en el 1 y silencio. Los demás finales con golpes y los rellenos de percusión (el
-  // abanico: golpe de borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2), abajo
-  const CIERRE = { A: [0, 6, 12, 14], B: [4, 8, 14] };
-  // finales con golpes de toda la banda en el último compás (el último, si cae en el 4 o después, trae el acorde que viene):
-  // parada en clave (los golpes de la clave del lado y silencio; John Santos), bloque de contratiempos (Moore: los «pickups»
-  // de la timba, 1&, 2&, 3& y el golpe del 4&), tres contra cuatro (la cruz de la timba, un golpe cada tres semicorcheas),
-  // golpe en el 4& (todos juntos en el anticipo)
+  // la unión entre dos secciones: dónde llega la que viene, en semicorcheas del último compás de la anterior (16: en el 1 que viene)
+  const LLEGA = { '4y': 14, '4': 12, '1': 16 };
+  // finales con golpes de toda la banda en el último compás, en semicorcheas. Caen en la llegada de lo que sigue (L): el golpe
+  // que cae ahí antes del 1 ya trae el acorde que viene y queda ligado; si lo que sigue entra en el 1, el último golpe es del
+  // acorde de ahora y la banda cae junta en el 1. Cierre: toda la banda sobre la clave y el golpe de la llegada (en el 4 si lo
+  // que sigue entra en el 1). Parada en clave: los golpes de la clave del lado y silencio (John Santos): la banda no anticipa
+  // nada, solo si un golpe de la clave cae justo en la llegada. Contratiempos: 1&, 2&, 3& y el golpe de la llegada (Moore: los
+  // «pickups» de la timba). Tres contra cuatro: un golpe cada tres semicorcheas que termina en la llegada (la cruz de la
+  // timba). Golpe: todos juntos en la llegada. Corte: golpe en el 1 y silencio. Los rellenos de percusión (el abanico: golpe de
+  // borde en el 4, redoble y golpe de borde en el 1 de lo que viene, que entra recién en el 2), abajo
   const GOLPES_FIN = {
-    cierre: (lado, tipo) => CIERRE[lado],
+    cierre: (lado, tipo, L) => [...new Set([...(lado === 'B' ? [4, 8] : [0, 6, 12]), L < 16 ? L : 12])].sort((a, b) => a - b),
     parada: (lado, tipo) => lado === 'B' ? [4, 8] : tipo === 'rumba' ? [0, 6, 14] : [0, 6, 12],
-    contratiempos: () => [2, 6, 10, 14],
-    tresxcuatro: () => [0, 3, 6, 9, 12, 15],
-    golpe4y: () => [14]
+    contratiempos: (lado, tipo, L) => [2, 6, 10, Math.min(L, 14)],
+    tresxcuatro: (lado, tipo, L) => { const p = []; for (let q = L === 16 ? 13 : L; q >= 0; q -= 3) p.unshift(q); return p; },
+    golpe: (lado, tipo, L) => L < 16 ? [L] : []
   };
   // rellenos de percusión en el último compás (con la banda que sigue): qué familia se corre, desde dónde, los golpes y lo que cae en el 1 que viene
   const RELLENOS = {
@@ -74,6 +76,11 @@
     // el loop es un círculo: lo que sigue a su última sección es su primera (cancion.loop = { desde, hasta }, índices de sección)
     const loop = cancion.loop && secs[cancion.loop.desde] && secs[cancion.loop.hasta] && cancion.loop.desde <= cancion.loop.hasta ? cancion.loop : null;
     let costura = null;
+    // la unión: la sección de antes y la de después (en el loop, la primera viene de la última); dónde entra cada una
+    const antes = i => i > 0 ? i - 1 : loop && i === loop.desde ? loop.hasta : null;
+    const despues = i => loop && i === loop.hasta ? loop.desde : i + 1 < secs.length ? i + 1 : null;
+    const cambioDe = i => secs[i].cambio || (TM.ESTILOS[secs[i].estilo] || TM.ESTILOS.pupy).cambio || '4y';
+    const entraDe = i => ['4y', '4', '1'].includes(secs[i].entra) ? secs[i].entra : antes(i) != null ? cambioDe(antes(i)) : '1';
     secs.forEach((s, i) => {
       const prog = progs[i]; if (!prog.length) throw new Error(`La sección ${i + 1} no tiene acordes`);
       // el estilo de la sección (toda la banda) y el del piano, que puede ser otro; sus perillas van debajo de las de la sección
@@ -81,7 +88,9 @@
       const on = ons[i], perillas = { ...cancion.perillas, ...EP.piano, ...s.perillas };
       for (const f of PERC) if (!on[f]) perillas['m_' + f] = 0;
       const sig = loop && i === loop.hasta ? progs[loop.desde][0] : progs[i + 1] ? progs[i + 1][0] : null, marcha = TM.MARCHAS[s.marcha] ? s.marcha : 'marcha';
-      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: EP.estilo || null, grupo: EP.grupo || null, tipo: s.tipo || null, cambio: s.cambio || E.cambio, estiloBanda: E.banda, bajoEstilo: E.bajo, percusion: s.percusion || null,
+      // la llegada de lo que sigue (en el último compás de esta)
+      const llegaSig = despues(i) != null ? entraDe(despues(i)) : '1', L = LLEGA[llegaSig];
+      const r = TM.generar({ prog, clave: cancion.clave, marcha, vueltas: s.vueltas || 1, semilla: s.semilla || (i + 1) * 7919, perillas, estiloPreferido: EP.estilo || null, grupo: EP.grupo || null, tipo: s.tipo || null, cambio: s.cambio || E.cambio, cambioFin: llegaSig, estiloBanda: E.banda, bajoEstilo: E.bajo, percusion: s.percusion || null,
         tipoPiano: s.tipoPiano || null, marchaPiano: s.marchaPiano || null, marchaPerc: s.marchaPerc || null, semillas: { piano: s.semillaPiano, bajo: s.semillaBajo, perc: s.semillaPerc },
         contexto: { inicio, siguiente: sig, previo, gancho: s.ganchoDe != null ? ganchos[s.ganchoDe] : null } }, M);
       ganchos[s.id != null ? s.id : i] = r.gancho;
@@ -93,7 +102,7 @@
       if (formatoV) {
         const acDe = b => b < r.compases ? r.acordes[b] : sig || [r.acordes[r.compases - 1].at(-1)];
         const vs = TM.soplar({ nb: r.compases, lado: b => r.lados[((b % r.compases) + r.compases) % r.compases], acordesDe: acDe, acordeEn: (b, p) => { const c = acDe(b); return c.length > 1 && p >= 8 ? c[1] : c[0]; },
-          anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, toca: tocaV, formato: formatoV, armonia: sv.armonia || EVi.armonia || 'unisono', entrada: sv.entrada || 'capas',
+          anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, anticipaFin: llegaSig !== '1', posAntFin: L, toca: tocaV, formato: formatoV, armonia: sv.armonia || EVi.armonia || 'unisono', entrada: sv.entrada || 'capas',
           largo: prog.length, estilo: EP.estilo, campana: ['marcha', 'mambo'].includes(marcha), R: rng((s.semillaVientos || (s.semilla || (i + 1) * 7919) * 31 + 5) >>> 0),
           gancho: s.ganchoDe != null ? ganchosV[s.ganchoDe] : null, forma: EVi.forma, k: perillas }, V);
         for (const f of VIENTOS) if (on[f]) vientos[f] = vs[f];
@@ -103,13 +112,15 @@
       if (!on.piano) { r.der.length = 0; r.izq.length = 0; }
       if (!on.bajo) r.bajo.length = 0;
       const perc = r.perc || new Array(nb).fill(null), extra = Array.from({ length: nb }, () => []);
-      // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico) y el plato del timbalero al entrar
-      if (s.entrada === 'plato') pend.push({ p: 0, d: 'plato', v: 0.85 });
-      // plato en el 4& del último compás de la sección anterior, junto con el anticipo del piano y del bajo (en vez del 1)
-      if (s.entrada === 'plato4y' && i > 0) {
+      // lo que dejó la sección anterior en el 1 de esta (platillo del relleno, golpe del abanico) y el plato del timbalero al
+      // entrar: en el 1, o con la entrada (en el 4& o el 4 del último compás de la anterior, junto con el anticipo)
+      // (la primera sección de un loop que entra anticipada: el plato lo pone la costura del loop, al volver)
+      const Le = LLEGA[entraDe(i)], platoEn = s.plato === '1' || (s.plato === 'entra' && Le === 16) ? 0 : s.plato === 'entra' && i > 0 ? Le : null;
+      if (platoEn === 0) pend.push({ p: 0, d: 'plato', v: 0.85 });
+      if (platoEn > 0) {
         pend = pend.filter(g => g.d !== 'plato');
         const ult = res.perc.length - 1, dst = res.perc[ult] || res.extra[ult];
-        if (suena(ons[i - 1], 'plato') && suena(on, 'plato') && !dst.some(e => e.p === 14 && e.d === 'plato')) dst.push({ p: 14, d: 'plato', v: 0.9 });
+        if (suena(ons[i - 1], 'plato') && suena(on, 'plato') && !dst.some(e => e.p === platoEn && e.d === 'plato')) dst.push({ p: platoEn, d: 'plato', v: 0.9 });
       }
       for (const g of pend) {
         if (g.quitar && perc[0]) perc[0] = perc[0].filter(e => e.p >= 4 || !['timbales', 'campanas'].includes(TM.familiaPerc(e.d)));
@@ -142,22 +153,24 @@
         if (formatoV) { const g = TM.golpeVientos(formatoV, S, 4, chs[0], 108); for (const f of VIENTOS) { cortar(vientos[f], S, S + 4); if (on[f] && !vientos[f].some(e => e.p <= S && e.p + e.L > S)) vientos[f].push(...g[f]); } }
         Object.assign(fin, { ligaAl1: false, entraSolo: true }); pend = [];
       } else if (GOLPES_FIN[tr]) {
-        // golpes de toda la banda: el resto del compás se calla (en el golpe del 4&, desde el 4&); el último golpe, si cae en el 4 o
-        // después, ya trae el acorde que viene y queda ligado al 1
-        const pos = GOLPES_FIN[tr](lado, /rumba/.test(cancion.clave || '') ? 'rumba' : 'son'), desde = tr === 'golpe4y' ? 14 : 0, golpes = (perc[nb - 1] || []).filter(e => e.p < desde);
+        // golpes de toda la banda: el resto del compás se calla (en el golpe solo, desde la llegada; si lo que sigue entra en el 1,
+        // desde el 4&: la banda respira y cae junta en el 1); el golpe que cae en la llegada antes del 1 trae el acorde que viene
+        const pos = GOLPES_FIN[tr](lado, /rumba/.test(cancion.clave || '') ? 'rumba' : 'son', L), desde = tr === 'golpe' ? Math.min(L, 14) : 0, golpes = (perc[nb - 1] || []).filter(e => e.p < desde);
         cortar(r.der, S + desde); cortar(r.izq, S + desde); cortar(r.bajo, S + desde);
         for (const f of VIENTOS) cortar(vientos[f], S + desde);
-        const ultimoQ = pos[pos.length - 1], anticipaFin = !!sig && ultimoQ >= 12;
+        const anticipaFin = !!sig && L < 16 && pos[pos.length - 1] === L;
         pos.forEach((q, n) => {
           const ultimo = n === pos.length - 1, antic = ultimo && anticipaFin, ch = antic ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
           if (on.piano) { const g = golpePiano(ch, refTop); r.der.push({ p: S + q, L, ps: g.der, v: 108, art: '->', antic, ch, ...(antic ? { liga: true } : {}) }); r.izq.push({ p: S + q, L, ps: g.izq, v: 96, art: '->', ch }); }
           if (on.bajo) r.bajo.push({ p: S + q, L, ps: [raizCerca(ch, refBajo)], v: 106, art: '->', ch, ...(antic ? { cola: L + 4 } : {}) });
           if (formatoV) { const gv = TM.golpeVientos(formatoV, S + q, L, ch, 110); for (const f of VIENTOS) if (on[f]) vientos[f].push(...gv[f]); }
           for (const [d, v] of GOLPE) if (suena(on, d) && (r.mix[TM.familiaPerc(d)] ?? 1) > 0) golpes.push({ p: q, d, v });
-          if (n === 0 && on.bateria && tr !== 'golpe4y') golpes.push({ p: q, d: 'crash', v: 0.8 });
+          if (n === 0 && on.bateria && tr !== 'golpe') golpes.push({ p: q, d: 'crash', v: 0.8 });
         });
         perc[nb - 1] = golpes; extra[nb - 1] = (extra[nb - 1] || []).filter(e => e.p < desde);
-        Object.assign(fin, { ligaAl1: anticipaFin && on.piano }); pend = [];
+        // sin golpe anticipado, el bajo de lo que sigue entra con la raíz en el 1; el golpe solo hacia el 1 cae en el 1 que viene
+        Object.assign(fin, { ligaAl1: anticipaFin && on.piano, entraSolo: !anticipaFin }); pend = [];
+        if (tr === 'golpe' && L === 16) pend = [...GOLPE, ['crash', 0.85]].map(([d, v]) => ({ p: 0, d, v }));
       }
       // ---------- relleno de percusión en el último compás (si la banda sigue derecho)
       const RL = RELLENOS[s.relleno];
@@ -184,8 +197,8 @@
       }
       const nombre = String(s.nombre || '').replace(/["\\]/g, '').trim(), palabra = PALABRA[marcha];
       const texto = !nombre ? r.marca : nombre.toLowerCase().includes(palabra) ? nombre : `${nombre} · ${palabra}`;
-      res.secciones.push({ id: s.id != null ? s.id : i, nombre, inicio, largo: prog.length, vueltas: s.vueltas || 1, compases: nb, marcha, marca: r.marca, texto, semilla: s.semilla || (i + 1) * 7919, transicion: tr, info: { ...r.info, vientos: infoV } });
-      previo = { linea: on.piano ? fin.linea : null, bajo: on.bajo ? fin.bajo : null, ligaAl1: liga, entraSolo: fin.entraSolo || !on.bajo };
+      res.secciones.push({ id: s.id != null ? s.id : i, nombre, inicio, largo: prog.length, vueltas: s.vueltas || 1, compases: nb, marcha, marca: r.marca, texto, semilla: s.semilla || (i + 1) * 7919, transicion: tr, entra: entraDe(i), llegaSig, info: { ...r.info, vientos: infoV } });
+      previo = { linea: on.piano ? fin.linea : null, bajo: on.bajo ? fin.bajo : null, ligaAl1: liga, entraSolo: fin.entraSolo || !on.bajo || llegaSig === '1' };
       inicio += nb;
     });
     for (const k of ['der', 'izq', 'bajo']) res[k].sort((a, b) => a.p - b.p);
@@ -208,10 +221,11 @@
         for (const e of costura.bajo) colas.push({ parte: 'bajo', p: e.p, ps: e.ps, extra: Math.min(e.cola - (costura.ultimo * 16 + 16 - e.p), hasta - t0) });
       }
       const vuelta = costura.pend.filter(g => suena(onA, g.d)).map(g => ({ p: g.p, d: g.d, v: g.v }));
-      // el plato del timbalero en el 4& de antes, cuando el principio del loop entra así
-      if (secs[loop.desde].entrada === 'plato4y' && suena(onA, 'plato') && suena(ons[loop.hasta], 'plato')) {
+      // el plato del timbalero con la entrada del principio del loop (en el 4& o el 4 del último compás)
+      const Lp = LLEGA[entraDe(loop.desde)];
+      if (secs[loop.desde].plato === 'entra' && Lp < 16 && suena(onA, 'plato') && suena(ons[loop.hasta], 'plato')) {
         const u = costura.ultimo, dst = res.perc[u] || res.extra[u];
-        if (!dst.some(e => e.p === 14 && e.d === 'plato')) dst.push({ p: 14, d: 'plato', v: 0.9 });
+        if (!dst.some(e => e.p === Lp && e.d === 'plato')) dst.push({ p: Lp, d: 'plato', v: 0.9 });
       }
       res.costura = { inicio: A.inicio, fin: costura.ultimo + 1, entrada, colas, vuelta };
     }
@@ -221,5 +235,5 @@
     return { compases: inicio, prog: res.acordes, ...res, mix: res.mixes[0], info: s0.info, marcha: s0.marcha, marca: s0.marca, clave: cancion.clave, titulo: cancion.titulo || '' };
   }
 
-  Object.assign(TM, { generarCancion, PISTAS, PISTAS_PERC: PERC, PISTAS_VIENTOS: VIENTOS });
+  Object.assign(TM, { generarCancion, PISTAS, PISTAS_PERC: PERC, PISTAS_VIENTOS: VIENTOS, GOLPES_FIN, LLEGA });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

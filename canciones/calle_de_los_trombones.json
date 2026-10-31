@@ -20,7 +20,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "cierre",
-    "entrada": "",
     "perillas": {
      "v_repite": 1,
      "v_largo": "2"
@@ -74,7 +73,6 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "",
     "perillas": {},
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
@@ -151,7 +149,6 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Coro",
     "tipo": "coro",
@@ -192,14 +189,14 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "terceras"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s4",
     "pistas": {},
     "vol": {},
     "transicion": "contratiempos",
-    "entrada": "plato",
     "perillas": {
      "frase": "frase",
      "v_cresc": 0.8,
@@ -245,14 +242,14 @@
     "vientos": {
      "toca": "mambo",
      "armonia": "terceras"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s5",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {},
     "nombre": "Coro y soneos",
     "tipo": "coro",
@@ -293,14 +290,14 @@
     "vientos": {
      "toca": "respuesta",
      "armonia": "unisono"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s6",
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "entrada": "plato",
     "perillas": {
      "v_repite": 0.9
     },
@@ -343,14 +340,14 @@
     "vientos": {
      "toca": "moña",
      "armonia": "terceras"
-    }
+    },
+    "plato": "1"
    },
    {
     "id": "s7",
     "pistas": {},
     "vol": {},
     "transicion": "corte",
-    "entrada": "",
     "perillas": {},
     "nombre": "Final",
     "tipo": "final",
