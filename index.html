@@ -532,7 +532,7 @@ body.sin-partitura .panel-full{display:none}
     </div>
     <div class="snd-row">
       <h3>Sonido</h3>
-      <select id="pk-snd" aria-label="Cómo suena"><option value="pack">Banda de samples incluida (3 MB)</option><option value="sf2">GeneralUser GS · archivo .sf2</option><option value="synth">Sintetizador (no descarga nada)</option><option value="midi">Dispositivo MIDI externo…</option></select>
+      <select id="pk-snd" aria-label="Cómo suena"><option value="sf2">GeneralUser GS (de entrada)</option><option value="pack">Banda de samples incluida (3 MB)</option><option value="synth">Sintetizador (no descarga nada)</option><option value="midi">Dispositivo MIDI externo…</option></select>
       <button class="btn ghost sf2-pick" type="button" style="display:none" title="Queda guardado en este navegador">Elegir GeneralUser-GS.sf2…</button>
       <label class="chk" title="Pequeñas variaciones de tiempo y fuerza en cada golpe (banda incluida)"><input type="checkbox" id="pk-human" checked> Humanizar</label>
       <span class="desc" id="pk-info">La banda de samples se carga la primera vez que tocás algo (unos 3 MB).</span>
@@ -2573,6 +2573,10 @@ const SF2=(()=>{
       let got=null;
       if(location.protocol!=='file:')try{const r=await fetch(FILE);if(r.ok)got=[FILE,await r.arrayBuffer()]}catch(_){}
       if(!got)try{const e=await db('readonly',s=>s.get('sf2'));if(e)got=[e.name,await e.blob.arrayBuffer()]}catch(_){}
+      // abierta como archivo: el .sf2 convertido en script (lo escribe analisis_tumbaos/construir.js), que el navegador sí deja cargar
+      if(!got&&location.protocol==='file:')try{got=[FILE,await new Promise((ok,mal)=>{const s=document.createElement('script');s.src=FILE+'.js';
+        s.onload=()=>{const b=window.SF2_GENERALUSER;delete window.SF2_GENERALUSER;s.remove();b?fetch('data:application/octet-stream;base64,'+b).then(r=>r.arrayBuffer()).then(ok,mal):mal()};
+        s.onerror=()=>{s.remove();mal()};document.head.appendChild(s)})]}catch(_){got=null}
       if(got&&use(got[0],got[1]))return true;
       S.failed=true;S.loading=null;
       if(!got){showPick(true);say('Elegí el archivo '+FILE+' (está al lado de esta página): el navegador no deja leerlo solo. Queda guardado para la próxima.')}
@@ -5158,15 +5162,16 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     else if(v==='pack'){SND.setMode('synth');PACK.S.on=true;PACK.load().then(()=>{const ul=$('pk-credits');ul.innerHTML='';PACK.credits().forEach(c=>{ul.appendChild(el('li',null,c))})})}
     else if(v==='synth'){PACK.S.on=false;SND.setMode('synth')}
     else if(v==='midi'){PACK.S.on=false;SND.setMode('midi').then(r=>{if(r==='synth')$('pk-snd').value='synth'})}
-    store('tdt-snd',v)}
-  $('pk-snd').value=load('tdt-snd','pack');if(!$('pk-snd').value)$('pk-snd').value='pack';
+    store('tdt-snd2',v)}
+  // de entrada suena con GeneralUser GS (la clave guardada es nueva: lo elegido antes con la banda de samples no cuenta)
+  $('pk-snd').value=load('tdt-snd2','sf2');if(!$('pk-snd').value)$('pk-snd').value='sf2';
   $('pk-snd').onchange=()=>{Synth.ensure();setSnd()};
   $('pk-bass').onchange=()=>{song.bajoSonido=$('pk-bass').value;PACK.S.bass=song.bajoSonido;save()};
   $('pk-human').onchange=()=>{PACK.S.human=$('pk-human').checked};
   PACK.S.on=$('pk-snd').value==='pack';
   SF2.on(t=>{if($('pk-snd').value==='sf2')$('pk-info').textContent=t});
   // primera interacción: preparar audio y samples
-  window.addEventListener('pointerdown',()=>{if($('pk-snd').value==='pack'){Synth.ensure();setSnd()}},{once:true});
+  window.addEventListener('pointerdown',()=>{if(['pack','sf2'].includes($('pk-snd').value)){Synth.ensure();setSnd()}},{once:true});
 
   // ---------- lo que suena: cursor en el multipista (que se corre para seguirlo) y acorde resaltado en la grilla
   let lastOn=-1, ancho=innerWidth;
@@ -5273,7 +5278,7 @@ ${lineas(marcar(res.bajo.length ? conDin(B) : B.map(() => 'R1')))}
     '#tb-gear':{t:'La marcha de toda la banda en esta sección. El piano y la percusión pueden tener la suya (en sus bloques); el bajo la sigue con «Qué toca».'},
     '#tb-clave':{t:'Qué clave suena y por qué lado empieza el primer compás'},
     '#pk-bass':{t:'Timbre del bajo, para toda la canción',e:'Bajo eléctrico: más ataque. Baby bass: el contrabajo eléctrico vertical de la salsa, más redondo.'},
-    '#pk-snd':{t:'Qué sonidos usa: la banda de samples incluida (piano, bajo y percusión grabados), el GeneralUser GS desde el archivo .sf2, el sintetizador (no baja nada) o un dispositivo MIDI'},
+    '#pk-snd':{t:'Qué sonidos usa: GeneralUser GS (de entrada; se carga solo la primera vez que tocás), la banda de samples incluida (piano, bajo y percusión grabados), el sintetizador (no baja nada) o un dispositivo MIDI'},
     '#run':{t:'Volver a leer el código LilyPond del editor, dibujarlo y que suene así (Ctrl+Enter)'},
     '#fav-add':{t:'Guardar en este navegador la canción entera: secciones, acordes, perillas y mezcla'},
     '#tb-copy':{t:'Copiar el código LilyPond de la partitura, para abrirlo en LilyPond o pegarlo en el editor de la página'},

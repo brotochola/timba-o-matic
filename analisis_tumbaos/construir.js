@@ -14,6 +14,13 @@ const META_F = path.join(__dirname, 'fuentes.json'), BASE_F = path.join(__dirnam
 const HTML_F = path.join(RAIZ, 'index.html'), MIDIS = path.join(RAIZ, 'midis');
 const args = process.argv.slice(2);
 const META = JSON.parse(fs.readFileSync(META_F, 'utf8'));
+// el sonido de entrada (GeneralUser GS) como script: abierta como archivo, la página no puede leer el .sf2 pero sí
+// cargar un script. No va al repositorio (el .sf2 sí: en un servidor se lee directo)
+const SF2_F = path.join(RAIZ, 'GeneralUser-GS.sf2'), SF2_JS = SF2_F + '.js';
+if (fs.existsSync(SF2_F) && (!fs.existsSync(SF2_JS) || fs.statSync(SF2_JS).mtimeMs < fs.statSync(SF2_F).mtimeMs)) {
+  fs.writeFileSync(SF2_JS, 'window.SF2_GENERALUSER="' + fs.readFileSync(SF2_F).toString('base64') + '";\n');
+  console.log('GeneralUser-GS.sf2.js escrito');
+}
 if (args.includes('--solo-html')) { meterEnHtml(fs.readFileSync(BASE_F, 'utf8')); process.exit(0); }
 
 // ---------- importar lo exportado desde la app
