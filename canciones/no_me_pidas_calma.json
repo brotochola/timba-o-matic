@@ -12,7 +12,7 @@
   "mezcla": {
    "piano": {
     "mute": false,
-    "solo": true
+    "solo": false
    },
    "bajo": {
     "mute": false,
@@ -24,7 +24,7 @@
    },
    "congas": {
     "mute": false,
-    "solo": true
+    "solo": false
    },
    "bongo": {
     "mute": false,
@@ -48,15 +48,15 @@
    },
    "trompetas": {
     "mute": false,
-    "solo": true
+    "solo": false
    },
    "trombones": {
     "mute": false,
-    "solo": true
+    "solo": false
    },
    "saxos": {
     "mute": false,
-    "solo": true
+    "solo": false
    }
   },
   "bpm": 190,
@@ -115,7 +115,9 @@
     },
     "vol": {},
     "transicion": "ninguna",
-    "perillas": {},
+    "perillas": {
+     "b_estilo": "salsa"
+    },
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
     "marcha": "cuerpo",
@@ -183,7 +185,8 @@
     ],
     "vueltas": 2,
     "semilla": 102,
-    "semillaVientos": 5359
+    "semillaVientos": 9990,
+    "entra": "4"
    },
    {
     "id": "s3",
@@ -191,7 +194,7 @@
      "campanas": false
     },
     "vol": {},
-    "transicion": "cierre",
+    "transicion": "corte",
     "perillas": {},
     "nombre": "Puente",
     "tipo": "cuerpo",
@@ -235,7 +238,13 @@
     "pistas": {},
     "vol": {},
     "transicion": "ninguna",
-    "perillas": {},
+    "perillas": {
+     "v_forma": "contrapunto",
+     "v_largo": "1",
+     "v_remate": "larga",
+     "v_fuente": "todo",
+     "b_estilo": "motivo"
+    },
     "nombre": "Coro",
     "tipo": "coro",
     "marcha": "marcha",
@@ -272,7 +281,13 @@
     ],
     "vueltas": 4,
     "semilla": 104,
-    "plato": "entra"
+    "plato": "entra",
+    "entra": "4",
+    "semillaVientos": 9697,
+    "vientos": {
+     "armonia": "fuente",
+     "entrada": "juntos"
+    }
    },
    {
     "id": "s5",
@@ -283,7 +298,7 @@
      "saxos": 1.5,
      "piano": 0.45
     },
-    "transicion": "cierre",
+    "transicion": "tresxcuatro",
     "perillas": {
      "frase": "frase",
      "v_largo": "1",
@@ -296,12 +311,14 @@
      "v_agudo": 1,
      "v_remate": "golpe",
      "v_fuente": "todo",
-     "v_forma": "escalonado"
+     "v_forma": "escalonado",
+     "b_dens": 0.5,
+     "b_gliss": 1
     },
     "nombre": "Mambo",
     "tipo": "mambo",
     "marcha": "mambo",
-    "estilo": "pupy",
+    "estilo": "salsa",
     "pianoComo": "songo",
     "bars": [
      {
@@ -338,19 +355,37 @@
     ],
     "vueltas": 4,
     "semilla": 105,
-    "semillaVientos": 8127,
-    "plato": "entra"
+    "semillaVientos": 2881,
+    "plato": "entra",
+    "entra": "4"
    },
    {
     "id": "s6",
     "pistas": {},
     "vol": {},
-    "transicion": "cierre",
-    "perillas": {},
+    "transicion": "contratiempos",
+    "perillas": {
+     "b_estilo": "pedal",
+     "oct": 2,
+     "reg": 12,
+     "amb": 12,
+     "lh": "dobla16",
+     "largo": "auto",
+     "acc": 2,
+     "mezcla": 1,
+     "dens": 1.5,
+     "frase": "frase",
+     "ten": 0.5,
+     "rep": 1,
+     "dim": 1,
+     "gancho": 1,
+     "var": 0,
+     "temp": 0.35
+    },
     "nombre": "Presión",
     "tipo": "presion",
     "marcha": "presion",
-    "estilo": "pupy",
+    "estilo": "tirso",
     "bars": [
      {
       "a": {
@@ -369,20 +404,27 @@
      {
       "a": {
        "r": 7,
-       "q": "7"
+       "q": "m7"
       },
       "b": null
      },
      {
       "a": {
        "r": 7,
-       "q": "7"
+       "q": "m7"
       },
-      "b": null
+      "b": {
+       "r": 7,
+       "q": "7"
+      }
      }
     ],
     "vueltas": 2,
-    "semilla": 106
+    "semilla": 106,
+    "entra": "4",
+    "plato": "entra",
+    "marchaPiano": "presion",
+    "semillaPiano": 6381
    },
    {
     "id": "s7",
@@ -390,7 +432,14 @@
     "vol": {},
     "transicion": "ninguna",
     "perillas": {
-     "v_forma": "contrapunto"
+     "v_forma": "contrapunto",
+     "frase": "frase",
+     "oct": 2,
+     "int": 0,
+     "blq": 2.3,
+     "crom": 0,
+     "salto": -1,
+     "lh": "nada"
     },
     "nombre": "Despelote",
     "tipo": "despelote",
@@ -428,12 +477,16 @@
     ],
     "vueltas": 4,
     "semilla": 107,
-    "plato": "entra"
+    "plato": "entra",
+    "semillaPiano": 8923,
+    "entra": "4"
    },
    {
     "id": "s8",
     "pistas": {},
-    "vol": {},
+    "vol": {
+     "bajo": 0.65
+    },
     "transicion": "cierre",
     "perillas": {},
     "nombre": "Bomba",
@@ -472,7 +525,8 @@
     ],
     "vueltas": 2,
     "semilla": 108,
-    "semillaVientos": 3701
+    "semillaVientos": 3701,
+    "entra": "4"
    },
    {
     "id": "s9",
