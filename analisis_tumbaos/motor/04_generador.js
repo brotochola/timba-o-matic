@@ -58,9 +58,7 @@
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
     { g: 'Bajo', id: 'b_reg', l: 'Registro del bajo', tipo: 'sel', def: 'medio', ops: [['grave', 'grave'], ['medio', 'medio'], ['agudo', 'agudo']], h: 'En qué octava toca el bajo' },
     { g: 'Bajo', id: 'b_gliss', l: 'Deslizamientos', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Glissando hacia abajo en los saltos grandes, en cualquier estilo (el estilo «deslizamientos» ya los trae)' },
-    { g: 'Percusión', id: 'p_fuente', l: 'Percusión', tipo: 'sel', def: 'aprendida', ops: [['aprendida', 'aprendida de la base'], ['clasica', 'clásica por marcha (la de antes)']], h: 'Aprendida: juegos reales de la base (en cuerpo, coro y mambo). Clásica: los patrones de la guía para cada marcha' },
     { g: 'Percusión', id: 'p_int', l: 'Intensidad', min: 0, max: 1, st: 0.05, def: 0.55, f: '%', h: 'Juegos más ralos o más cargados' },
-    { g: 'Percusión', id: 'p_cambio', l: 'Cambiar el patrón', tipo: 'sel', def: '8', ops: [['0', 'nunca'], ['8', 'cada 8 compases'], ['4', 'cada 4 compases']], h: 'Cada cuánto puede pasar a otro juego de percusión parecido, para que no sea un loop idéntico' },
     { g: 'Percusión', id: 'p_relleno', l: 'Rellenos al final de la vuelta', min: 0, max: 1, st: 0.05, def: 0.6, f: '%', h: 'Chance de un repique de timbal en el último compás de cada vuelta, con platillo en el 1 que sigue' },
     { g: 'Mezcla de percusión', id: 'm_clave', l: 'Clave', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen de la clave (0 = no suena)' },
     { g: 'Mezcla de percusión', id: 'm_congas', l: 'Congas', min: 0, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Volumen de las congas: tumba, conga y quinto (0 = no suenan)' },
@@ -74,15 +72,15 @@
   // las ondas de la app como ajustes de perillas (y de qué estilo de la base aprender; grupo: los estilos de una colección,
   // como los de Toontrack, que la onda prefiere cuando están en la base)
   const ONDAS = {
-    pupy: { cambio: '4y', gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
-    melon: { cambio: '4y', lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
-    tirso: { cambio: '4y', blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
-    songo: { cambio: '4y', dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
-    sonmontuno: { cambio: '4', lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
-    mambo: { cambio: '4', lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
-    funk: { cambio: '4y', lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
-    salsa: { cambio: '4', lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
-    libre: { cambio: '4y' }
+    pupy: { banda: 'timba', cambio: '4y', gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5, b_estilo: 'motivo', estilo: 'timba' },
+    melon: { banda: 'timba', cambio: '4y', lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8, b_estilo: 'timbero', estilo: 'timba' },
+    tirso: { banda: 'timba', cambio: '4y', blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4', b_estilo: 'timbero', estilo: 'timba' },
+    songo: { banda: 'songo', cambio: '4y', dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8', b_estilo: 'songo', estilo: 'cubano', grupo: ['songo'] },
+    sonmontuno: { banda: 'son', cambio: '4', lh: 'auto', b_estilo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'] },
+    mambo: { banda: 'mambo', cambio: '4', lh: 'auto', blq: 1.3, b_estilo: 'aprendido', estilo: 'cubano', grupo: ['mambo'] },
+    funk: { banda: 'timba', cambio: '4y', lh: 'auto', b_estilo: 'timbero', estilo: 'cubano', grupo: ['funk_cubano'] },
+    salsa: { banda: 'salsa', cambio: '4', lh: 'auto', b_estilo: 'aprendido', estilo: 'salsa', grupo: ['salsa_media', 'salsa_rapida'] },
+    libre: { banda: 'timba', cambio: '4y' }
   };
   // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
   const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };
@@ -97,7 +95,6 @@
   };
 
   // ---------- percusión: clave y relleno
-  const CLAVE16 = { son: { A: [0, 6, 12], B: [4, 8] }, rumba: { A: [0, 6, 14], B: [4, 8] } };
   const RELLENO = [[10, 'timbalH', 0.55], [11, 'timbalH', 0.45], [12, 'timbalH', 0.75], [13, 'timbalL', 0.6], [14, 'timbalL', 0.9], [15, 'timbalL', 0.7]];
 
   // opc.contexto (una sección de una canción): { inicio: compás global, siguiente: acordes del compás que sigue (null al final),
@@ -532,40 +529,22 @@
     let perc = null;
     const desborde = [];
     const mix = { clave: k.m_clave, congas: k.m_congas, bongo: k.m_bongo, campanas: k.m_campanas, timbales: k.m_timbales, guiro: k.m_guiro, bateria: k.m_bateria };
-    const usarAprendida = k.p_fuente === 'aprendida' && ['cuerpo', 'marcha', 'mambo'].includes(marC.perc) && M.perc.juegos.length;
-    info.percusion = usarAprendida ? 'aprendida' : 'clásica';
-    if (usarAprendida) {
-      let pool = M.perc.juegos.filter(j => j.tipo === marC.perc);
-      if (pool.length < 3) pool = M.perc.juegos.filter(j => j.tipo === 'marcha' || j.tipo === marC.perc);
-      if (!pool.length) pool = M.perc.juegos;
-      const orden = pool.slice().sort((a, b) => a.densidad - b.densidad);
-      const rango = new Map(orden.map((j, i) => [j, orden.length > 1 ? i / (orden.length - 1) : 0.5]));
-      const peso = j => Math.sqrt(j.n) * Math.exp(-((rango.get(j) - k.p_int) ** 2) / 0.04) * (j.f === info.piano ? 3 : 1) * (j.lado === 'sin' ? 0.5 : 1);
-      let juego = elegir(RP, pool, peso);
-      info.percFuente = juego.f;
-      perc = [];
-      const cada = +k.p_cambio;
-      for (let b = 0; b < nb; b++) {
-        if (cada && b > 0 && b % cada === 0 && RP() < 0.6) { const actual = juego; juego = elegir(RP, pool, j => peso(j) * (j.f === actual.f ? 3 : 1) * Math.exp(-((rango.get(j) - rango.get(actual)) ** 2) / 0.02)); }
-        const L_ = lado(b), base = L_ === 'A' ? 0 : 16, out = [];
-        for (const d in juego.k) {
-          if (d === 'maraca') continue;   // sin maracas: el raspado es solo el güiro
-          const pat = juego.k[d], fam = TM.familiaPerc(d), mx = mix[fam] ?? 1; if (mx <= 0) continue;
-          for (let q = 0; q < 16; q++) { const c = pat[base + q]; if (c && c !== '.') out.push({ p: q, d, v: +(0.25 + 0.1 * +c).toFixed(2) * mx }); }
-        }
-        if (mix.clave > 0) for (const q of CLAVE16[tipoClave][L_]) out.push({ p: q, d: 'clave', v: 0.95 * mix.clave });
-        // relleno de timbal al final de cada vuelta de la progresión
-        const finVuelta = b % L === L - 1;
-        if (finVuelta && RP() < k.p_relleno && mix.timbales > 0) {
-          for (let i = out.length - 1; i >= 0; i--) if (out[i].p >= 10 && ['timbales', 'campanas'].includes(TM.familiaPerc(out[i].d))) out.splice(i, 1);
-          for (const [q, d, v] of RELLENO) out.push({ p: q, d, v: v * mix.timbales });
-          if ((b + 1 < nb || ctx) && mix.bateria > 0) out.push({ p: 16, d: 'crash', v: 0.7 * mix.bateria });
-        }
-        perc.push(out);
+    // por instrumento (07_percusion.js): lo de entrada de la marcha de la percusión y del estilo, con lo que elija la sección
+    const marchaPerc = MARCHAS[opc.marchaPerc] ? opc.marchaPerc : MARCHAS[opc.marcha] ? opc.marcha : 'marcha';
+    const pr = TM.percutir({ nb, lado, tipoClave, marcha: marchaPerc, estilo: opc.estiloBanda || null, eleccion: opc.percusion || null, mix, R: RP, intensidad: k.p_int });
+    info.percusion = 'por instrumento'; info.percUsa = pr.usa;
+    perc = pr.compases;
+    for (let b = 0; b < nb; b++) {
+      const out = perc[b];
+      // relleno de timbal al final de cada vuelta de la progresión, con el platillo en el 1 que sigue
+      if (b % L === L - 1 && (pr.usa.timbal || pr.usa.bateria) && RP() < k.p_relleno && mix.timbales > 0) {
+        for (let i = out.length - 1; i >= 0; i--) if (out[i].p >= 10 && ['timbales', 'campanas'].includes(TM.familiaPerc(out[i].d))) out.splice(i, 1);
+        for (const [q, d, v] of RELLENO) out.push({ p: q, d, v: v * mix.timbales });
+        if ((b + 1 < nb || ctx) && mix.bateria > 0 && pr.usa.bateria) out.push({ p: 16, d: 'crash', v: 0.7 * mix.bateria });
       }
-      // el platillo del relleno cae en el 1 del compás siguiente (en una canción, puede ser el de la sección que viene)
-      for (let b = 0; b < perc.length; b++) for (let i = perc[b].length - 1; i >= 0; i--) if (perc[b][i].p >= 16) { const e = perc[b].splice(i, 1)[0]; if (perc[b + 1]) perc[b + 1].push({ ...e, p: e.p - 16 }); else if (ctx) desborde.push({ ...e, p: e.p - 16 }); }
     }
+    // el platillo del relleno cae en el 1 del compás siguiente (en una canción, puede ser el de la sección que viene)
+    for (let b = 0; b < perc.length; b++) for (let i = perc[b].length - 1; i >= 0; i--) if (perc[b][i].p >= 16) { const e = perc[b].splice(i, 1)[0]; if (perc[b + 1]) perc[b + 1].push({ ...e, p: e.p - 16 }); else if (ctx) desborde.push({ ...e, p: e.p - 16 }); }
 
     return { compases: nb, prog, acordes: Array.from({ length: nb }, (_, b) => acordesDe(b)), der, izq, bajo, perc, mix, info, marcha: opc.marcha || 'marcha', marca: mar.marca, clave: opc.clave, lados: Array.from({ length: nb }, (_, b) => lado(b)),
       ...(ctx ? { fin: { linea: lineaFin, bajo: bajoFin, ligaAl1: ligaFin, desborde }, gancho: ganchoFin } : {}) };

@@ -77,9 +77,10 @@ for (const [qué, c] of [['marcha', { coro: { marcha: 'mambo' } }], ['semilla', 
 const sinBongo = gen({ coro: { pistas: { bongo: false } } }), c0 = ini('coro'), c1 = c0 + secs.find(s => s.id === 'coro').compases;
 ok(sinBongo.perc.slice(c0, c1).every((bar, i) => JSON.stringify((bar || []).filter(e => fam(e.d) !== 'bongo')) === JSON.stringify((r.perc[c0 + i] || []).filter(e => fam(e.d) !== 'bongo')) && !(bar || []).some(e => fam(e.d) === 'bongo')), 'apagar el bongó en el coro cambia solo el bongó');
 
-console.log('7. percusión clásica y sin maracas');
+console.log('7. percusión por instrumento y sin maracas');
 const pres = secs.find(s => s.id === 'presion');
-ok(r.perc.slice(pres.inicio, pres.inicio + pres.compases - 1).every(x => x === null), 'la presión usa la percusión clásica (null)');
+// la presión (07_percusion): se caen congas, bongó y campanas; queda el bombo de presión (el 3 y el 4) y la clave
+ok(r.perc.slice(pres.inicio, pres.inicio + pres.compases - 1).every(x => x && x.some(e => e.d === 'kick' && e.p === 8) && x.some(e => e.d === 'kick' && e.p === 12) && !x.some(e => ['congas', 'bongo', 'campanas'].includes(fam(e.d)))), 'la presión: bombo en el 3 y el 4, sin congas, bongó ni campanas');
 ok(Array.isArray(r.perc[pres.inicio + pres.compases - 1]), 'el compás del corte de la presión trae sus golpes');
 ok(r.estilos[pres.inicio] === 'presion' && r.estilos[0] === 'verso', 'estilo clásico por compás');
 ok(![...r.perc, ...r.extra].some(bar => (bar || []).some(e => e.d === 'maraca')), 'no hay maracas');

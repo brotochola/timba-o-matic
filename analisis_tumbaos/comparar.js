@@ -36,7 +36,8 @@ function original(archivo, desde, n, perfil, meta = {}) {
     lado: b.lado, acordes: b.acordes.map(a => a.nombre),
     piano: pt ? pt.compases[b.i].as.map(a => ({ pos: a.pos, ps: a.ps.slice().sort((x, y) => x - y), v: a.vel })) : [],
     bajo: det.bajoAt.filter(a => a.q16 >= 2 * b.x && a.q16 < 2 * b.x + 16).map(a => ({ pos: a.q16 - 2 * b.x, ps: [a.p], v: a.vel })),
-    perc: det.bateria.map(h => ({ pos: Math.round(h.u * 2) - 2 * b.x, gm: h.alt, v: h.v })).filter(h => h.pos >= 0 && h.pos < 16)
+    // la clave del original (si la tocó otro instrumento, p. ej. un bloque) cuenta como clave
+    perc: det.bateria.map(h => ({ pos: Math.round(h.u * 2) - 2 * b.x, gm: det.clave && h.alt === det.clave.instrumento ? 75 : h.alt, v: h.v })).filter(h => h.pos >= 0 && h.pos < 16)
   }));
   return { det, bares, clave: det.clave ? det.clave.tipo : null };
 }
@@ -70,6 +71,7 @@ function recrear(ref, opciones, M, ctx) {
 const GM_NOM = { 35: 'bombo2', 36: 'bombo', 37: 'aro', 38: 'caja', 39: 'palmas', 40: 'caja2', 41: 'tom grave', 42: 'charles', 44: 'charles pie', 45: 'tom', 46: 'charles ab.', 47: 'tom medio', 48: 'tom ag.', 49: 'crash', 51: 'ride', 52: 'china', 53: 'ride bell',
   56: 'cencerro', 57: 'crash2', 59: 'ride2', 60: 'bongó ag.', 61: 'bongó gr.', 62: 'conga apag.', 63: 'conga abierta', 64: 'tumba', 65: 'timbal ag.', 66: 'timbal gr.', 67: 'agogó ag.', 68: 'agogó gr.', 69: 'cabasa', 70: 'maracas',
   73: 'güiro corto', 74: 'güiro largo', 75: 'clave', 76: 'bloque ag.', 77: 'bloque gr.', 79: 'cuíca ab.', 80: 'triáng. apag.' };
+const SIN_PUNTAJE = [69, 70, 82];   // cabasa, maracas, shaker
 const prob = (bares, lado, f) => { const bs = bares.filter(b => b.lado === lado), p = Array(16).fill(0); for (const b of bs) for (const q of new Set(f(b))) if (q >= 0 && q < 16) p[q]++; return { p: p.map(x => bs.length ? x / bs.length : 0), n: bs.length }; };
 const parecido = (a, b) => { let d = 0, s = 0; for (let i = 0; i < 16; i++) { d += Math.abs(a[i] - b[i]); s += a[i] + b[i]; } return s ? 1 - d / s : 1; };
 const dig = p => p.map((x, i) => (i % 4 ? '' : '|') + (x <= 0 ? '.' : String(Math.min(9, Math.max(1, Math.round(x * 9)))))).join('') + '|';
@@ -135,7 +137,7 @@ function comparar(ref, app, ver, detalle) {
       const vR = ref.bares.flatMap(b => b.perc.filter(h => h.gm === gm).map(h => h.v)), vA = app.bares.flatMap(b => b.perc.filter(h => h.gm === gm).map(h => h.v));
       const sR = suaves(vR), sA = suaves(vA);
       out.push(`    ${String(nR).padStart(3)} → ${String(nA).padStart(3)} golpes · fuerza media ${Math.round(media(vR))} → ${Math.round(media(vA))} · suaves ${sR == null ? '-' : Math.round(100 * sR) + '%'} → ${sA == null ? '-' : Math.round(100 * sA) + '%'}`);
-      suma += s * (nR + nA); peso += nR + nA;
+      if (SIN_PUNTAJE.includes(gm)) out.push('    (no cuenta: la app no toca maracas; el raspado es el güiro)'); else { suma += s * (nR + nA); peso += nR + nA; }
     }
     notas.perc = peso ? suma / peso : 1;
   }
