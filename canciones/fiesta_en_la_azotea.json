@@ -3,9 +3,9 @@
  "version": 2,
  "cancion": {
   "version": 2,
-  "titulo": "Mambo de la azotea",
+  "titulo": "Fiesta en la azotea",
   "orden": 6,
-  "descripcion": "big band de mambo: saxos y trompetas contra los trombones",
+  "descripcion": "salsa con orquesta grande: dos mambos de vientos, el último sube",
   "clave": "son 2-3",
   "banda": "timba",
   "bajoSonido": "acbass",
@@ -28,7 +28,7 @@
     "nombre": "Intro",
     "tipo": "intro",
     "marcha": "mambo",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -76,7 +76,7 @@
     "nombre": "Cuerpo",
     "tipo": "cuerpo",
     "marcha": "cuerpo",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -152,7 +152,7 @@
     "nombre": "Montuno",
     "tipo": "coro",
     "marcha": "marcha",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -204,7 +204,7 @@
     "nombre": "Mambo",
     "tipo": "mambo",
     "marcha": "mambo",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -255,10 +255,10 @@
      "v_remate": "pickups",
      "v_largo": "2"
     },
-    "nombre": "Shout",
+    "nombre": "Mambo final",
     "tipo": "mambo",
     "marcha": "mambo",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -305,7 +305,7 @@
     "nombre": "Montuno final",
     "tipo": "coro",
     "marcha": "marcha",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -354,7 +354,7 @@
     "nombre": "Final",
     "tipo": "final",
     "marcha": "marcha",
-    "estilo": "mambo",
+    "estilo": "salsa",
     "bars": [
      {
       "a": {
@@ -395,14 +395,14 @@
   ],
   "letra": {
    "cuerpo": [
-    "En la azotea del Palladium no cabía un alma más, / la orquesta tiraba mambo y el piso pedía paz.",
+    "En la azotea del barrio no cabía un alma más, / la orquesta tiraba fuego y el piso pedía paz.",
     "Los saxos hacían la ola, las trompetas el ciclón, / y los trombones abajo le marcaban el pilón."
    ],
-   "coro": "Mambo, mambo de la azotea",
+   "coro": "Fiesta, fiesta en la azotea",
    "pregones": [
     "Que baje la luna a bailar",
     "Saxofón, contéstame",
-    "Esto es mambo, señores"
+    "Esto es salsa, señores"
    ]
   }
  },

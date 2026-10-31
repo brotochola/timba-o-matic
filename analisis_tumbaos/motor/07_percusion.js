@@ -50,7 +50,7 @@
       empujes: { n: 'campana con empujes', f: 'corpus, Yumbambe: los talones del 2& y el 4& más fuertes que los del 2 y el 4',
         A: { bongoBell: '9.......8.......', bongoBellC: '....3.6.....3.6.' },
         B: { bongoBell: '9.......8.......', bongoBellC: '....4.5.....3.6.' } },
-      corcheas: { n: 'campana en corcheas (mambo)', f: 'boca en los tiempos y talón en los contratiempos, para el mambo (sin verificar en el corpus)',
+      corcheas: { n: 'campana en corcheas (para el mambo de los vientos)', f: 'boca en los tiempos y talón en los contratiempos, para la sección de mambo (sin verificar en el corpus)',
         A: { bongoBell: '9...7...8...7...', bongoBellC: '..4...6...4...5.' },
         B: { bongoBell: '9...7...8...7...', bongoBellC: '..4...4...4...5.' } }
     },
@@ -60,7 +60,7 @@
         B: { cascara: '7...7...5.6...5.', timbalL: '......4.....7...' } },
       // abierta en los tiempos y talón en los contratiempos: el contracampaneo y el campaneo coinciden en cinco de seis golpes,
       // así que lo que los separa es el timbre (Moore anota los dos timbres de cada campana; investigacion_campana.md)
-      campana: { n: 'campana de mambo', f: 'Moore, contracampaneo: lado 2 en 1, 2, 3, 3&, 4, 4&; lado 3 en 1&, 2, 2&, 3, 4, 4& (abierta en los tiempos, talón en los contratiempos; en el corpus, exacto en 12 temas)',
+      campana: { n: 'contracampana (campana del timbal)', f: 'Moore, contracampaneo: lado 2 en 1, 2, 3, 3&, 4, 4&; lado 3 en 1&, 2, 2&, 3, 4, 4& (abierta en los tiempos, talón en los contratiempos; en el corpus, exacto en 12 temas)',
         A: { bell: '....9...9...9...', bellC: '..6...6.......6.' },
         B: { bell: '9...9...9...9...', bellC: '..........6...6.' } },
       negras: { n: 'campana en negras (chachá, despelote)', f: 'la campana en los cuatro tiempos (la del chachá y la charanga; también el despelote), el 1 y el 3 marcados',
@@ -107,7 +107,6 @@
   };
   const DE_ESTILO = {
     son: { congas: { cuerpo: 'tumbao1', marcha: 'tumbao1', mambo: 'tumbao1' }, timbal: { cuerpo: null, marcha: null, mambo: null }, bateria: null },
-    mambo: { congas: { cuerpo: 'tumbao2' }, bateria: null },
     // la charanga (Aragón): timbal y una conga, sin bongó; el timbalero pasa de la cáscara a la campana del chachá
     charanga: { congas: { cuerpo: 'tumbao1', marcha: 'tumbao1', mambo: 'tumbao1' }, bongo: null, timbal: { marcha: 'negras', mambo: 'negras' }, bateria: null },
     salsa: { bateria: null },

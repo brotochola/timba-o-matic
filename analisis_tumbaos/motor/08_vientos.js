@@ -26,7 +26,7 @@
     // la trombanga vive más abajo que un trombón de salsa: los riffs de Colón, de La2 a Mi♭4 (investigación de Willie Colón, R3)
     trombanga: { n: 'Trombanga (2 trombones)', d: 'Willie Colón, Barry Rogers: los trombones al frente, la salsa brava', familias: { trombones: 2 }, centro: { trombones: 57 } },
     fania: { n: 'Fania (2 trompetas y trombón)', d: 'la orquesta de salsa de los 70', familias: { trompetas: 2, trombones: 1 } },
-    bigband: { n: 'Big band de mambo', d: 'Machito, Puente, Pérez Prado: trompetas, trombones y saxos', familias: { trompetas: 3, trombones: 2, saxos: 2 } },
+    bigband: { n: 'Orquesta grande (3 trompetas, 2 trombones y 2 saxos)', d: 'trompetas, trombones y saxos; en el contrapunto, los metales contra los saxos', familias: { trompetas: 3, trombones: 2, saxos: 2 } },
     salsa90: { n: 'Salsa de los 90 (2 trompetas, trombón y tenor)', d: 'la orquesta de la salsa romántica', familias: { trompetas: 2, trombones: 1, saxos: 1 } },
     timba: { n: 'Timba (2 trompetas, trombón y saxo)', d: 'NG La Banda, Issac Delgado: los «metales de terror»', familias: { trompetas: 2, trombones: 1, saxos: 1 } },
     vanvan: { n: '3 trombones (Van Van, Dimensión Latina)', d: 'los trombones de Los Van Van desde 1980; en Venezuela, la Dimensión Latina con trombones solos', familias: { trombones: 3 } }
