@@ -17,7 +17,7 @@ const SECCIONES = [
   { id: 'cuerpo', nombre: 'Cuerpo', prog: 'Am Dm G C F Dm E7 E7', marcha: 'cuerpo', vueltas: 2, semilla: 22, perillas: { b_estilo: 'salsa' } },
   { id: 'puente', nombre: 'Puente', prog: 'F G Am', marcha: 'marcha', semilla: 33, transicion: 'cierre' },
   { id: 'coro', nombre: 'Coro', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 4, semilla: 44, relleno: 'abanico' },
-  { id: 'mambo', nombre: 'Mambo', prog: 'Am D7 G E7', marcha: 'mambo', vueltas: 2, semilla: 55, ganchoDe: 'coro', entrada: 'plato' },
+  { id: 'mambo', nombre: 'Mambo', prog: 'Am D7 G E7', marcha: 'mambo', vueltas: 2, semilla: 55, ganchoDe: 'coro', plato: '1' },
   { id: 'presion', nombre: 'Presión', prog: 'Am Am E7 E7', marcha: 'presion', vueltas: 2, semilla: 66, transicion: 'corte' },
   { id: 'final', nombre: 'Coro final', prog: 'Am D7 G E7', marcha: 'marcha', vueltas: 2, semilla: 77, transicion: 'corte', perillas: { b_estilo: 'salsa' } }
 ];
@@ -68,9 +68,11 @@ ok(r.bajo.some(e => e.p === ini('final') * 16), 'después del corte el bajo entr
 ok(r.bajo.some(e => e.p === 0), 'el bajo arranca el tema en el 1');
 
 console.log('6. estabilidad: cambiar el coro no toca lo anterior');
-const antesDe = (x, id) => { const t = x.secciones.find(s => s.id === id).inicio, T = (t - 1) * 16;
-  const ev = k => x[k].filter(e => e.p < t * 16).map(e => JSON.stringify({ ...e, L: e.p >= T ? 0 : e.L }));
-  return JSON.stringify([ev('der'), ev('izq'), ev('bajo'), x.perc.slice(0, t), x.extra.slice(0, t)]); };
+// lo anterior termina donde entra la sección (en el 4&, el 4 o el 1 del compás de antes): desde ahí ya suena lo de ella
+const antesDe = (x, id) => { const s = x.secciones.find(s => s.id === id), t = s.inicio, T = (t - 1) * 16, Le = TM.LLEGA[s.entra] ?? 16, tL = T + Le;
+  const ev = k => x[k].filter(e => e.p < Math.min(t * 16, tL)).map(e => JSON.stringify({ ...e, L: e.p >= T ? 0 : e.L }));
+  const hasta = a => a.slice(0, t).map((bar, b) => b === t - 1 && bar ? bar.filter(e => e.p < Le) : bar);
+  return JSON.stringify([ev('der'), ev('izq'), ev('bajo'), hasta(x.perc), hasta(x.extra)]); };
 const ref = antesDe(r, 'coro');
 for (const [qué, c] of [['marcha', { coro: { marcha: 'mambo' } }], ['semilla', { coro: { semilla: 999 } }], ['perillas', { coro: { perillas: { dens: 1.4, b_estilo: 'timbero' } } }], ['vueltas', { coro: { vueltas: 2 } }], ['pistas', { coro: { pistas: { bongo: false, piano: false } } }], ['acordes después', { mambo: { prog: 'Dm G C A7' } }]])
   ok(antesDe(gen(c), 'coro') === ref, 'cambiar ' + qué + ' del coro');
@@ -148,7 +150,10 @@ for (const [tr, lados] of Object.entries(FIG)) for (const [lado, porL] of Object
   if (rf.lados[u] !== 'A') { ok(false, `${tr}: el último compás de la prueba tendría que ser del lado 3`); continue; }
   const ataques = evs => [...new Set(evs.filter(e => e.p >= S + desde && e.p < S + 16).map(e => e.p - S))].sort((a, b) => a - b).join();
   const caso = `${tr} hacia ${entra === '4y' ? 'el 4&' : 'el ' + entra}`;
-  ok(ataques(rf.der) === esp.join() && ataques(rf.bajo) === esp.join(), `${caso}: piano y bajo golpean en ${esp.join(',') || 'nada'} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
+  // la parada no anticipa: calla. Pero la sección que sigue entra en la llegada, así que piano y bajo traen ahí lo de ella
+  const espPB = tr === 'parada' && L < 16 && !esp.includes(L) ? [...esp, L] : esp;
+  ok(ataques(rf.der) === espPB.join() && ataques(rf.bajo) === espPB.join(), `${caso}: piano y bajo golpean en ${espPB.join(',') || 'nada'} (piano ${ataques(rf.der)}, bajo ${ataques(rf.bajo)})`);
+  if (espPB !== esp) ok(rf.der.some(x => x.p === S + L && x.ch.nombre === 'Dm'), `${caso}: en la llegada (${L}) el piano ya trae el acorde de la que sigue`);
   ok(ataques(rf.vientos.trompetas) === esp.join(), `${caso}: los vientos golpean con la banda (${ataques(rf.vientos.trompetas)})`);
   ok([...new Set(rf.perc[u].filter(e => e.p >= desde && e.d !== 'plato').map(e => e.p))].every(q => esp.includes(q)), `${caso}: la percusión solo en los golpes`);
   const ult = esp[esp.length - 1], e = rf.der.find(x => x.p === S + ult);
@@ -165,7 +170,7 @@ for (const [entra, L] of [['4y', 14], ['4', 12], ['1', 16]]) {
   const rf = TM.generarCancion(c2, M), u = 3, S = u * 16, caso = `entra ${entra === '4y' ? 'en el 4&' : 'en el ' + entra}`;
   const conDm = evs => evs.filter(e => e.p >= S && e.p < S + 16 && e.ch && e.ch.nombre === 'Dm').map(e => e.p - S);
   if (L < 16) {
-    ok(conDm(rf.der).includes(14) && conDm(rf.der).every(q => q >= 12), `${caso}: el piano trae el acorde nuevo en el 4& (${conDm(rf.der).join(',')})`);
+    ok(conDm(rf.der).includes(L) && conDm(rf.der).every(q => q >= L), `${caso}: el piano trae el acorde nuevo en la llegada, ${L} (${conDm(rf.der).join(',')})`);
     ok(conDm(rf.bajo).includes(L) && conDm(rf.bajo).every(q => q >= L - 2), `${caso}: el bajo trae la raíz nueva en ${L} (${conDm(rf.bajo).join(',')})`);
     ok(conDm(rf.vientos.trompetas).includes(L), `${caso}: los bloques de los vientos golpean en ${L} con el acorde nuevo (${conDm(rf.vientos.trompetas).join(',')})`);
     ok(rf.perc[u].some(x => x.p === L && x.d === 'plato'), `${caso}: el plato en ${L}`);

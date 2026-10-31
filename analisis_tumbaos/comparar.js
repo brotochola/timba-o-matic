@@ -162,7 +162,138 @@ function comparar(ref, app, ver, detalle) {
   return { texto: out.join('\n'), notas };
 }
 
-module.exports = { original, recrear, comparar, cadenaPagina, modeloDeEntrada };
+// ---------- el oído del piano: cuánto suena a montuno y cuánto desafina, medido igual en lo que sale y en los temas de la base
+// tocado: { lados: ['A'|'B'], acordes: [[ch]] por compás, ev: [{ p, L, ps (derecha), izq (izquierda), v, ch }], bajo: [{ p, L, ps }] | null }
+// - clave: log-verosimilitud del ritmo de cada compás en su lado contra el otro lado (perfil de la base); claveOK: compases a favor
+// - anticipa: cambios de acorde con el acorde nuevo en el 4&; liga: de esos, sin volver a atacar el 1
+// - repite2 / repite4: ataques compartidos con el compás de dos (cuatro) más adelante: el gancho
+// - acentos: correlación de la fuerza por posición con la de los pianistas de la base
+// - falsas: notas fuera del acorde (ni del acorde ni tensión) largas (desde una corchea con puntillo) o en el 2& y el 4&, los golpes que hablan
+// - semitono: ataques con dos notas a medio tono (o a 7a mayor / 9a menor) que el acorde no explica
+// - choqueBajo: ataques con una nota a medio tono del bajo que suena, que el acorde no explica
+// - izqGrave: notas de la izquierda debajo del fa2, donde embarran el bajo
+const LLv = (v, p) => v.reduce((s, h, k) => s + (h ? Math.log(p[k]) : Math.log(1 - p[k])), 0);
+const DEL_ACORDE = new Set(['R', '3', '5', '7']);
+function correlAcentos(cel, velRef) {
+  if (!velRef) return null;
+  const xs = [], ys = []; for (const [k, [s, n]] of Object.entries(cel)) if (n >= 3) { xs.push(s / n); ys.push(velRef[k[0]][+k.slice(1)]); }
+  if (xs.length < 6) return null;
+  const mx = xs.reduce((a, b) => a + b, 0) / xs.length, my = ys.reduce((a, b) => a + b, 0) / ys.length;
+  let n = 0, dx = 0, dy = 0; for (let i = 0; i < xs.length; i++) { n += (xs[i] - mx) * (ys[i] - my); dx += (xs[i] - mx) ** 2; dy += (ys[i] - my) ** 2; }
+  return dx && dy ? n / Math.sqrt(dx * dy) : null;
+}
+function oidoPiano(t, perfil, velRef) {
+  const nb = t.lados.length, porC = Array.from({ length: nb }, () => []);
+  for (const e of t.ev) { const b = Math.floor(e.p / 16); if (b >= 0 && b < nb) porC[b].push(e); }
+  const res = {}, pct = (a, b) => b ? a / b : null;
+  // clave
+  let llr = 0, nC = 0, aFavor = 0;
+  porC.forEach((evs, b) => { if (evs.length < 2) return; const v = new Array(16).fill(0); for (const e of evs) v[e.p % 16] = 1; const L = t.lados[b], x = LLv(v, perfil[L]) - LLv(v, perfil[L === 'A' ? 'B' : 'A']); llr += x; nC++; if (x > 0) aFavor++; });
+  res.clave = nC ? llr / nC : null; res.claveOK = pct(aFavor, nC);
+  // anticipos en los cambios de acorde
+  // (t.acordes puede traer uno más: el acorde que sigue al último compás; t.uno: si ese compás que sigue ataca el 1)
+  // (por lado: hacia el lado 3 y hacia el lado 2, el que sigue)
+  let cambios = 0, ant = 0, liga = 0, nLiga = 0; const lado = { A: [0, 0, 0, 0], B: [0, 0, 0, 0] };
+  for (let b = 0; b < nb; b++) {
+    if (!t.acordes[b + 1]) continue;
+    const ult = t.acordes[b][t.acordes[b].length - 1], sig = t.acordes[b + 1][0]; if (!ult || !sig || ult.nombre === sig.nombre) continue;
+    const L = t.lados[b] === 'A' ? 'B' : 'A', x = lado[L];
+    cambios++; x[0]++;
+    const e14 = porC[b].find(e => e.p % 16 === 14);
+    if (e14 && e14.ch && e14.ch.nombre === sig.nombre) {
+      ant++; x[1]++;
+      const uno = b + 1 < nb ? porC[b + 1].some(e => e.p % 16 === 0) : t.uno;
+      if (uno != null) { nLiga++; x[2]++; if (!uno) { liga++; x[3]++; } }
+    }
+  }
+  res.anticipa = pct(ant, cambios); res.liga = pct(liga, nLiga);
+  res.antA = pct(lado.A[1], lado.A[0]); res.antB = pct(lado.B[1], lado.B[0]); res.ligaA = pct(lado.A[3], lado.A[2]); res.ligaB = pct(lado.B[3], lado.B[2]);
+  // ritmo
+  const todos = t.ev.length;
+  res.densidad = nb ? todos / nb : 0; res.contra = pct(t.ev.filter(e => e.p % 4 === 2).length, todos); res.semis = pct(t.ev.filter(e => e.p % 2 === 1).length, todos);
+  const jac = (a, b) => { const A = new Set(a.map(e => e.p % 16)), B = new Set(b.map(e => e.p % 16)); const u = new Set([...A, ...B]).size; return u ? [...A].filter(x => B.has(x)).length / u : null; };
+  for (const k of [2, 4]) { const xs = []; for (let b = 0; b + k < nb; b++) { const j = jac(porC[b], porC[b + k]); if (j != null) xs.push(j); } res['repite' + k] = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; }
+  // acentos (solo si la fuerza varía): la fuerza relativa por lado y posición, que juntarOidos suma entre tocados
+  const vs = t.ev.map(e => e.v), mv = vs.reduce((a, b) => a + b, 0) / Math.max(1, vs.length), sd = Math.sqrt(vs.reduce((a, v) => a + (v - mv) ** 2, 0) / Math.max(1, vs.length));
+  res.velCel = {};
+  if (sd > 2) for (const e of t.ev) { const k = t.lados[Math.floor(e.p / 16)] + (e.p % 16), c = (res.velCel[k] = res.velCel[k] || [0, 0]); c[0] += e.v / mv; c[1]++; }
+  res.acentos = correlAcentos(res.velCel, velRef);
+  // disonancias
+  const bajoEn = new Map(); if (t.bajo) for (const e of t.bajo) for (let q = e.p; q < e.p + e.L; q++) bajoEn.set(q, e.ps[0]);
+  let notas = 0, falsas = 0, crom = 0, semi = 0, choque = 0, conBajo = 0, izq = 0, izqG = 0;
+  for (const e of t.ev) {
+    if (!e.ch) continue;
+    const todas = e.ps.concat(e.izq || []), acento = e.p % 16 === 6 || e.p % 16 === 14;
+    for (const m of todas) { notas++; const f = TM.funcion(m, e.ch); if (f === 'X') { crom++; if (e.L >= 3 || acento) falsas++; } }
+    for (const m of e.izq || []) { izq++; if (m < 41) izqG++; }
+    const tono = m => DEL_ACORDE.has(TM.funcion(m, e.ch));
+    let s = false; for (let i = 0; i < todas.length && !s; i++) for (let j = i + 1; j < todas.length; j++) { const ic = TM.pc(todas[j] - todas[i]); if ((ic === 1 || ic === 11) && !(tono(todas[i]) && tono(todas[j]))) { s = true; break; } }
+    if (s) semi++;
+    const bj = bajoEn.get(e.p);
+    if (bj != null) { conBajo++; if (todas.some(m => { const ic = TM.pc(m - bj); return (ic === 1 || ic === 11) && !(tono(m) && tono(bj)); })) choque++; }
+  }
+  Object.assign(res, { falsas: pct(falsas, notas), cromaticas: pct(crom, notas), semitono: pct(semi, todos), choqueBajo: t.bajo ? pct(choque, conBajo) : null, izqGrave: pct(izqG, izq) });
+  // textura y línea (la nota de arriba)
+  let oct = 0, sola = 0, blq = 0, del = 0, iv = 0, ter = 0, cua = 0, paso = 0, rep = 0, giros = 0, mov = 0, prevD = 0, prev = null;
+  for (const e of t.ev) {
+    if (!e.ps.length) continue;
+    const top = e.ps[e.ps.length - 1], der = e.ps.filter(x => x >= top - 12);
+    if (der.includes(top - 12)) oct++; else if (new Set(der.map(TM.pc)).size === 1) sola++; else blq++;
+    if (e.ch && DEL_ACORDE.has(TM.funcion(top, e.ch))) del++;
+    if (prev != null) { const d = top - prev, a = Math.abs(d) % 12 === 0 && d ? 0 : Math.abs(d); iv++; if (a === 0) rep++; else if (a <= 2) paso++; else if (a <= 4) ter++; else if (a === 5) cua++; if (d && d % 12) { if (prevD && Math.sign(d) !== Math.sign(prevD)) giros++; if (prevD) mov++; prevD = d; } }
+    prev = top;
+  }
+  const conDer = t.ev.filter(e => e.ps.length).length;
+  Object.assign(res, { octavas: pct(oct, conDer), sueltas: pct(sola, conDer), bloques: pct(blq, conDer), delAcorde: pct(del, conDer), repetidas: pct(rep, iv), pasos: pct(paso, iv), terceras: pct(ter, iv), cuartas: pct(cua, iv), cambiaDir: pct(giros, mov) });
+  // perfil de ataques por lado (para ver a qué estilo se parece)
+  const perf = { A: new Array(16).fill(0), B: new Array(16).fill(0) }, nL = { A: 0, B: 0 };
+  porC.forEach((evs, b) => { const L = t.lados[b]; nL[L]++; for (const q of new Set(evs.map(e => e.p % 16))) perf[L][q]++; });
+  res.perfil = { A: perf.A.map(x => nL.A ? x / nL.A : 0), B: perf.B.map(x => nL.B ? x / nL.B : 0) };
+  return res;
+}
+// lo que sale del motor (una canción o una sección), como lo toca la página: derecha e izquierda juntas por ataque
+function tocadoDe(r) {
+  const porP = new Map();
+  for (const e of r.der) porP.set(e.p, { p: e.p, L: e.L, ps: e.ps.slice().sort((a, b) => a - b), izq: [], v: e.v, ch: e.ch });
+  for (const e of r.izq) { const x = porP.get(e.p); if (x) x.izq = e.ps.slice(); else porP.set(e.p, { p: e.p, L: e.L, ps: [], izq: e.ps.slice(), v: e.v, ch: e.ch }); }
+  return { lados: r.lados, acordes: r.acordes, ev: [...porP.values()].sort((a, b) => a.p - b.p), bajo: r.bajo };
+}
+// una fuente de la base (sus ciclos de piano, de a dos compases): el acorde de cada ataque con su anticipo, como lo ve el modelo
+// los ciclos seguidos (c, c+2, c+4…) van juntos, para medir el gancho y las ligaduras de un ciclo al otro
+function tocadoDeFuente(f) {
+  const out = [], ciclos = (f.piano || []).filter(c => TM.acordesCiclo(c).ok).sort((a, b) => a.c - b.c);
+  let tramo = null;
+  for (const c of ciclos) {
+    const K = TM.acordesCiclo(c);
+    if (!tramo || tramo.ult !== c.c - 2) { tramo = { lados: [], acordes: [], ev: [], bajo: null, uno: null, ult: null }; out.push(tramo); }
+    const o = tramo.lados.length * 16;
+    for (const [p, d, ps, v] of c.e) {
+      const ord = ps.slice().sort((a, b) => a - b), top = ord[ord.length - 1], cur = K.en(p), sig = K.proximo(p);
+      const ch = TM.anticipaAtaque(ord, top, cur, sig) ? sig : cur;
+      tramo.ev.push({ p: o + p, L: d, ps: ord.filter(x => x >= top - 12), izq: ord.filter(x => x < top - 12), v, ch });
+    }
+    // el acorde que sigue al tramo (por si el último compás anticipa); se corrige si viene otro ciclo seguido
+    if (tramo.acordes.length > tramo.lados.length) tramo.acordes.pop();
+    tramo.lados.push('A', 'B'); tramo.acordes.push(K.A[0], K.A[1]); if (K.sig) tramo.acordes.push([K.sig]);
+    tramo.ult = c.c;
+  }
+  return out;
+}
+// junta las medidas de varios tocados (promedio pesado por la cantidad de compases)
+function juntarOidos(lista, velRef) {
+  const acc = {}, peso = {}, cel = {};
+  for (const { o, n } of lista) for (const [k, v] of Object.entries(o)) {
+    if (k === 'perfil') { acc.perfil = acc.perfil || { A: new Array(16).fill(0), B: new Array(16).fill(0) }; for (const L of ['A', 'B']) v[L].forEach((x, i) => { acc.perfil[L][i] += x * n; }); peso.perfil = (peso.perfil || 0) + n; continue; }
+    if (k === 'velCel') { for (const [c, [s, m]] of Object.entries(v)) { const x = (cel[c] = cel[c] || [0, 0]); x[0] += s; x[1] += m; } continue; }
+    if (k === 'acentos' || v == null || Number.isNaN(v)) continue; acc[k] = (acc[k] || 0) + v * n; peso[k] = (peso[k] || 0) + n;
+  }
+  const res = {}; for (const k of Object.keys(acc)) res[k] = k === 'perfil' ? { A: acc.perfil.A.map(x => x / peso.perfil), B: acc.perfil.B.map(x => x / peso.perfil) } : acc[k] / peso[k];
+  res.acentos = correlAcentos(cel, velRef);
+  return res;
+}
+const parecidoPerfil = (a, b) => parecido(a.A.concat(a.B), b.A.concat(b.B));
+
+module.exports = { original, recrear, comparar, cadenaPagina, modeloDeEntrada, oidoPiano, tocadoDe, tocadoDeFuente, juntarOidos, parecidoPerfil, parecido };
 
 if (require.main === module) {
   const args = process.argv.slice(2), sueltos = args.filter(a => !a.startsWith('--'));

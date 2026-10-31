@@ -30,30 +30,50 @@
     muela: { dens: 0.55, oct: 0.15, blq: 0.5, semi: 0, perc: 'muela', bajo: 'muela', marca: 'Muela' }
   };
 
-  // ---------- perillas: valor por defecto y cómo se muestran
+  // ---------- la colección Toontrack (Latin Cuban EZkeys, tocada por Manuel Valera): estilos (carpetas) y partes (nombres de
+  // archivo). Las notas no están acá: vienen de la base local (analisis_tumbaos/base_local.js) si está; sin ella, el piano
+  // toca Opus en el estilo más parecido. La carpeta MAMBO_95_BPM (el género) no entra: en la app, mambo es la sección de vientos
+  const TOONTRACK = {
+    estilos: [['son_montuno', 'Son montuno (91)'], ['salsa_media', 'Salsa media (90)'], ['salsa_rapida', 'Salsa rápida (170)'], ['songo', 'Songo Van Van (105)'], ['funk_cubano', 'Funk cubano (114)']],
+    // estilo de la sección → estilo de Toontrack, y al revés (sin la colección, Opus toca en ese estilo)
+    deEstilo: { sonmontuno: 'son_montuno', charanga: 'son_montuno', salsabrava: 'salsa_media', salsa: 'salsa_rapida', songo: 'songo', pupy: 'songo', melon: 'funk_cubano', tirso: 'funk_cubano' },
+    aEstilo: { son_montuno: 'sonmontuno', salsa_media: 'salsabrava', salsa_rapida: 'salsa', songo: 'songo', funk_cubano: 'tirso' },
+    // partes: id, nombre, comienzos de archivo (en orden de preferencia)
+    partes: [['intro', 'Intro', ['Intro']], ['intro2', 'Intro 2', ['Intro_2']], ['a', 'A Section (o A 1)', ['A_Section', 'A_Section_1']], ['a2', 'A Section 2', ['A_Section_2']],
+      ['b', 'B Section', ['B_Section']], ['coro', 'Coro', ['Coro']], ['montuno', 'Montuno 1', ['Montuno_1']], ['montuno2', 'Montuno 2', ['Montuno_2']], ['soneo', 'Soneo', ['Soneo']],
+      ['mambo', 'Mambo (la de los vientos)', ['Mambo']], ['solo', 'Solo', ['Solo']], ['break', 'Break', ['Break']], ['final', 'End Vamp', ['End_Vamp']]],
+    // si el estilo no tiene la parte elegida, las parecidas (en orden)
+    parecidas: { intro: ['intro2', 'a', 'coro'], intro2: ['intro', 'a'], a: ['a2', 'b', 'coro', 'montuno'], a2: ['a', 'b'], b: ['a', 'a2'], coro: ['montuno', 'soneo', 'montuno2', 'mambo'],
+      montuno: ['coro', 'montuno2', 'soneo'], montuno2: ['montuno', 'coro', 'soneo'], soneo: ['coro', 'montuno', 'montuno2'], mambo: ['montuno2', 'coro', 'soneo', 'solo'],
+      solo: ['mambo', 'b'], break: ['final', 'coro'], final: ['coro', 'montuno', 'soneo'] },
+    // tipo de sección (o marcha) → parte
+    deTipo: { intro: 'intro', cuerpo: 'a', coro: 'coro', mambo: 'mambo', mona: 'mambo', presion: 'b', bomba: 'b', despelote: 'mambo', muela: 'b', bloque: 'break', final: 'final', marcha: 'coro' }
+  };
+
+  // ---------- perillas: valor por defecto y cómo se muestran. Las del piano valen para Opus y el generado; Toontrack y la
+  // frase real tocan lo del pianista y solo les cambian la izquierda, el registro, el legato, los acentos y el cromatismo
   const PERILLAS_UI = [
-    { g: 'Piano · ritmo y textura', id: 'frase', l: 'De dónde sale el piano', tipo: 'sel', def: 'generado', ops: [['generado', 'generado nota por nota'], ['frase', 'frase real de la base']], h: 'Generado: células reales de la base y la línea buscada nota por nota, con todas las perillas. Frase real: toca tal cual lo que tocó el pianista de un tema de la base (ritmo, voces, mano izquierda y fuerza de cada golpe) y le acomoda las notas a tus acordes; las perillas del piano no la cambian, salvo «sin mano izquierda». Suena mejor con la colección Toontrack' },
-    { g: 'Piano · ritmo y textura', id: 'dens', l: 'Densidad', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Cuántos ataques por compás, respecto de la célula elegida' },
-    { g: 'Piano · ritmo y textura', id: 'oct', l: 'Octavas', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Más o menos ataques en octava (la línea que «habla»)' },
-    { g: 'Piano · ritmo y textura', id: 'blq', l: 'Bloques (díadas y acordes)', min: 0, max: 2.5, st: 0.05, def: 1, f: 'x', h: 'El golpe armónico, sobre todo en el 3& y el 1& del lado 3' },
-    { g: 'Piano · ritmo y textura', id: 'int', l: 'Nota adentro de la octava', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Una 3a o 4a pegada debajo de la nota de arriba' },
-    { g: 'Piano · ritmo y textura', id: 'semi', l: 'Semicorcheas', min: 0, max: 6, st: 0.25, def: 1, f: 'x', h: 'Notas de paso picadas antes de los contratiempos' },
-    { g: 'Piano · ritmo y textura', id: 'leg', l: 'Legato', min: 0, max: 1, st: 0.05, def: 0.6, f: '%', h: 'De picado (0) a ligado hasta el ataque siguiente (100%)' },
-    { g: 'Piano · línea', id: 'ten', l: 'Tensiones (9, 11, 13)', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Color en la nota de arriba' },
-    { g: 'Piano · línea', id: 'crom', l: 'Cromatismo', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Apoyaturas a medio tono que resuelven en una nota del acorde' },
-    { g: 'Piano · línea', id: 'salto', l: 'Pasos ↔ saltos', min: -1, max: 1, st: 0.05, def: 0, f: '±', h: 'Negativo: más por grado conjunto; positivo: más saltos de 3a y 4a' },
-    { g: 'Piano · línea', id: 'zig', l: 'Zigzag', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Después de un salto, volver para el otro lado' },
-    { g: 'Piano · línea', id: 'rep', l: 'Notas repetidas', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Empuje de notas repetidas (despelote, Melón)' },
-    { g: 'Piano · línea', id: 'reg', l: 'Registro', min: -12, max: 12, st: 1, def: 0, f: '±st', h: 'Corre la línea hacia el grave o el agudo (0 = como la base, alrededor de F5)' },
-    { g: 'Piano · línea', id: 'amb', l: 'Ámbito', min: 2, max: 12, st: 0.5, def: 7, f: 'st', h: 'Cuánto se aleja la línea del centro' },
-    { g: 'Piano · línea', id: 'lh', l: 'Mano izquierda', tipo: 'sel', def: 'auto', ops: [['auto', 'como la fuente'], ['dobla8', 'dobla a la octava'], ['dobla16', 'dobla a dos octavas'], ['decima', 'décimas'], ['contrario', 'movimiento contrario'], ['ancla', 'ancla en el grave'], ['nada', 'sin mano izquierda']], h: 'Qué hace la izquierda debajo de la línea. «Como la fuente» copia lo que hacía el pianista del tema elegido de la base' },
-    { g: 'Piano · armonía y forma', id: 'dim', l: 'Disminuido de paso', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'En el 4, un °7 medio tono abajo del acorde que viene (Pupy)' },
-    { g: 'Piano · armonía y forma', id: 'gancho', l: 'Gancho fijo', min: 0, max: 1, st: 0.05, def: 0.75, f: '%', h: 'Cuánto repite las mismas notas cuando vuelven los mismos acordes' },
-    { g: 'Piano · armonía y forma', id: 'var', l: 'Variación por vuelta', min: 0, max: 1, st: 0.05, def: 0.35, f: '%', h: 'Chance de cambiarle algo al ritmo en cada repetición' },
-    { g: 'Piano · armonía y forma', id: 'largo', l: 'Largo del gancho', tipo: 'sel', def: 'auto', ops: [['auto', 'automático'], ['2', '2 compases (una clave)'], ['4', '4 compases (dos claves)'], ['8', '8 compases (cuatro claves)']], h: 'Cada cuántos compases se repite el gancho. Automático: 4 si la progresión dura 4, 8 o 16 compases; si no, 2' },
-    { g: 'Piano · armonía y forma', id: 'mezcla', l: 'Mezclar fuentes', min: 0, max: 1, st: 0.05, def: 0.15, f: '%', h: '0 = todas las células de un mismo tema de la base; 100% = de cualquiera' },
-    { g: 'Piano · armonía y forma', id: 'temp', l: 'Libertad', min: 0, max: 2, st: 0.05, def: 0.6, f: 'x', h: 'Cuánto se permite salir de lo más probable' },
-    { g: 'Piano · armonía y forma', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves' },
+    { g: 'Piano · qué toca', id: 'frase', l: 'Qué toca el piano', tipo: 'sel', def: 'opus', ops: [['opus', 'Opus: montuno de pianista acomodado a tus acordes'], ['toontrack', 'patrón de Toontrack (colección local)'], ['frase', 'frase real de un tema de la base'], ['generado', 'células y línea nota por nota']], h: 'Opus: elige el montuno de un pianista para el estilo, el tipo de sección y el ritmo de tus acordes (de Toontrack si está la colección local, y de los temas de la base), lo repite como gancho y conduce sus voces a tus acordes. Toontrack: el patrón que elijas abajo, tal cual. Frase real: la frase entera de un tema de la base, en orden. Células: el ritmo de la base y la línea buscada nota por nota' },
+    { g: 'Piano · qué toca', id: 'tt_estilo', l: 'Toontrack: estilo', tipo: 'sel', def: 'auto', ops: [['auto', 'el de la sección'], ...TOONTRACK.estilos], h: 'Solo con «patrón de Toontrack»: de qué carpeta de la colección local sale el patrón. Sin la colección local, el piano toca Opus en el estilo más parecido' },
+    { g: 'Piano · qué toca', id: 'tt_parte', l: 'Toontrack: parte', tipo: 'sel', def: 'auto', ops: [['auto', 'según el tipo de sección'], ...TOONTRACK.partes.map(([id, n]) => [id, n])], h: 'Solo con «patrón de Toontrack»: qué parte de la canción de Toontrack (intro en la intro, A o B en el cuerpo, coro o montuno en el coro, mambo en el mambo, End Vamp en el final). Si el estilo no la tiene, toca la más parecida' },
+    { g: 'Piano · qué toca', id: 'tt_var', l: 'Toontrack: variación', min: 0, max: 10, st: 1, def: 0, f: 'n', h: 'Solo con «patrón de Toontrack»: cuál de las variaciones de esa parte (1, 2, 3…). En 0, la elige la variante de la sección (🎲)' },
+    { g: 'Piano · ritmo y textura', id: 'dens', l: 'Densidad', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos ataques por compás que el montuno elegido (saca los golpes débiles o agrega en los lugares de la base)' },
+    { g: 'Piano · ritmo y textura', id: 'oct', l: 'Octavas', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Más o menos ataques en octava: la línea que «habla». En 0, notas sueltas' },
+    { g: 'Piano · ritmo y textura', id: 'int', l: 'Octavas rellenas', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Una 3a o 4a del acorde adentro de la octava, pegada debajo de la nota de arriba (el sonido del tres)' },
+    { g: 'Piano · ritmo y textura', id: 'blq', l: 'Bloques', min: 0, max: 2.5, st: 0.05, def: 1, f: 'x', h: 'Díadas y acordes: el golpe armónico que contesta a la línea, sobre todo en el 3& y en el 1& del lado 3' },
+    { g: 'Piano · ritmo y textura', id: 'semi', l: 'Semicorcheas', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Notas picadas de paso antes de los contratiempos (el tumbao «picado» de la timba). En 0, ninguna' },
+    { g: 'Piano · ritmo y textura', id: 'leg', l: 'Legato', min: 0, max: 1, st: 0.05, def: 0.5, f: '%', h: 'En 50%, como lo toca el pianista; menos, más picado; más, cada nota ligada hasta el ataque siguiente' },
+    { g: 'Piano · ritmo y textura', id: 'acc', l: 'Acentos', min: 0, max: 2, st: 0.05, def: 1, f: 'x', h: 'Contraste entre los golpes fuertes y los suaves (1 = como el pianista o la base; 0 = todo parejo)' },
+    { g: 'Piano · línea y armonía', id: 'reg', l: 'Registro', min: -12, max: 12, st: 1, def: 0, f: '±st', h: 'Corre todo el piano hacia el grave o el agudo, en semitonos (0 = el registro del pianista, la línea alrededor de fa5)' },
+    { g: 'Piano · línea y armonía', id: 'salto', l: 'Pasos ↔ saltos', min: -1, max: 1, st: 0.05, def: 0, f: '±', h: 'La línea de arriba: negativo, más por grado conjunto; positivo, más saltos de 3a y 4a' },
+    { g: 'Piano · línea y armonía', id: 'rep', l: 'Notas repetidas', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Empuje de notas repetidas en la línea (Melón, el despelote)' },
+    { g: 'Piano · línea y armonía', id: 'ten', l: 'Tensiones (9, 11, 13)', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Color en la línea: en 0, solo notas del acorde; más de 1, tensiones también donde el pianista tocaba notas del acorde (nunca en los golpes fuertes)' },
+    { g: 'Piano · línea y armonía', id: 'crom', l: 'Cromatismo', min: 0, max: 3, st: 0.1, def: 1, f: 'x', h: 'Notas de paso a medio tono que resuelven en una nota del acorde, siempre cortas y en golpes débiles. En 0, ninguna' },
+    { g: 'Piano · línea y armonía', id: 'dim', l: 'Disminuido de paso (Pupy)', min: 0, max: 1, st: 0.05, def: 0, f: '%', h: 'Chance de que el 4 antes de un cambio de acorde sea un °7 medio tono abajo del acorde que viene' },
+    { g: 'Piano · línea y armonía', id: 'lh', l: 'Mano izquierda', tipo: 'sel', def: 'auto', ops: [['auto', 'como el pianista'], ['dobla8', 'dobla a la octava'], ['dobla16', 'dobla a dos octavas'], ['decima', 'décimas'], ['contrario', 'movimiento contrario (Pupy)'], ['ancla', 'ancla en el grave (Tirso)'], ['nada', 'sin mano izquierda']], h: 'Qué hace la izquierda debajo de la línea. «Como el pianista» toca lo que tocaba la izquierda del montuno elegido; nunca baja del fa2, donde embarra el bajo' },
+    { g: 'Piano · gancho', id: 'largo', l: 'Largo del gancho', tipo: 'sel', def: 'auto', ops: [['auto', 'automático'], ['2', '2 compases (una clave)'], ['4', '4 compases (dos claves)'], ['8', '8 compases (cuatro claves)']], h: 'Cada cuántos compases se repite el gancho. Automático: 4 si la progresión dura 4, 8 o 16 compases; si no, 2' },
+    { g: 'Piano · gancho', id: 'gancho', l: 'Gancho fijo', min: 0, max: 1, st: 0.05, def: 0.75, f: '%', h: 'Cuánto repite las mismas notas cuando vuelven los mismos acordes (también de una sección a otra que comparte el gancho)' },
+    { g: 'Piano · gancho', id: 'var', l: 'Variación por vuelta', min: 0, max: 1, st: 0.05, def: 0.35, f: '%', h: 'Chance de que el pianista varíe el final del gancho al repetirlo' },
     { g: 'Bajo', id: 'b_estilo', l: 'Qué toca', tipo: 'sel', def: 'auto', ops: [['auto', 'según el estilo y la marcha'], ['aprendido', 'aprendido de la base'], ['salsa', 'tumbao de salsa (2& y 4)'], ['timbero', 'timbero (anticipos)'], ['timba', 'timba (2& y 3 repetidos, la 3a en el 4)'], ['songo', 'songo Van Van'], ['motivo', 'motivo con el piano (Pupy)'], ['pedal', 'nota pedal (una, grave y larga)'], ['largas', 'notas largas (cada 2 compases)'], ['deslizado', 'deslizamientos y golpes'], ['muela', 'de muela'], ['ninguno', 'sin bajo']], h: 'De dónde sale el bajo: aprendido de la base o un patrón de la guía. Nota pedal: una sola nota grave que se sostiene (presión). Notas largas: la raíz cada dos compases, sostenida (el «pedal» de Kevin Moore). Deslizamientos: deja el tumbao, golpes cortos y la mano que se desliza por la cuerda grave (Feliciano Arango). «Según la marcha» elige el que le queda a cada marcha' },
     { g: 'Bajo', id: 'b_aprox', l: 'Aproximaciones cromáticas', min: 0, max: 1, st: 0.05, def: 0.25, f: '%', h: 'Medio tono antes de la raíz que viene' },
     { g: 'Bajo', id: 'b_dens', l: 'Densidad del bajo', min: 0.5, max: 1.5, st: 0.05, def: 1, f: 'x', h: 'Más o menos notas por compás en el bajo' },
@@ -83,27 +103,27 @@
   const PERILLAS = Object.fromEntries(PERILLAS_UI.map(k => [k.id, k.def]));
   // los estilos: cómo toca toda la banda en una sección. vientos: el formato de entrada de la canción, la armonía y qué tocan en
   // cada marcha (la timba calla en los coros y toca el mambo después; investigación de vientos de timba y de salsa) piano: sus perillas (el piano puede tocar como otro estilo);
+  // piano.como: el estilo en que toca el piano (Opus elige montunos de pianistas de ese estilo; con «Toca como», el de otro);
   // estilo y grupo: de qué temas de la base aprende el piano (grupo: los estilos de Toontrack, si están en la base local);
   // banda: la percusión de entrada (07_percusion.js); cambio: el cambio de acorde; bajo: el tumbao en cuerpo, coro y mambo
+  // (en la app, mambo es la sección donde tocan los vientos; el género de los 50 no está)
   const ESTILOS = {
-    sonmontuno: { n: 'Son montuno', d: 'El conjunto de los años 40 y 50 (Arsenio, Lilí Martínez): piano en octavas con la izquierda doblando, el bajo anticipado en el 4, una conga y bongó, sin timbal.',
-      banda: 'son', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'], vientos: { formato: 'conjunto', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { lh: 'dobla8', oct: 1.2, blq: 0.6, semi: 0.5, crom: 0.6 } },
-    mambo: { n: 'Mambo', d: 'Los años 50: el montuno más cargado, con bloques, para que entren los metales; campana de mambo y bajo anticipado en el 4.',
-      banda: 'mambo', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['mambo'], vientos: { formato: 'bigband', armonia: 'bloque', toca: { cuerpo: 'fondo', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { lh: 'auto', blq: 1.4, oct: 0.9 } },
-    charanga: { n: 'Charanga', d: 'La orquesta de flauta y violines (Aragón, «Pare cochero»): el piano de notas sueltas con la izquierda doblando, timbal y conga sin bongó.',
-      banda: 'charanga', cambio: '4', bajo: 'salsa', estilo: 'salsa', vientos: { formato: null, armonia: 'unisono', toca: { cuerpo: 'nada', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { oct: 0.25, blq: 0.6, lh: 'dobla16', semi: 0.6, crom: 0.6 } },
+    sonmontuno: { n: 'Son montuno', d: 'El conjunto de los años 40 y 50 (Arsenio, Lilí Martínez): piano en octavas con la nota de adentro, el bajo anticipado en el 4, una conga y bongó, sin timbal.',
+      banda: 'son', cambio: '4', bajo: 'salsa', estilo: 'cubano', grupo: ['son_montuno'], vientos: { formato: 'conjunto', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { como: 'sonmontuno', int: 1.4, semi: 0.5, crom: 0.6 } },
+    charanga: { n: 'Charanga', d: 'La orquesta de flauta y violines (Aragón, «Pare cochero»): el piano de notas sueltas con la izquierda a dos octavas, timbal y conga sin bongó.',
+      banda: 'charanga', cambio: '4', bajo: 'salsa', estilo: 'salsa', vientos: { formato: null, armonia: 'unisono', toca: { cuerpo: 'nada', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, intro: 'nada' }, piano: { como: 'charanga', oct: 0.4, blq: 0.6, lh: 'dobla16', semi: 0.6, crom: 0.6 } },
     salsabrava: { n: 'Salsa brava', d: 'Nueva York en los 70 (Palmieri, Fania): montuno en octavas con la izquierda a dos octavas, percusivo; bajo en el 2& y el 4, campanas al frente.',
-      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_media'], vientos: { formato: 'trombanga', armonia: 'trombanga', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { lh: 'dobla16', oct: 1.4, blq: 0.7, ten: 0.8 } },
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_media'], vientos: { formato: 'trombanga', armonia: 'trombanga', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { como: 'salsabrava', lh: 'dobla16', oct: 1.2, ten: 0.8 } },
     salsa: { n: 'Salsa de los 90', d: 'La salsa romántica (Gilberto, Marc Anthony): más aire, la izquierda a la décima, tensiones; bajo en el 2& y el 4.',
-      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_rapida', 'salsa_media'], vientos: { formato: 'salsa90', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { lh: 'decima', ten: 1.2 } },
+      banda: 'salsa', cambio: '4', bajo: 'salsa', estilo: 'salsa', grupo: ['salsa_rapida', 'salsa_media'], vientos: { formato: 'salsa90', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'respuesta', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'mambo' }, piano: { como: 'salsa', lh: 'decima', ten: 1.2 } },
     songo: { n: 'Songo (Van Van)', d: 'Los 70 y 80: más aire, la derecha en los tiempos y sostenida, la izquierda a la octava; batería de Changuito y el bajo de Formell.',
-      banda: 'songo', cambio: '4y', bajo: 'songo', estilo: 'cubano', grupo: ['songo'], vientos: { formato: 'vanvan', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'nada' }, piano: { dens: 0.75, oct: 1.2, leg: 0.85, semi: 0.3, lh: 'dobla8' } },
+      banda: 'songo', cambio: '4y', bajo: 'songo', estilo: 'cubano', grupo: ['songo'], vientos: { formato: 'vanvan', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'nada' }, piano: { como: 'songo', dens: 0.8, leg: 0.8, semi: 0.4 } },
     pupy: { n: 'Timba · Pupy', d: 'Gancho que se repite igual en cada clave, manos en movimiento contrario y disminuidos de paso; el bajo en motivo con el piano.',
-      banda: 'timba', cambio: '4y', bajo: 'motivo', estilo: 'timba', vientos: { formato: 'timba', armonia: 'unisono', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'nada' }, piano: { gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.6, dim: 0.35, ten: 1.2, semi: 1.5 } },
-    melon: { n: 'Timba · Melón', d: 'Chorro continuo con corridas hacia las notas de referencia y la izquierda que mete notas entre las de la derecha; el bajo de timba.',
-      banda: 'timba', cambio: '4y', bajo: 'timba', estilo: 'timba', vientos: { formato: 'timba', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'contrapunto', intro: 'nada' }, piano: { lh: 'decima', semi: 3, oct: 0.6, rep: 0.35, gancho: 0.8 } },
+      banda: 'timba', cambio: '4y', bajo: 'motivo', estilo: 'timba', grupo: ['songo'], vientos: { formato: 'timba', armonia: 'unisono', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'bloque', intro: 'nada' }, piano: { como: 'pupy', gancho: 0.9, var: 0.15, lh: 'contrario', crom: 1.4, dim: 0.35, ten: 1.2, semi: 1.4 } },
+    melon: { n: 'Timba · Melón', d: 'Chorro continuo con corridas hacia las notas de referencia y la izquierda a la décima; el bajo de timba.',
+      banda: 'timba', cambio: '4y', bajo: 'timba', estilo: 'timba', vientos: { formato: 'timba', armonia: 'terceras', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'contrapunto', intro: 'nada' }, piano: { como: 'melon', lh: 'decima', semi: 1.8, rep: 0.35, gancho: 0.8 } },
     tirso: { n: 'Timba · Tirso', d: 'Células de 3+4 pulsos, terceras paralelas y saltos de registro; la izquierda ancla en el grave; el bajo timbero.',
-      banda: 'timba', cambio: '4y', bajo: 'timbero', estilo: 'timba', vientos: { formato: 'timba', armonia: 'cuartas', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'escalonado', intro: 'nada' }, piano: { blq: 1.8, salto: 0.5, zig: 1.4, lh: 'ancla', largo: '4' } }
+      banda: 'timba', cambio: '4y', bajo: 'timbero', estilo: 'timba', grupo: ['funk_cubano'], vientos: { formato: 'timba', armonia: 'cuartas', toca: { cuerpo: 'respuesta', marcha: 'nada', mambo: 'mambo', presion: 'nada', bomba: 'bloques', despelote: 'bloques', muela: 'nada' }, forma: 'escalonado', intro: 'nada' }, piano: { como: 'tirso', blq: 1.8, salto: 0.5, lh: 'ancla', largo: '4' } }
   };
   // tipo de sección de la canción → secciones de la base que le sirven (sin tipo, sale de la marcha)
   const SECCION_BASE = { intro: ['intro'], cuerpo: ['cuerpo'], coro: ['coro'], bloque: ['coro'], mambo: ['mambo'], mona: ['mambo', 'solo'], final: ['final', 'coro'] };
@@ -161,7 +181,7 @@
     let ganchoFin = null, ligaFin = false, lineaFin = previo ? previo.linea : null;
     if (pianoOK) {
       // gancho de otra sección: misma fuente, mismas células y la memoria de sus notas
-      const G0 = C.gancho && !C.gancho.frase && C.gancho.H <= nb ? C.gancho : null;
+      const G0 = C.gancho && !C.gancho.frase && !C.gancho.opus && C.gancho.celulas && C.gancho.H <= nb ? C.gancho : null;
       // fuente principal (un tema de la base), con peso por raíz del número de ciclos. Las fuentes que dicen de qué sección
       // son (Toontrack: intro, A, coro, mambo…) pesan más en una sección de ese tipo, y las del grupo de la onda, más todavía
       const porF = {}; for (const c of P.ciclos) (porF[c.f] = porF[c.f] || []).push(c);
@@ -176,59 +196,23 @@
       const Fprev = G0 ? G0.F : C.gancho && C.gancho.frase ? C.gancho.F : null;
       const F = Fprev && porF[Fprev] ? Fprev : elegir(R, fs, pesoF);
       info.piano = F;
-      if (k.frase === 'frase') {
-        // ---------- frase real: los ciclos de la fuente en orden, con las notas acomodadas a los acordes de la sección
-        info.frase = true;
-        const cic = porF[F].slice().sort((a, b) => a.c - b.c), n = cic.length;
-        const desde = C.gancho && C.gancho.frase && C.gancho.F === F ? C.gancho.desde : R() < 0.5 ? 0 : Math.floor(R() * n);
-        const desfase = lado(0) === 'B' ? 1 : 0;
-        // una nota del acorde S (el de la fuente) al acorde T: la misma función (raíz, 3a, 5a, 7a) y, si es tensión o cromática,
-        // el mismo intervalo; las largas que no le quedan al acorde nuevo van a la nota del acorde más cercana
-        const mapear = (m, S, T, larga) => {
-          if (!S || !T || S.nombre === T.nombre) return m;
-          const iv = pc(m - S.raiz), A = S.fun, B = T.fun;
-          let nv = iv;
-          if (iv === 0) nv = 0;
-          else if (iv === A.t) nv = B.t ?? iv;
-          else if (iv === A.f) nv = B.f;
-          else if (A.s != null && iv === A.s) nv = B.s ?? (iv === 9 ? 9 : 12);
-          else if (larga && !B.T.includes(iv) && !T.pcs.includes((iv + T.raiz) % 12)) { let best = null; for (const x of T.pcs) { const d = plegar(x - T.raiz - iv); if (best == null || Math.abs(d) < Math.abs(best)) best = d; } nv = iv + best; }
-          const x = m + plegar(T.raiz - S.raiz) + plegar(nv - iv);
-          if (!larga || TM.funcion(x, T) !== 'X') return x;
-          // la función de antes no le queda al acorde nuevo (una sexta mayor sobre un menor, una 7a sobre una tríada…): a la nota del acorde más cercana
-          let best = x; for (let d = 1; d <= 2 && best === x; d++) for (const y of [x - d, x + d]) if (T.pcs.includes(pc(y))) { best = y; break; }
-          return best;
-        };
-        const evs = [];
-        for (let b = 0; b < nb; b++) {
-          const cy = cic[(desde + Math.floor((b + desfase) / 2)) % n], L_ = lado(b), cs = acordesDe(b);
-          for (const e of cy.ev) {
-            if ((e.p < 16) !== (L_ === 'A')) continue;
-            const pos = e.p % 16;
-            const T = !e.antic || !antDe(b) ? acordeEn(b, pos) : pos >= 12 ? acordesDe(b + 1)[0] : cs.length > 1 && pos >= 4 && pos < 8 ? cs[1] : acordeEn(b, pos);
-            // solo la nota de paso corta y sola queda libre; lo que dura o va doblado tiene que ser del acorde nuevo (o una tensión que le quede)
-            const ps = [...new Set(e.ps.map(m => mapear(m, e.ch, T, e.d >= 2 || e.ps.length > 1)))].sort((x, y) => x - y);
-            evs.push({ p: b * 16 + pos, d: e.d, ps, v: e.v, ch: T, antic: !!e.antic && T.nombre !== acordeEn(b, pos).nombre });
-          }
-        }
-        // las dos manos por registro (debajo del sol de la clave de fa, la izquierda); cada mano sin pisarse con su ataque siguiente
-        const manos = { der: [], izq: [] };
-        for (const e of evs) {
-          const d = e.ps.filter(m => m >= 55), i = k.lh === 'nada' ? [] : e.ps.filter(m => m < 55);
-          if (d.length) manos.der.push({ ...e, ps: d });
-          if (i.length) manos.izq.push({ ...e, ps: i });
-        }
-        for (const [mano, out] of [[manos.der, der], [manos.izq, izq]]) mano.forEach((e, i) => {
-          const gap = (mano[i + 1] ? mano[i + 1].p : nb * 16) - e.p;
-          out.push({ p: e.p, L: Math.max(1, Math.min(e.d, gap)), ps: e.ps, v: Math.max(30, Math.min(127, e.v)), art: e.v >= 100 ? '->' : '', antic: e.antic, ch: e.ch });
-        });
-        const ult = der[der.length - 1];
-        lineaFin = ult ? { m: ult.ps[ult.ps.length - 1], pd: 0, ch: ult.ch.nombre, f: null } : lineaFin;
-        if (ctx) ganchoFin = { frase: true, F, desde, H: 2 };
-      } else {
+      // ---------- Opus, Toontrack y la frase real (09_piano.js): lo que tocó un pianista, acomodado a los acordes de la sección.
+      // Toontrack sin la colección local toca Opus en el estilo más parecido
+      const modo = ['opus', 'toontrack', 'frase'].includes(k.frase) ? k.frase : 'generado';
+      let hecho = null;
+      if (modo !== 'generado' && TM.tocarPiano) {
+        const TT = TM.TOONTRACK, ttElegido = k.tt_estilo && k.tt_estilo !== 'auto' ? TT.aEstilo[k.tt_estilo] : null;
+        const X = { k, nb, L, lado, acordesDe, acordeEn, antDe, posDe, previo, ctx: !!ctx, C, M, R, RA, RV, info, marP, efect, opc, lineaFin,
+          estilo: k.como || ({ salsa: 'salsa', cubano: 'sonmontuno', timba: 'pupy' })[opc.estiloPreferido] || null, centro: P.registro.p50 + (k.reg || 0) + (marP.reg || 0) };
+        if (modo === 'toontrack') { hecho = TM.pianoToontrack(X); if (!hecho) { info.sinToontrack = true; if (ttElegido) X.estilo = ttElegido; } }
+        if (modo === 'frase') { const n = porF[F].length, desde = C.gancho && C.gancho.frase && C.gancho.F === F ? C.gancho.desde : R() < 0.5 ? 0 : Math.floor(R() * n); hecho = TM.pianoFrase(X, F, desde); }
+        if (!hecho) hecho = TM.pianoOpus(X);
+      }
+      if (hecho) { der.push(...hecho.der); izq.push(...hecho.izq); lineaFin = hecho.lineaFin || lineaFin; ligaFin = hecho.ligaFin; ganchoFin = hecho.ganchoFin; }
+      else {
       const meta = (P.densidad.A + P.densidad.B) / 2 * efect.dens;
       const elegirCelula = (parecida) => {
-        const pool = R() < k.mezcla ? P.ciclos : porF[F];
+        const pool = R() < (k.mezcla ?? 0.15) ? P.ciclos : porF[F];
         return elegir(R, pool, c => {
           // cada ciclo es una muestra real: sin perilla de densidad, todos pesan igual
           let w = Math.abs(efect.dens - 1) < 0.02 ? 1 : Math.exp(-((((c.n / 2) - meta) / 2.2) ** 2));
@@ -307,7 +291,10 @@
             if (!cand && !delCompas.some(e => e.pos === 15)) { cand = { pos: 14, d: 2, t: 'o', izq: 'nada', v: 90, inner: null, b, j: b % H, r: Math.floor(b / H), p16: b * 16 + 14, ch: ult }; E.push(cand); }
             if (cand) {
               cand.ch = sigCh; cand.antic = true; cand.liga = true; if (b === nb - 1) ligaFin = true;
-              const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno) quitar.add(uno);
+              // hacia el lado 3 el anticipo queda ligado (el 1 no se ataca); hacia el lado 2, si la célula ataca el 1, lo vuelve a
+              // atacar, como en la base (se liga el 95% hacia el lado 3 y el 55% hacia el lado 2): si no, el lado 2 se queda sin su 1 y el
+              // ritmo pierde la clave. Al final de la sección, siempre ligado (la costura con la que sigue)
+              const uno = E.find(e => e.b === b + 1 && e.pos === 0); if (uno && (lado(b + 1) === 'A' || b + 1 >= nb)) quitar.add(uno);
             }
           }
           if (k.dim > 0 && RA() < k.dim) {
@@ -332,7 +319,7 @@
       const INT = d => LN(((P.intervalos[d] || 0) * (d === 0 ? 0.55 : Math.abs(d) >= 12 ? 0.15 : 1) + 0.3) / totI);
       const totS = Object.values(P.salto).reduce((a, b) => a + b, 0) || 1, ZIG = s => LN(((P.salto[s] || 0) + 1) / (totS + 3)) - LN(1 / 3);
       const totE = Object.values(P.enlace).reduce((a, b) => a + b, 0) || 1, ENL = s => LN(((P.enlace[s] || 0) + 1) / (totE + 4)) - LN(1 / 4);
-      const centro = P.registro.p50 + k.reg + (marP.reg || 0), amb = k.amb, lo = Math.round(centro - 12), hi = Math.round(centro + 11);
+      const centro = P.registro.p50 + k.reg + (marP.reg || 0), amb = k.amb ?? 7, lo = Math.round(centro - 12), hi = Math.round(centro + 11);
       const TONOS = { R: 1, 3: 1, 5: 1, 7: 1 };
       const FUNS = ['R', '3', '5', '7', 'T', 'X'];
       const sortearFuncion = e => {
@@ -381,7 +368,7 @@
                 s += INT(Math.max(-12, Math.min(12, d)));
                 if (Math.abs(d) >= 3) s += 0.7 * k.salto; else if (d !== 0) s -= 0.7 * k.salto;
                 if (d === 0) s += 2 * efect.rep - (st.rep >= 1 ? 1.5 : 0);
-                if (Math.abs(st.pd) >= 3 && mm) s += 0.6 * k.zig * ZIG(Math.sign(mm) === Math.sign(st.pd) ? 'sigue' : Math.abs(mm) <= 2 ? 'vuelvePaso' : 'vuelveSalto');
+                if (Math.abs(st.pd) >= 3 && mm) s += 0.6 * (k.zig ?? 1) * ZIG(Math.sign(mm) === Math.sign(st.pd) ? 'sigue' : Math.abs(mm) <= 2 ? 'vuelvePaso' : 'vuelveSalto');
                 if (st.f === 'X') s += (Math.abs(d) >= 1 && Math.abs(d) <= 2 && TONOS[c.f]) ? 2 : -3;
                 if (st.paso) s += (Math.abs(d) >= 1 && Math.abs(d) <= 2) ? 1.2 : -1.8;
                 if (st.ch && st.ch !== e.ch.nombre) { const fd = Math.abs(plegar(d)); s += 1.6 * ENL(fd === 0 ? 'comun' : fd <= 2 ? 'paso' : fd <= 4 ? 'tercera' : 'cuarta'); }
@@ -390,7 +377,7 @@
                   else if (ref.dir != null && mm) s += Math.sign(mm) === ref.dir ? 0.9 * k.gancho : -0.3 * k.gancho;
                 }
               } else if (recuerda && c.m === ref.top) s += G;
-              s += k.temp * 0.8 * gumbel(RL);
+              s += (k.temp ?? 0.6) * 0.8 * gumbel(RL);
               const d = st.m != null ? c.m - st.m : 0, mm = d % 12 === 0 ? 0 : d;
               sig.push({ m: c.m, pd: mm ? mm : st.pd, ch: e.ch.nombre, f: c.f, paso: !!e.paso, rep: d === 0 ? st.rep + 1 : 0, s, atras: si });
             }
@@ -438,9 +425,10 @@
         const piso = ps[0];
         if (modo === 'dobla8') mi = [piso - 12];
         else if (modo === 'dobla16') mi = [piso - 24];
-        else if (modo === 'decima') { const t = debajo(piso, ch, 14, 17, 15.5); if (t != null) mi = [t]; }
+        // décimas: la izquierda canta la línea una décima abajo de la nota de arriba (si no hay nota del acorde ahí, a la octava)
+        else if (modo === 'decima') { const t = debajo(m, ch, 14, 17, 15.5); mi = [t != null ? t : piso - 12]; }
         else if (modo === 'contrario') { const eje = centro - 18, obj = 2 * eje - m + 12; let best = null; for (let x = obj - 6; x <= obj + 6; x++) if (tonos(ch).includes(pc(x)) && (best == null || Math.abs(x - obj) < Math.abs(best - obj))) best = x; if (best != null && best < piso - 4) mi = [best]; }
-        mi = mi.map(x => { while (x < 36) x += 12; return x; }).filter(x => x < piso);
+        mi = mi.map(x => { while (x < 45) x += 12; return x; }).filter(x => x < piso);   // nunca debajo del la2: embarra el bajo
         // marchas livianas: la izquierda solo en los anticipos, en el 1 y el 3, y a veces
         if (mi.length && marP.izq != null && !e.antic && e.pos % 8 !== 0 && RV() > marP.izq) mi = [];
         // duración: de picado a ligado hasta el ataque siguiente
@@ -454,10 +442,11 @@
         der.push({ p: e.p16, L: L_, ps, v: vel, art: acento ? '->' : '', antic: !!e.antic, ch, ...(e.liga ? { liga: true } : {}) });
         if (mi.length) izq.push({ p: e.p16, L: L_, ps: mi, v: Math.round(vel * 0.9), art: acento ? '->' : '', ch });
       });
-      // ancla en el grave: notas propias de la izquierda
+      // ancla en el grave: notas propias de la izquierda, en los lugares de la clave: el 1 y el 3 del lado 2, el bombo (2&) y el
+      // anticipo (4&) del lado 3 (al revés, el lado 3 atacado en el 1 suena cruzado: en la base, el 1 del lado 3 se liga)
       if (k.lh === 'ancla') {
         izq.length = 0;
-        for (let b = 0; b < nb; b++) for (const [pos, L_] of (lado(b) === 'A' ? [[0, 8], [8, 6]] : [[6, 8], [14, 2]])) {
+        for (let b = 0; b < nb; b++) for (const [pos, L_] of (lado(b) === 'B' ? [[0, 8], [8, 6]] : [[6, 8], [14, 2]])) {
           const ch = pos === 14 ? acordesDe(b + 1)[0] : acordeEn(b, pos);
           let m = 36 + pc(ch.raiz); if (m < 41) m += 12;
           const d = der.find(x => x.p === b * 16 + pos); if (d && m >= Math.min(...d.ps)) m -= 12;   // siempre debajo de la derecha
@@ -593,5 +582,5 @@
       ...(ctx ? { fin: { linea: lineaFin, bajo: bajoFin, ligaAl1: ligaFin, desborde }, gancho: ganchoFin } : {}) };
   }
 
-  Object.assign(TM, { generar, MARCHAS, PERILLAS, PERILLAS_UI, ESTILOS, BAJO_GUIA });
+  Object.assign(TM, { generar, MARCHAS, PERILLAS, PERILLAS_UI, ESTILOS, BAJO_GUIA, TOONTRACK });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

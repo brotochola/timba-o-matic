@@ -336,7 +336,7 @@
   const digito = v => String(Math.max(1, Math.min(9, Math.round(v / 127 * 9))));
 
   // ---------- fuente: lo que se guarda en la base (compacto) para aprender
-  function extraerFuente(det, meta) {
+  function extraerFuente(det, meta, opciones) {
     const C = det.compases, pt = det.partes[0];
     const nombres = cs => cs.map(a => a.nombre);
     const sigDe = i => (C[i] && C[i].acordes[0]) ? C[i].acordes[0].nombre : null;
@@ -344,12 +344,18 @@
     const piano = [], bajo = [], juegos = new Map(), vientos = [];
     // ¿suena la campana (cencerro) en el ciclo? coro o mambo; si no, cuerpo
     const conCampana = i => det.bateria.some(h => h.alt === 56 && Math.round(h.u * 2) - 2 * C[i].x >= 0 && Math.round(h.u * 2) - 2 * C[i].x < 32);
+    // en qué parte del tema está un ciclo de piano (k): sin campana, el cuerpo (v); con campana, el coro (c); con campana y los
+    // vientos tocando mucho, el mambo (m). Solo si el tema usa la campana en algún lado (en muchas timbas la batería no la toca:
+    // ahí la campana no dice nada)
+    const vientosEn = i => det.vientosAt.filter(a => a.q16 - 2 * C[i].x >= 0 && a.q16 - 2 * C[i].x < 32).length;
+    const usaCampana = det.bateria.some(h => h.alt === 56);
+    const parteDe = i => usaCampana ? { k: conCampana(i) ? (vientosEn(i) >= 12 ? 'm' : 'c') : 'v' } : {};
     for (let i = 0; i + 1 < C.length; i++) {
       if (!par(i)) continue;
       if (pt && usable(det, pt, i) && usable(det, pt, i + 1) && !C[i].conflicto) {
         const e = [];
         for (const k of [0, 1]) for (const a of pt.compases[i + k].as) e.push([a.pos + 16 * k, Math.max(1, Math.round(a.dur * 2)), a.ps, Math.round(a.vel)]);
-        piano.push({ c: i, a: [nombres(C[i].acordes), nombres(C[i + 1].acordes)], s: sigDe(i + 2), e });
+        piano.push({ c: i, a: [nombres(C[i].acordes), nombres(C[i + 1].acordes)], s: sigDe(i + 2), e, ...parteDe(i) });
       }
       if (det.bajoAt.length && C[i].grillaOK && C[i + 1].grillaOK && C[i].acordes.length && C[i + 1].acordes.length) {
         const e = [];
@@ -379,6 +385,24 @@
       const e = det.vientosAt.map(a => [a.q16 - 2 * C[i].x, a.d, a.p, Math.round(a.v), a.ins]).filter(x => x[0] >= 0 && x[0] < 32);
       if (e.length >= 2) vientos.push({ c: i, a: [nombres(C[i].acordes), nombres(C[i + 1].acordes)], s: sigDe(i + 2), campana: conCampana(i), e });
     }
+    // la frase entera (colecciones con _frases: los patrones de Toontrack): todos los compases del piano en orden, también los
+    // que no son montuno (acordes largos, cortes, rellenos), con su lado y sus acordes; cada ataque [compás, posición, duración, notas, fuerza]
+    let frase = null;
+    if (opciones && opciones.frase && pt) {
+      const con = pt.compases.filter(c => c.as.length).map(c => c.i);
+      if (con.length) {
+        const b0 = Math.min(...con), b1 = Math.max(...con), a = [], e = [];
+        let ult = null;
+        for (let i = b0; i <= b1; i++) {
+          const cs = nombres(C[i].acordes); if (cs.length) ult = cs;
+          a.push(cs.length ? cs : ult || []);
+          for (const x of pt.compases[i].as) e.push([i - b0, x.pos, Math.max(1, Math.round(x.dur * 2)), x.ps, Math.round(x.vel)]);
+        }
+        // los compases del principio sin acorde (silencio) toman el primero que aparece
+        const pri = a.find(x => x.length) || []; for (let i = 0; i < a.length && !a[i].length; i++) a[i] = pri;
+        frase = { l: C.slice(b0, b1 + 1).map(b => b.lado).join(''), a, e };
+      }
+    }
     return {
       version: 1,
       analisis: {
@@ -386,7 +410,7 @@
         bpm: Math.round(det.segs[0].bpm), compases: C.length, roles: det.roles,
         montuno: pt ? pt.compases.filter((c, i) => usable(det, pt, i)).length : 0
       },
-      piano, bajo, perc, vientos
+      piano, bajo, perc, vientos, ...(frase ? { frase } : {})
     };
   }
 
@@ -410,7 +434,7 @@
     let deduccion = null;
     if (det.ladoFuente === 'sin' && perfil) { deduccion = deducirLados(det, perfil, true); if (deduccion && deduccion.compases) det.ladoFuente = 'deducido'; }
     else if (det.ladoFuente === 'clave' && perfil) deducirLados(det, perfil, false);
-    const f = extraerFuente(det, meta);
+    const f = extraerFuente(det, meta, opciones);
     if (deduccion) f.analisis.deduccion = { llr: +deduccion.llrPorCompas.toFixed(2), compases: deduccion.compases };
     f.analisis.conflicto = det.compases.filter(b => b.conflicto).length;
     return f;

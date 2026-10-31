@@ -41,6 +41,56 @@
     return fn > fc || (fn === fc && sig.pcs.includes(t) && !cur.pcs.includes(t));
   }
   const plegar = d => ((d % 12) + 18) % 12 - 6;
+  // un ciclo de piano de la base, leído: el acorde de cada ataque (con su anticipo), la textura y la nota de arriba
+  function leerCiclo(c) {
+    const K = acordesCiclo(c); if (!K.ok) return null;
+    const ev = c.e.map(([p, d, ps, v]) => { const t = TM.textura(ps); return { p, d, ps, v, top: t.top, t: TM.letraTextura(t), der: t.der, izq: t.izq }; }).sort((a, b) => a.p - b.p);
+    for (const e of ev) {
+      const cur = K.en(e.p), sig = K.proximo(e.p);
+      e.antic = anticipa(e.ps, e.top, cur, sig); e.ch = e.antic ? sig : cur;
+      e.f = TM.funcion(e.top, e.ch);
+    }
+    return { K, ev };
+  }
+
+  // ---------- a qué estilos de la app se parece el piano de una fuente (para Opus): por el grupo de Toontrack, el género o el
+  // estilo, y en la salsa por el artista: la brava (Nueva York y Puerto Rico, de los 60 a los 80) o la romántica de los 90.
+  // Los géneros que no son salsa ni música cubana (merengue, cumbia, pop, bolero…) no entran, y el mambo de big band (el
+  // género de los 50) tampoco: en la app, mambo es solo la sección donde tocan los vientos
+  const ROMANTICA = /gilberto|marc anthony|frankie ruiz|jerry rivera|rey ruiz|cartagena|ana[ií]s|v[ií]ctor manuelle|tito rojas|eddie santiago|lalo rodr|huey dunbar|dark latin|\bdlg\b|\bindia\b|willie gonz|tito nieves|luis enrique|maelo|nino segarra|tony vega|jos[eé] alberto|charlie cruz|domingo qui|manny manuel|son by four|puro dolor|despacito|vivir mi vida|vivir lo nuestro|ricky martin|gloria estefan|jennifer lopez|chayanne|grupo niche|guayac[aá]n|orquesta de la luz/i;
+  const BRAVA = /lavoe|willie col[oó]n|bl[aá]des|ismael rivera|gran combo|palmieri|fania|barretto|pacheco|celia|cheo|bobby valent|dimensi[oó]n latina|oscar d.?le[oó]n|richie ray|bobby cruz|roena|sonora ponce|joe arroyo|tito puente|larry harlow|ray sep|johnny colon|apollo|conjunto cl[aá]sico|sonora matancera|la rebeli/i;
+  function estilosPiano(f) {
+    const G = { son_montuno: ['sonmontuno', 'charanga'], salsa_media: ['salsabrava'], salsa_rapida: ['salsa', 'salsabrava'], songo: ['songo', 'pupy'], funk_cubano: ['tirso'] };
+    if (f.grupo) return G[f.grupo] || [];
+    const g = String(f.genero || '').toLowerCase(), t = String(f.titulo || f.archivo || '');
+    if (/mambo|big band/.test(g) || /p[eé]rez prado|mambo n|mambo jambo|mambo!/i.test(t)) return [];
+    if (g && !/salsa|son|guaracha|guajira|chachach|danz|charanga|timba|songo/.test(g)) return [];
+    if (/chachach|danz|charanga/.test(g)) return ['charanga'];
+    if (/^son|guaracha|guajira/.test(g)) return ['sonmontuno'];
+    if (/rom[aá]ntica/.test(g)) return ['salsa'];
+    // la timba de la base (secuencias de 1998): notas sueltas y díadas con la izquierda en décimas, la textura de Melón (Fiol)
+    if (f.estilo === 'timba') return ['melon', 'pupy', 'tirso', 'songo'];
+    if (f.estilo === 'otro') return [];
+    if (f.estilo === 'cubano') return ['sonmontuno'];
+    if (/pare cochero|aragón|charanga/i.test(t)) return ['charanga'];
+    if (ROMANTICA.test(t)) return ['salsa'];
+    if (BRAVA.test(t)) return ['salsabrava'];
+    return ['salsabrava', 'salsa'];
+  }
+  // qué tan buen montuno es un ciclo para copiarlo: en su lado de la clave (no cruzado), con las notas largas en el acorde
+  // que se detectó (si no, el acorde está mal leído) y una densidad de montuno
+  const LLc = (v, p) => v.reduce((s, h, k) => s + (h ? Math.log(p[k]) : Math.log(1 - p[k])), 0);
+  function calidadCiclo(ev, perfil) {
+    const v = { A: new Array(16).fill(0), B: new Array(16).fill(0) };
+    for (const e of ev) v[e.p < 16 ? 'A' : 'B'][e.p % 16] = 1;
+    const clave = LLc(v.A, perfil.A) - LLc(v.A, perfil.B) + LLc(v.B, perfil.B) - LLc(v.B, perfil.A);
+    const largas = ev.filter(e => e.d >= 2), bien = largas.filter(e => TM.funcion(e.top, e.ch) !== 'X').length;
+    const nA = ev.filter(e => e.p < 16).length, nB = ev.length - nA;
+    const dens = nA >= 3 && nB >= 3 && nA <= 10 && nB <= 10 ? 1 : 0.3;
+    // un piano que hace también de bajo (notas debajo del mi2) no sirve para tocar con la banda
+    const grave = ev.some(e => e.ps[0] < 40) ? 0.3 : 1;
+    return { clave, acorde: largas.length ? bien / largas.length : 0.5, q: dens * grave * (1 / (1 + Math.exp(-clave))) * Math.pow(largas.length ? bien / largas.length : 0.5, 2) };
+  }
 
   function construirModelo(fuentes) {
     const M = {
@@ -58,16 +108,10 @@
       const porC = new Map((f.piano || []).map(c => [c.c, c]));
       const velVaria = (() => { const vs = (f.piano || []).flatMap(c => c.e.map(e => e[3])); if (vs.length < 20) return false; const m = vs.reduce((a, b) => a + b, 0) / vs.length; return Math.sqrt(vs.reduce((a, v) => a + (v - m) ** 2, 0) / vs.length) > 4; })();
       for (const c of f.piano || []) {
-        const K = acordesCiclo(c); if (!K.ok) continue;
-        const ev = c.e.map(([p, d, ps, v]) => { const t = TM.textura(ps); return { p, d, ps, v, top: t.top, t: TM.letraTextura(t), der: t.der, izq: t.izq }; }).sort((a, b) => a.p - b.p);
-        // armonía de cada ataque (con anticipos)
-        for (const e of ev) {
-          const cur = K.en(e.p), sig = K.proximo(e.p);
-          e.antic = anticipa(e.ps, e.top, cur, sig); e.ch = e.antic ? sig : cur;
-          e.f = TM.funcion(e.top, e.ch);
-        }
+        const L0 = leerCiclo(c); if (!L0) continue;
+        const { K, ev } = L0;
         const ritmo = new Array(32).fill('.'); for (const e of ev) ritmo[e.p] = e.t;
-        P.ciclos.push({ f: f.id, estilo: f.estilo, seccion: f.seccion || null, grupo: f.grupo || null, c: c.c, ev, ritmo: ritmo.join(''), A: K.A, n: ev.length });
+        P.ciclos.push({ f: f.id, estilo: f.estilo, seccion: f.seccion || null, grupo: f.grupo || null, c: c.c, ev, ritmo: ritmo.join(''), A: K.A, s: c.s || null, k: c.k || null, n: ev.length, velVaria });
         for (const L of ['A', 'B']) {
           P.n[L]++;
           for (const e of ev) {
@@ -128,6 +172,36 @@
     const pr = (a, def) => a[1] >= 5 ? a[0] / a[1] : def;
     P.pAnticipo = { A: pr(P.anticipo.A, 0.72), B: pr(P.anticipo.B, 0.44), liga: pr(P.anticipo.liga, 0.79), mitad: pr(P.anticipo.mitad, 0.63) };
 
+    // ---------- las frases enteras (Toontrack, _frases): para tocar un patrón tal cual
+    P.frases = fuentes.filter(f => f.frase && f.frase.a && f.frase.a.length).map(f => ({ id: f.id, titulo: f.titulo, coleccion: f.coleccion || null, grupo: f.grupo || null, parte: f.parte || null, var: f.var || 0, seccion: f.seccion || null, frase: f.frase }));
+    // ---------- Opus: montunos de pianista de dos o cuatro compases (uno o dos ciclos seguidos de un mismo tema), con a qué
+    // estilos de la app se parecen, de qué parte del tema son (la de Toontrack, o la campana y los vientos del tema) y qué tan
+    // buenos son para copiarlos. Salen de los ciclos de la base y de la biblioteca: los temas de las colecciones que la página no
+    // carga enteros (f.opus, que arma construir.js)
+    const meta = {}, porF = {};
+    for (const f of fuentes) meta[f.id] = f;
+    for (const c of P.ciclos) (porF[c.f] = porF[c.f] || []).push(c);
+    for (const f of fuentes) if (f.opus) {
+      for (const g of f.opus.fuentes || []) meta[g.id] = g;
+      for (const c of f.opus.ciclos || []) {
+        const L0 = leerCiclo(c); if (!L0) continue;
+        const g = meta[c.f] || {};
+        (porF[c.f] = porF[c.f] || []).push({ f: c.f, estilo: g.estilo, seccion: g.seccion || null, grupo: g.grupo || null, c: c.c, ev: L0.ev, A: L0.K.A, s: c.s || null, k: c.k || null, n: L0.ev.length, velVaria: !!g.velVaria });
+      }
+    }
+    P.plantillas = [];
+    for (const [fid, cs] of Object.entries(porF)) {
+      const g = meta[fid] || {}, estilos = estilosPiano(g); if (!estilos.length) continue;
+      cs.sort((a, b) => a.c - b.c);
+      for (const c of cs) c.cal = calidadCiclo(c.ev, P.perfil);
+      const buenos = cs.filter(c => c.cal.clave > -0.5 && c.cal.acorde >= 0.6);
+      for (let i = 0; i < buenos.length; i++) {
+        const c = buenos[i], n = buenos[i + 1], sec = g.seccion || ({ v: 'cuerpo', c: 'coro', m: 'mambo' })[c.k] || null, tt = g.coleccion === 'toontrack';
+        P.plantillas.push({ id: fid + '#' + c.c, f: fid, titulo: g.titulo || fid, estilos, seccion: sec, tt, ciclos: [c], q: c.cal.q });
+        if (n && n.c === c.c + 2) P.plantillas.push({ id: fid + '#' + c.c + '+', f: fid, titulo: g.titulo || fid, estilos, seccion: sec, tt, ciclos: [c, n], q: (c.cal.q + n.cal.q) / 2 });
+      }
+    }
+
     // ---------- bajo: rol de cada nota respecto del acorde (y del que viene)
     const B = M.bajo;
     for (const f of fuentes) for (const c of f.bajo || []) {
@@ -179,5 +253,5 @@
     return M;
   }
 
-  Object.assign(TM, { construirModelo, acordesCiclo, familiaPerc, FAMILIAS });
+  Object.assign(TM, { construirModelo, acordesCiclo, familiaPerc, FAMILIAS, anticipaAtaque: anticipa, estilosPiano, calidadCiclo, leerCiclo });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

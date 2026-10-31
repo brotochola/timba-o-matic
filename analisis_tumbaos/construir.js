@@ -62,8 +62,10 @@ for (const col of fs.existsSync(MIDIS) ? fs.readdirSync(MIDIS, { withFileTypes: 
     const nombre = path.relative(dir, f).split(path.sep).join('/'), base = path.basename(f).replace(/\.midi?$/i, '');
     const g = (meta._grupos || {})[nombre.split('/')[0]] || null, s = secciones.find(([p]) => base.startsWith(p));
     const v = /^(.*)_Variation_(\d+)$/.exec(base), parte = v ? `${v[1].replace(/_/g, ' ')} · var. ${+v[2]}` : base.replace(/_/g, ' ');
-    const m = { ...(g ? { estilo: g.estilo, grupo: g.grupo, titulo: (g.titulo || '') + ' · ' + parte } : {}), ...(s ? { seccion: s[1] } : {}), ...(meta[nombre] || {}) };
-    archivos.push({ f, nombre, meta: m, coleccion: col });
+    // la clave del grupo (o la del archivo) y la parte y la variación según el nombre («A_Section_1_Variation_02»): para elegir el patrón
+    const m = { ...(g ? { estilo: g.estilo, grupo: g.grupo, titulo: (g.titulo || '') + ' · ' + parte, ...(g.clave ? { clave: g.clave } : {}), ...(g.excluir ? { excluir: true } : {}) } : {}), ...(s ? { seccion: s[1] } : {}),
+      ...(v ? { parte: v[1], var: +v[2] } : {}), ...(meta[nombre] || {}) };
+    archivos.push({ f, nombre, meta: m, coleccion: col, ...(meta._frases ? { frase: true } : {}) });
   }
 }
 
@@ -74,11 +76,12 @@ const perfil = TM.perfilLado(primera.filter((f, i) => f && !datos[i].coleccion &
 const fuentes = [];
 datos.forEach((d, i) => {
   if (!primera[i]) return;
-  const f = TM.analizarFuente(d.bytes, d.meta, { perfil });
+  const f = TM.analizarFuente(d.bytes, d.meta, { perfil, frase: !!d.frase });
   const id = 'b:' + (d.coleccion ? d.coleccion + '/' : '') + d.nombre;
-  if (!f.piano.length && !f.bajo.length && !f.perc.length) { console.log(`${id.slice(2).padEnd(34)} sin compases usables de piano, bajo ni percusión: queda afuera`); return; }
+  if (!f.piano.length && !f.bajo.length && !f.perc.length && !f.frase) { console.log(`${id.slice(2).padEnd(34)} sin compases usables de piano, bajo ni percusión: queda afuera`); return; }
   fuentes.push({ id, archivo: d.nombre, titulo: d.meta.titulo || d.nombre.replace(/\.midi?$/i, ''), estilo: d.meta.estilo || 'salsa', autor: d.meta.autor || '', ...(d.coleccion ? { coleccion: d.coleccion } : {}),
-    ...(d.meta.grupo ? { grupo: d.meta.grupo } : {}), ...(d.meta.seccion ? { seccion: d.meta.seccion } : {}), ...(d.meta.genero ? { genero: d.meta.genero } : {}), ...f });
+    ...(d.meta.grupo ? { grupo: d.meta.grupo } : {}), ...(d.meta.seccion ? { seccion: d.meta.seccion } : {}), ...(d.meta.genero ? { genero: d.meta.genero } : {}),
+    ...(d.meta.parte ? { parte: d.meta.parte, var: d.meta.var } : {}), ...f });
   const a = f.analisis;
   console.log(`${(d.coleccion ? d.coleccion + '/' : '') + d.nombre.padEnd(34)} ${String(f.piano.length).padStart(4)} ciclos de piano · ${String(f.bajo.length).padStart(4)} de bajo · ${String(f.perc.length).padStart(3)} juegos de percusión · lado: ${a.ladoFuente}${a.conflicto ? ' (' + a.conflicto + ' compases en contra)' : ''}`);
 });
