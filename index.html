@@ -445,6 +445,83 @@ body.sin-partitura .panel-full{display:none}
   .dev.plegado .dev-h{writing-mode:horizontal-tb;transform:none;flex:none;text-align:left}
   .det-tirador{display:none}
 }
+/* ===== el celular (angosto, o acostado con poca altura): la barra queda arriba y chica (tocar, detener, dónde va y «Más»,
+   que despliega tempo, clave, banda, loop y los paneles), el panel de la sección va en pestañas (una a la vez, con las
+   pestañas fijas arriba al bajar) y lo que se toca tiene tamaño de dedo. Las mismas condiciones que CELU en el script ===== */
+.tr-mas,.dev-tabs{display:none}
+@media (max-width:760px),(pointer:coarse) and (max-height:560px){
+  .transport{position:sticky;top:0;padding:6px 10px;gap:8px 10px;align-items:center}
+  .transport .play,.transport #stop{width:42px;height:42px}
+  .transport .pos{min-width:0;flex:0 1 auto;padding:9px 8px;font-size:12.5px;white-space:nowrap;overflow:hidden}
+  .tr-mas{display:inline-flex;margin-left:auto;height:42px;padding:0 12px;gap:6px;font-size:13px}
+  .transport .logo{display:none}
+  .tr-mas svg{width:18px;height:18px}
+  .tr-mas[aria-expanded="true"]{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
+  body:not(.tr-abierta) .transport>.ctl,body:not(.tr-abierta) #seguir-lbl,body:not(.tr-abierta) .tr-panels{display:none}
+  .transport>.ctl{flex:1 1 calc(50% - 10px);min-width:0;justify-content:space-between;font-size:13px}
+  .transport>.ctl:has(#tempo){flex-basis:100%}
+  .transport>.ctl select{flex:1 1 auto;min-width:0;max-width:72%;height:40px}
+  .transport input[type=range]{flex:1 1 auto;width:auto;height:32px}
+  #seguir-lbl{flex:1 1 calc(50% - 10px);justify-content:center;height:40px}
+  .tr-panels{flex:1 1 100%;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .tr-panels>*{justify-content:center;min-height:40px;font-size:13px}
+  .tr-panels .chk.tg{display:flex;align-items:center}
+  /* paneles encima: de lado a lado, con el título y la ✕ en la misma línea */
+  .panel{width:100vw;border-left:0}
+  .gen-head .muted,.pn-head .muted{order:3;flex-basis:100%}
+  .pn-head h2,.panel .gen-head h2{flex:1 1 auto}
+  .pn-x{width:42px;height:42px;justify-content:center;padding:0;font-size:16px}
+  .panel-full{padding:10px 10px 30px}
+  .gen-actions .gen-more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;width:100%}
+  .gen-actions .gen-more>.btn{justify-content:center;min-height:42px}
+  .gen-actions .gen-more>.ctl{grid-column:1/-1;flex-wrap:nowrap;justify-content:space-between}
+  .gen-actions .gen-more>.ctl select{flex:1 1 auto;max-width:70%}
+  .gen .snd-row select{flex:1 1 200px}
+  /* las pistas: el nombre más angosto y la ayuda de abajo en dos líneas como mucho */
+  .mt-ayuda{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  #gen{padding:8px 8px 0}
+  /* la sección: nombre arriba, herramientas en una fila que se desliza, y los seis bloques como pestañas */
+  .sec-box{scroll-margin-top:var(--bar-h)}
+  .sec-head{flex-wrap:wrap}
+  .sec-head .sc-nombre{flex:1 1 0;min-height:40px}
+  .sec-tools{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;margin:0;padding-bottom:2px;scrollbar-width:none}
+  .sec-tools::-webkit-scrollbar{display:none}
+  .sec-tools .btn{flex:0 0 auto;min-height:40px;min-width:44px;justify-content:center}
+  .det-plegar{width:44px!important;height:40px}
+  .dev-tabs{display:flex;position:sticky;top:var(--bar-h);z-index:6;gap:4px;overflow-x:auto;padding:6px;background:var(--panel);border-bottom:1px solid var(--line);scrollbar-width:none;scroll-snap-type:x proximity}
+  .dev-tabs::-webkit-scrollbar{display:none}
+  .sec-box.cerrado .dev-tabs{display:none}
+  .dev-tabs button{flex:0 0 auto;scroll-snap-align:start;appearance:none;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--muted);font:600 13px/1 Inter,system-ui,sans-serif;padding:0 15px;height:38px;cursor:pointer}
+  .dev-tabs button[aria-selected="true"]{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--on-accent)}
+  .det-body{flex-direction:column;overflow:visible;padding:8px;min-height:calc(100vh - var(--bar-h) - 52px)}
+  .dev{display:none;width:auto!important;border:0;background:transparent}
+  .dev.tab-on{display:flex}
+  .dev-h{display:none}
+  .dev.plegado .dev-c{display:flex}
+  .dev-c{padding:2px 2px 16px;overflow:visible;gap:12px}
+  .dev .sec-flds{gap:12px 10px}
+  /* tamaño de dedo */
+  :root{--mt-head:150px}
+  .mt-h{gap:3px}
+  .mt-btn{width:26px;height:24px;font-size:11px}
+  .mt-row.plegada .mt-btn{width:24px;height:20px}
+  .mt-union{height:24px;min-width:30px;padding:0 7px;font-size:11.5px;border-radius:12px}
+  .sec-pistas{gap:8px}
+  .sec-pistas button{padding:9px 14px}
+  .kn-grp summary{min-height:40px}
+  .kn-grp .kn-reset{padding:10px 10px}
+  .cg-split{padding:6px 10px}
+  .dev .cg-card{padding-top:30px}
+  .cg-roots button,.cg-quals button{min-width:48px;min-height:44px;font-size:15px}
+  .kn input[type=range]{height:32px}
+  .chk input{width:20px;height:20px}
+}
+/* el celular acostado: hay lugar para el volumen de cada pista al lado del nombre */
+@media (pointer:coarse) and (max-height:560px) and (min-width:621px){:root{--mt-head:210px}.mt-h input[type=range]{width:50px}}
+/* en pantallas táctiles, 16px en lo que se escribe o se elige: si no, el iPhone hace zoom al tocarlo */
+@media (pointer:coarse){
+  input[type=text],input[type=number],select,textarea{font-size:16px!important}
+}
 </style>
 </head>
 <body>
@@ -467,6 +544,9 @@ body.sin-partitura .panel-full{display:none}
       <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg>
     </button>
     <div class="pos"><b id="pos-m">1</b> / <span id="pos-n">–</span> · <span id="pos-t">0:00</span></div>
+    <button class="btn ghost tr-mas" id="tr-mas" type="button" aria-expanded="false" aria-label="Más controles: tempo, clave, banda, loop y paneles" title="Tempo, clave, banda, loop y paneles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Más</span>
+    </button>
     <label class="ctl">Tempo <input type="range" id="tempo" min="90" max="240" value="184"> <b id="tempo-v">184</b></label>
     <label class="ctl">Clave <select id="tb-clave"><option>rumba 3-2</option><option>rumba 2-3</option><option>son 3-2</option><option>son 2-3</option></select></label>
     <label class="ctl">Banda <select id="cn-banda"><option value="timba">timba (con batería)</option><option value="salsa">salsa (sin batería)</option></select></label>
@@ -6843,6 +6923,56 @@ ${vientosStaff}    \\new PianoStaff <<
   let on=true;try{const v=localStorage.getItem('tdt-ayuda');if(v!=null)on=v==='1'}catch(_){}
   sw.checked=on;document.body.classList.toggle('con-ayuda',on);
   sw.onchange=()=>{document.body.classList.toggle('con-ayuda',sw.checked);try{localStorage.setItem('tdt-ayuda',sw.checked?'1':'0')}catch(_){}};
+})();
+</script>
+<script>
+/* =====================================================================
+   El celular: «Más» en la barra (despliega tempo, clave, banda, loop y los paneles) y el panel de la sección en pestañas.
+   La condición es la misma de la hoja de estilos (angosto, o táctil y acostado). En la compu no cambia nada.
+   ===================================================================== */
+(function(){
+  const CELU=matchMedia('(max-width:760px),(pointer:coarse) and (max-height:560px)');
+  const raiz=document.documentElement,barra=document.querySelector('.transport'),mas=document.getElementById('tr-mas');
+  const medir=()=>raiz.style.setProperty('--bar-h',barra.offsetHeight+'px');
+  const leer=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:v}catch(_){return d}};
+  const guardar=(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}};
+
+  // «Más»: abre y cierra la segunda parte de la barra; se cierra sola al abrir un panel o la partitura
+  const abrirMas=on=>{document.body.classList.toggle('tr-abierta',on);mas.setAttribute('aria-expanded',String(on));medir()};
+  mas.onclick=()=>abrirMas(!document.body.classList.contains('tr-abierta'));
+  barra.addEventListener('click',e=>{if(CELU.matches&&e.target.closest('.tr-panels [data-panel], .tr-panels .btn'))abrirMas(false)});
+  document.getElementById('ver-partitura').addEventListener('change',()=>{if(CELU.matches)abrirMas(false)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')abrirMas(false)});
+  CELU.addEventListener('change',()=>{if(!CELU.matches)abrirMas(false);medir()});
+  addEventListener('resize',medir);
+
+  // las pestañas de la sección: una por bloque (Estructura, Acordes, Piano, Bajo, Percusión, Vientos); queda la última elegida
+  const caja=document.getElementById('sec-box'),cuerpo=caja.querySelector('.det-body'),devs=[...cuerpo.querySelectorAll('.dev')];
+  const tabs=document.createElement('div');tabs.className='dev-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Partes de la sección');
+  let actual=leer('tdt-dev-tab','estructura');if(!devs.some(d=>d.dataset.dev===actual))actual='estructura';
+  const botones=devs.map(d=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.dataset.dev=d.dataset.dev;
+    b.textContent=d.querySelector('.dev-h').textContent;b.onclick=()=>elegir(d.dataset.dev,true);tabs.appendChild(b);return b});
+  cuerpo.before(tabs);
+  function elegir(id,tocada){
+    actual=id;guardar('tdt-dev-tab',id);
+    devs.forEach(d=>d.classList.toggle('tab-on',d.dataset.dev===id));
+    botones.forEach(b=>{const on=b.dataset.dev===id;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;
+      if(on&&tocada)b.scrollIntoView({block:'nearest',inline:'nearest',behavior:'smooth'})});
+    // si las pestañas ya están pegadas arriba, la parte nueva arranca desde su principio
+    if(tocada&&CELU.matches){const y=tabs.getBoundingClientRect().top,tope=barra.offsetHeight+1;
+      if(y<=tope)scrollTo({top:scrollY+cuerpo.getBoundingClientRect().top-tope-tabs.offsetHeight,behavior:'auto'})}
+  }
+  tabs.addEventListener('keydown',e=>{const i=botones.findIndex(b=>b.dataset.dev===actual),n=botones.length;
+    const j=e.key==='ArrowRight'?(i+1)%n:e.key==='ArrowLeft'?(i-1+n)%n:-1;if(j<0)return;e.preventDefault();elegir(botones[j].dataset.dev,true);botones[j].focus()});
+  elegir(actual,false);
+
+  // tocar una sección en las pistas, en el celular: la pantalla baja hasta su panel (si estaba plegado, se abre)
+  document.getElementById('mt').addEventListener('click',e=>{
+    if(!CELU.matches||!e.target.closest('.mt-sec'))return;
+    if(caja.classList.contains('cerrado'))document.getElementById('det-plegar').click();
+    setTimeout(()=>caja.scrollIntoView({behavior:'smooth',block:'start'}),60)});
+
+  medir();addEventListener('load',medir);
 })();
 </script>
 </body>

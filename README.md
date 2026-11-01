@@ -10,6 +10,7 @@ La app ocupa toda la ventana, a lo Ableton:
 - **Abajo**, la sección elegida en seis bloques plegables: estructura, acordes, piano, bajo, percusión y vientos. Cada bloque tiene una línea de ayuda (el texto entero, al pasar el mouse). El panel se achica o se agranda desde su borde de arriba y se oculta con ▾.
 - **Encima**, cuando se abren: «Canción y sonido» y «Partitura» (con el código LilyPond y para abrir archivos .ly o .mid).
 - Con **Seguir**, mientras suena, el panel de abajo muestra la sección que suena.
+- **En el celular** (o acostado, en una pantalla táctil baja), la barra queda arriba con tocar, detener, dónde va y **Más**, que despliega tempo, clave, banda, loop y los paneles. Tocar una sección en las pistas baja hasta su panel, que va en pestañas (Estructura, Acordes, Piano, Bajo, Percusión, Vientos) fijas arriba al bajar por las perillas.
 
 ### La sección
 
