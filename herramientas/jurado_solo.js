@@ -54,7 +54,10 @@ if (CANCION) {
 }
 
 // ---------- los solos del motor
-const PROGS = { 'C F G7 F': 'son I-IV-V-IV', 'Am Dm E7 Am': 'menor i-iv-V', 'Dm7 G7 Cmaj7 Cmaj7': 'ii-V-I', 'Em C Am B7': 'i-VI-iv-V', 'Gm Cm D7 Gm': 'menor en sol', 'Fmaj7 E7 Am7 Gm7+C7': 'Just the two of us' };
+// --otras: progresiones y semillas que no se usaron para afinar el motor (para ver que no se afinó para el examen)
+const OTRAS = args.includes('--otras');
+const PROGS = OTRAS ? { 'Bbmaj7 Gm7 Cm7 F7': 'I-vi-ii-V en si bemol', 'Dm Bb C A7': 'menor con el VI y el VII', 'E7 A7 D7 G7': 'dominantes encadenadas', 'Cm Fm G7 Cm': 'menor en do', 'D G A7 G': 'son en re', 'Am7 D7 Gmaj7 Cmaj7 F#m7b5 B7 Em Em': 'ciclo de cuartas en mi menor' }
+  : { 'C F G7 F': 'son I-IV-V-IV', 'Am Dm E7 Am': 'menor i-iv-V', 'Dm7 G7 Cmaj7 Cmaj7': 'ii-V-I', 'Em C Am B7': 'i-VI-iv-V', 'Gm Cm D7 Gm': 'menor en sol', 'Fmaj7 E7 Am7 Gm7+C7': 'Just the two of us' };
 const ESTILO_DE = { son: 'sonmontuno', descarga: 'salsa', brava: 'salsabrava', timba: 'pupy', latinjazz: 'songo' };
 function contexto(prog, nb, clave32) {
   const P = TM.leerProgresion(prog), acordesDe = b => P[((b % P.length) + P.length) % P.length];
@@ -97,7 +100,7 @@ const res = {};
 // cada modo con su solo corrido; el son, además, contestándole al coro (su forma más común)
 for (const [col, modo, forma] of [...Object.keys(TM.MODOS_SOLO).map(m => [m, m, 'corrido']), ['son·coro', 'son', 'coro']]) {
   res[col] = [];
-  for (const prog of Object.keys(PROGS)) for (let s = 1; s <= SEMILLAS; s++) for (const cl of ['2-3', '3-2']) {
+  for (const prog of Object.keys(PROGS)) for (let s = 1 + (OTRAS ? 50 : 0); s <= SEMILLAS + (OTRAS ? 50 : 0); s++) for (const cl of ['2-3', '3-2']) {
     const g = generar(modo, prog, s, cl, forma);
     const j = J.juzgar(g.r.notas.map(n => ({ p: n.p, L: n.L, m: n.ps[0] })), { chEn: chDe(g.cx, g.posAnt), sigEn: sigDe(g.cx, g.posAnt), ladoDe: p => g.cx.lado(Math.floor(p / 16)), huecos: g.r.info.huecos, forma }, modo);
     res[col].push({ r: j.r, j, prog, s, cl, g });
@@ -134,8 +137,9 @@ console.log('\nLo más flojo del motor (rasgo: nota media de 0 a 1): ' + Object.
 
 // ---------- ver un solo, compás por compás
 if (VER) {
-  const x = res[VER] && res[VER][0]; if (!x) { console.log('no hay modo ' + VER); process.exit(0); }
+  const x = res[VER] && res[VER][+arg('--n', 0)]; if (!x) { console.log('no hay modo ' + VER); process.exit(0); }
   const N = TM.NOM, nom = m => N[pc(m)] + (Math.floor(m / 12) - 1);
+  console.log('rasgos flojos: ' + x.j.detalle.filter(d => d.s < 0.8).map(d => d.k + ' ' + d.x.toFixed(2)).join(' · '));
   console.log(`\n${VER} · ${x.prog} · clave ${x.cl} · semilla ${x.s} · de: ${x.g.r.info.fuentes.join(', ')} · nota ${x.j.nota}`);
   for (let b = 0; b < NB; b++) {
     const ns = x.g.r.notas.filter(n => Math.floor(n.p / 16) === b), cs = x.g.cx.acordesDe(b).map(c => c.nombre).join('+');

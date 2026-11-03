@@ -86,10 +86,12 @@ En las marchas fuertes (presión, bomba, despelote, muela) el bajo toca lo de la
   | | Nota (0 a 10) |
   |---|---|
   | trompetistas reales | 8,8 |
-  | la app: descarga, timba, latin jazz | 9,1 · 9,1 · 9,4 |
-  | la app: son, salsa brava, son contestándole al coro | 8,8 · 8,6 · 8,3 |
+  | la app: descarga, timba, latin jazz | 9,4 · 9,3 · 9,6 |
+  | la app: son, salsa brava, son contestándole al coro | 9,2 · 9,1 · 8,8 |
   | notas al azar de la escala | 6,8 |
   | arpegios corridos sin respirar | 3,9 |
+
+  Con otras progresiones y otras semillas (`--otras`, que no se usaron para afinar el motor) da lo mismo. Que la app saque más que los trompetistas reales no quiere decir que toque mejor: el jurado premia estar dentro de lo normal en cada medida, y los reales son más variados (cada uno se sale de lo normal en alguna). Lo que el jurado no oye (el sonido, el swing, si el solo emociona) se juzga escuchando.
 
 La canción se genera sección por sección, cada una con su semilla, y cada sección recibe la costura de la anterior: el lado de la clave, el acorde que viene, la última nota de la línea y del bajo, y la ligadura al 1. Los finales de sección: los golpes (cierre, parada, contratiempos, tres contra cuatro, un golpe) los tocan piano, bajo, vientos y percusión juntos y caen donde entra la sección que sigue: en el 4& o el 4, el golpe de la llegada ya trae el acorde que viene, ligado al 1; si la que sigue entra en el 1, el último golpe es del acorde de ahora y la banda cae junta en el 1. El tres contra cuatro cuenta de a tres semicorcheas hacia atrás desde la llegada. La parada en clave no anticipa: calla. El corte es golpe en el 1 y silencio. Si la banda sigue derecho, la percusión puede hacer un relleno en el último compás: abanico (redoble de timbal en el 4 y golpe de borde y plato en el 1 que viene), redoble, floreo del quinto o toms.
 

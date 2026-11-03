@@ -6123,7 +6123,8 @@ ${vientosStaff}    \\new PianoStaff <<
   const elegir = (R, items, peso) => { let tot = 0; const w = items.map(x => { const v = Math.max(0, peso(x)); tot += v; return v; }); if (!tot) return items[Math.floor(R() * items.length)]; let r = R() * tot; for (let i = 0; i < items.length; i++) { r -= w[i]; if (r <= 0) return items[i]; } return items[items.length - 1]; };
   const esAc = g => g === 'R' || g === '3' || g === '5' || g === '7';
 
-  // ---------- los modos del solista. centro: la nota media al empezar; sube: cuánto sube el centro en el clímax; techo: la más
+  // ---------- los modos del solista. pasoMeta: la parte de pasos de grado de la línea en sus trompetistas (la selección de frases
+  // tira hacia lo saltón: las que encajan en la clave y las ralas suelen ser arpegios); centro: la nota media al empezar; sube: cuánto sube el centro en el clímax; techo: la más
   // aguda; dens: notas por tiempo; frase y aire: en semicorcheas; crom: cuánto cromatismo; quien e ideas: de quién y qué
   // tipo de frase aprende (las unidades de nivel medio de Frieler: lick, line, melody, rhythm, expressive, quote)
   const SWING = ['Louis Armstrong', 'Roy Eldridge', 'Buck Clayton', 'Harry Edison', 'Henry Allen', 'Rex Stewart', 'Charlie Shavers', 'Bix Beiderbecke'];
@@ -6131,15 +6132,15 @@ ${vientosStaff}    \\new PianoStaff <<
   const MODERNO = ['Freddie Hubbard', 'Woody Shaw', 'Wynton Marsalis', 'Clifford Brown', 'Dizzy Gillespie', 'Don Ellis', 'Kenny Wheeler'];
   const MODOS = {
     son: { n: 'Son (septeto, Chappottín)', d: 'frases de una clave que bajan a la nota del acorde, una célula que se repite, diatónico, registro medio',
-      centro: 67, sube: 5, techo: 79, dens: 1.6, frase: [24, 40], maxFrase: 48, aire: [4, 10], crom: 0.5, cromMeta: 0.06, jurado: { escala: 0.13, repite: 0.05 }, quien: SWING, ideas: { melody: 1.6, rhythm: 1.8, lick: 1, expressive: 1.2, quote: 1, line: 0.7, fragment: 0.7, theme: 1 }, baja: 1.6, celula: 0.3, pedal: 0.18 },
+      pasoMeta: 0.55, centro: 67, sube: 5, techo: 79, dens: 1.6, frase: [24, 40], maxFrase: 48, aire: [4, 10], crom: 0.5, cromMeta: 0.06, jurado: { escala: 0.13, repite: 0.05 }, quien: SWING, ideas: { melody: 1.6, rhythm: 1.8, lick: 1, expressive: 1.2, quote: 1, line: 0.7, fragment: 0.7, theme: 1 }, baja: 1.6, celula: 0.3, pedal: 0.18 },
     descarga: { n: 'Descarga (Chocolate Armenteros)', d: 'frases más largas, arpegios y escalas, alguna cita, sube hasta el Do6',
-      centro: 68, sube: 8, techo: 84, dens: 2, frase: [28, 56], maxFrase: 68, aire: [4, 10], crom: 0.8, cromMeta: 0.12, jurado: { escala: 0.08 }, quien: [...HARDBOP, 'Chet Baker', 'Roy Eldridge'], ideas: { melody: 1.2, rhythm: 1.2, lick: 1, expressive: 1, quote: 1.2, line: 1.1, fragment: 0.6, theme: 1 }, baja: 1.2, celula: 0.12, pedal: 0.12 },
+      pasoMeta: 0.63, centro: 68, sube: 8, techo: 84, dens: 2, frase: [28, 56], maxFrase: 68, aire: [4, 10], crom: 0.8, cromMeta: 0.12, jurado: { escala: 0.08 }, quien: [...HARDBOP, 'Chet Baker', 'Roy Eldridge'], ideas: { melody: 1.2, rhythm: 1.2, lick: 1, expressive: 1, quote: 1.2, line: 1.1, fragment: 0.6, theme: 1 }, baja: 1.2, celula: 0.12, pedal: 0.12 },
     brava: { n: 'Salsa brava (Nueva York)', d: 'agudo y fuerte, notas largas que cantan, pentatónica y blues',
-      centro: 68, sube: 9, techo: 86, dens: 1.9, frase: [24, 52], maxFrase: 64, aire: [4, 10], crom: 0.65, cromMeta: 0.1, jurado: { escala: 0.08, registro: 2 }, quien: ['Lee Morgan', 'Freddie Hubbard', 'Clifford Brown', 'Dizzy Gillespie', 'Fats Navarro', 'Woody Shaw', 'Roy Eldridge'], ideas: { melody: 1.2, rhythm: 1.5, lick: 1.1, expressive: 1.6, quote: 0.8, line: 0.9, fragment: 0.6, theme: 0.8 }, baja: 1.2, celula: 0.14, pedal: 0.2 },
+      pasoMeta: 0.63, centro: 68, sube: 9, techo: 86, dens: 1.9, frase: [24, 52], maxFrase: 64, aire: [4, 10], crom: 0.65, cromMeta: 0.1, jurado: { escala: 0.08, registro: 2 }, quien: ['Lee Morgan', 'Freddie Hubbard', 'Clifford Brown', 'Dizzy Gillespie', 'Fats Navarro', 'Woody Shaw', 'Roy Eldridge'], ideas: { melody: 1.2, rhythm: 1.5, lick: 1.1, expressive: 1.6, quote: 0.8, line: 0.9, fragment: 0.6, theme: 0.8 }, baja: 1.2, celula: 0.14, pedal: 0.2 },
     timba: { n: 'Timba (vocabulario de jazz, agudo)', d: 'líneas de bebop, cromatismo y arpegios de tensiones, registro agudo sostenido',
-      centro: 69, sube: 10, techo: 87, dens: 2.5, frase: [32, 68], maxFrase: 80, aire: [2, 8], crom: 1.1, cromMeta: 0.2, jurado: { escala: 0.04, registro: 2 }, quien: MODERNO, ideas: { melody: 0.7, rhythm: 1.2, lick: 1, expressive: 1, quote: 0.5, line: 1.3, fragment: 0.6, theme: 0.6 }, baja: 1, celula: 0.1, pedal: 0.15 },
+      pasoMeta: 0.61, centro: 69, sube: 10, techo: 87, dens: 2.5, frase: [32, 68], maxFrase: 80, aire: [2, 8], crom: 1.1, cromMeta: 0.2, jurado: { escala: 0.04, registro: 2 }, quien: MODERNO, ideas: { melody: 0.7, rhythm: 1.2, lick: 1, expressive: 1, quote: 0.5, line: 1.3, fragment: 0.6, theme: 0.6 }, baja: 1, celula: 0.1, pedal: 0.15 },
     latinjazz: { n: 'Latin jazz', d: 'bebop sobre el montuno: líneas y licks, espacio, sube con la banda',
-      centro: 68, sube: 8, techo: 84, dens: 2.2, frase: [32, 64], maxFrase: 80, aire: [4, 10], crom: 1, cromMeta: 0.18, jurado: { escala: 0.04 }, quien: [...HARDBOP, 'Woody Shaw', 'Miles Davis', 'Kenny Wheeler'], ideas: { melody: 1, rhythm: 1, lick: 1, expressive: 1, quote: 0.8, line: 1, fragment: 0.6, theme: 0.8 }, baja: 1, celula: 0.1, pedal: 0.1 }
+      pasoMeta: 0.63, centro: 68, sube: 8, techo: 84, dens: 2.2, frase: [32, 64], maxFrase: 80, aire: [4, 10], crom: 1, cromMeta: 0.18, jurado: { escala: 0.04 }, quien: [...HARDBOP, 'Woody Shaw', 'Miles Davis', 'Kenny Wheeler'], ideas: { melody: 1, rhythm: 1, lick: 1, expressive: 1, quote: 0.8, line: 1, fragment: 0.6, theme: 0.8 }, baja: 1, celula: 0.1, pedal: 0.1 }
   };
   const MODO_DE_ESTILO = { sonmontuno: 'son', charanga: 'descarga', salsabrava: 'brava', salsa: 'descarga', songo: 'latinjazz', pupy: 'timba', melon: 'timba', tirso: 'timba' };
   const PISO = 55;   // Sol3 (sonido real): el piso del solo (investigación de salsa, R23)
@@ -6212,8 +6213,9 @@ ${vientosStaff}    \\new PianoStaff <<
           return { q: n.p - b0, d: Math.max(1, Math.min(n.d, sig ? sig.p - n.p : 16)), m: n.m, cat, fa: familia(n.ch), ra: n.ch.raiz, ...(crom ? { crom: true } : {}) };
         });
         const ms = ev.map(e => e.m), xr = ev.filter(e => e.crom).length / ev.length;
+        let pasos = 0; for (let i = 1; i < ms.length; i++) { const d = Math.abs(ms[i] - ms[i - 1]); if (d >= 1 && d <= 2) pasos++; }
         MS.frases.push({ s: si, p0: b0, interprete: s.interprete, inst: s.inst, feel: s.feel || '', idea: idea[gr.i[0]], ev, off: ev[0].q, len, n: ev.length, dens: ev.length / Math.max(1, len / 4),
-          xr, baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
+          xr, paso: pasos / (ms.length - 1), baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
           fit: [encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'A'), encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'B')] });
       }
     });
@@ -6308,7 +6310,9 @@ ${vientosStaff}    \\new PianoStaff <<
     const cuantas = {}; for (const f of MS.frases) cuantas[f.interprete] = (cuantas[f.interprete] || 0) + 1;
     const parejo = f => 1 / Math.sqrt(Math.max(1, (cuantas[f.interprete] || 1) / 25));
     const pesoBase = f => parejo(f) * (quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
-      * (f.ancho > 19 ? Math.exp(-(f.ancho - 19) / 4) : 1) * Math.exp(-Math.max(0, f.xr - Mo.cromMeta * +kv('s_crom', 1)) * 8) * (f.baja < -2 ? Mo.baja : 1);
+      * (f.ancho > 19 ? Math.exp(-(f.ancho - 19) / 4) : 1) * Math.exp(-Math.max(0, f.xr - Mo.cromMeta * +kv('s_crom', 1)) * 8) * (f.baja < -2 ? Mo.baja : 1)
+      // la línea como la de sus trompetistas: las frases mucho más saltonas que eso, menos
+      * Math.exp(-Math.max(0, Mo.pasoMeta - 0.08 - f.paso) * 6);
     const pool = MS.frases.filter(f => f.len <= Mo.maxFrase + 8 && pesoBase(f) > 0.01);
     const usadas = new Set();
     let prev = null, ultima = null, pedales = 0, pedalEn = -99, grito = false, seguidas = 0;
@@ -6393,7 +6397,7 @@ ${vientosStaff}    \\new PianoStaff <<
         const I = inten(t / total), quiere = Mo.frase[0] + (Mo.frase[1] - Mo.frase[0]) * (0.35 + 0.5 * I) * (0.7 + 0.6 * R());
         let fr = null, ini = null, extra = { hasta: h1 };
         const op = R();
-        if (ultima && !ultima.pedal && seguidas < 2 && op < motivo * pDes) {
+        if (ultima && !ultima.pedal && seguidas < (forma === 'coro' ? 2 : 1) && op < motivo * pDes) {
           // desarrollo: la misma frase en la clave siguiente (secuencia en los acordes de acá), a veces más arriba o como célula
           fr = R() < Mo.celula * 2 && !ultima.celula ? celula(ultima) : ultima;
           if (fr.ev.length > 10 && !fr.celula && !fr.pedal) { const cut = Math.ceil(fr.ev.length * (0.4 + 0.25 * R())); fr = { ...fr, ev: fr.ev.slice(0, cut), len: fr.ev[cut - 1].q + fr.ev[cut - 1].d - fr.ev[0].q }; }
@@ -6402,7 +6406,8 @@ ${vientosStaff}    \\new PianoStaff <<
           // lo desarrollado también tiene que estar en clave: si cruza, del otro lado; si tampoco, una frase nueva
           const enc = x => encaje(fr.ev.map(e => ({ p: e.q, d: e.d })), MS.clave, ladoDe(x / 16));
           if (enc(ini) < -0.12) ini = enc(ini + 16) > enc(ini) && ini + 16 + fr.ev.at(-1).q < h1 ? ini + 16 : -1;
-          if (ini < 0 || enc(ini) < -0.12 || ini + fr.ev.at(-1).q >= h1) fr = null; else { seguidas++; (info.ideas = info.ideas || []).push(fr.celula ? 'celula-desarrollo' : 'repite'); }
+          // si para desarrollar hay que esperar más de medio compás, mejor una frase nueva (no compases vacíos)
+          if (ini < 0 || enc(ini) < -0.12 || ini + fr.ev.at(-1).q >= h1 || ini + fr.off - t > 8) fr = null; else { seguidas++; (info.ideas = info.ideas || []).push(fr.celula ? 'celula-desarrollo' : 'repite'); }
         } else if (pedales < Math.max(1, Math.floor(nb / 16)) && t / 16 - pedalEn >= 8 && op < motivo * pDes + Mo.pedal * (0.4 + I) && I > 0.45 && h1 - t >= 34) {
           // la nota pedal: una o dos por solo (investigación de salsa, R15)
           let b = Math.floor(t / 16); if (b * 16 < t) b++;
