@@ -29,6 +29,8 @@ function modeloDeEntrada(o = {}) {
   const todas = base.fuentes.concat(loc), cols = { ...base.colecciones, ...(o.sinLocal ? {} : (globalThis.BASE_TUMBAOS_LOCAL || {}).colecciones || {}) };
   const M = TM.construirModelo(todas.filter(f => !f.coleccion || !!(cols[f.coleccion] || {}).encendida));
   M.vientos = TM.construirVientos(todas);
+  // la trompeta solista: los solos de la Weimar Jazz Database (si está la base)
+  const solos = RUTAS.leerSolos(); if (solos) M.solos = TM.construirSolos(solos, todas);
   return { base, M };
 }
 

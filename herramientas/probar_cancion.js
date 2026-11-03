@@ -257,6 +257,57 @@ for (const [d, est, per] of [['salsa', 'salsa', {}], ['Pupy con el tumbao de sal
 const pedido = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 'a', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 2, semilla: 3, perillas: { b_aprox: 0, b_lado2: 'entrada' } }] }, M);
 ok(bajoEn(pedido, 0).join() === '0,4,8,12' && !bajoEn(pedido, 2).includes(4), 'pedidas «al entrar la sección», también en salsa');
 
-if (process.argv[2]) { fs.writeFileSync(process.argv[2], ly); console.log('LilyPond → ' + process.argv[2]); }
+console.log('18. la trompeta solista (10_solo.js)');
+const SOL = RUTAS.leerSolos();
+let lySolo = null;
+if (!SOL) console.log('  (sin base/base_solos.json: node herramientas/solos_jazz.js)');
+else {
+  const MS = TM.construirSolos(SOL, base.fuentes), Ms = { ...M, solos: MS };
+  const conSolo = (cambios = {}) => TM.generarCancion({ titulo: 'Solo', clave: 'son 2-3', perillas: {}, secciones: [
+    { id: 'coro', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 2, semilla: 5, ...(cambios.coro || {}) },
+    { id: 'solo', tipo: 'solo', prog: 'Am D7 G E7', marcha: 'marcha', estilo: 'salsa', vueltas: 4, semilla: 6, perillas: { s_detras: 'moña' }, ...(cambios.solo || {}) },
+    { id: 'fin', prog: 'Am D7 G E7', marcha: 'mambo', estilo: 'salsa', vueltas: 1, semilla: 7, transicion: 'corte' }] }, Ms);
+  const rs = conSolo(), sS = rs.secciones[1], t0 = sS.inicio * 16, t1 = t0 + sS.compases * 16;
+  ok(rs.solo.length > 20, `toca (${rs.solo.length} notas)`);
+  ok(rs.solo.every(e => e.p >= t0 && e.p + e.L <= t1), 'de entrada, solo en la sección de tipo «solo»');
+  ok(rs.solo.every((e, i, x) => e.L >= 1 && (!i || e.p >= x[i - 1].p + x[i - 1].L)), 'una nota por vez, sin pisarse');
+  ok(rs.solo.every(e => e.ps.length === 1 && e.ps[0] >= 55 && e.ps[0] <= 88), 'en el registro de la trompeta (Sol3 a Mi6)');
+  ok(rs.secciones[1].info.solo && rs.secciones[1].info.solo.modo === 'descarga', 'el modo del estilo (salsa de los 90: descarga)');
+  const mitad = t0 + Math.floor(sS.compases / 4) * 32;
+  ok(TM.PISTAS_VIENTOS.every(fm => !rs.vientos[fm].some(e => e.p >= t0 && e.p < mitad)) && TM.PISTAS_VIENTOS.some(fm => rs.vientos[fm].some(e => e.p >= mitad && e.p < t1)), 'detrás del solo, la moña entra en la segunda mitad');
+  const en = conSolo({ coro: { pistas: { solo: true } } }), no = conSolo({ solo: { pistas: { solo: false } } });
+  ok(en.solo.some(e => e.p < t0) && !no.solo.length, 'la pista se pone o se saca en cualquier sección');
+  const corte = conSolo({ solo: { transicion: 'corte' } }), S1 = t1 - 16;
+  ok(!corte.solo.some(e => e.p >= S1) && corte.solo.every(e => e.p + e.L <= S1), 'con corte al final, la trompeta calla en el último compás');
+  ok(conSolo().solo.map(e => e.p + ':' + e.ps[0]).join() === rs.solo.map(e => e.p + ':' + e.ps[0]).join(), 'la misma semilla, el mismo solo');
+  ok(conSolo({ solo: { semillaSolo: 99 } }).solo.map(e => e.ps[0]).join() !== rs.solo.map(e => e.ps[0]).join(), 'otra semilla, otro solo');
+  // la frase en sus acordes vuelve igual; con los acordes un tono arriba, sube un tono
+  const tp = MS.frases.filter(x => x.inst === 'tp').slice(0, 300), sube = (ch, k) => ch && TM.acorde(TM.NOM[(ch.raiz + k) % 12] + ch.q);
+  for (const k of [0, 2]) {
+    let igual = 0, n = 0;
+    for (const x of tp) {
+      const So = MS.solos[x.s], ms = x.ev.map(e => e.m + k), centro = ms.reduce((a, b) => a + b, 0) / ms.length;
+      const ns = x.ev.map((e, i) => { const p = x.p0 + e.q, T = sube(So.chEn(p), k); return { p, d: e.d, m: e.m, cat: e.cat, crom: e.crom, ra: e.ra, T, esc: TM.escalaSolo(T, sube(So.sigEn(p), k)), fuerte: p % 4 === 0, fin: i === x.ev.length - 1 }; });
+      const out = TM.acomodarSolo(ns, { centro, lo: Math.min(...ms) - 4, hi: Math.max(...ms) + 4, prev: null, crom: 1, blues: false });
+      out.forEach((m, i) => { n++; if (m === ms[i]) igual++; });
+    }
+    ok(igual / n >= 0.95, `la frase real en sus acordes${k ? ' un tono arriba' : ''}: ${(100 * igual / n).toFixed(1)}% de las notas iguales`);
+  }
+  // el jurado: el solo de la sección, contra los trompetistas reales; y distingue un solo de notas al azar
+  const J = TM.prepararJurado(MS, base.fuentes), chEn = p => { const b = sS.inicio + Math.floor(p / 16), q = p % 16; return q >= 14 && rs.acordes[b + 1] ? rs.acordes[b + 1][0] : rs.acordes[b][0]; };
+  const j = J.juzgar(rs.solo.filter(e => e.p >= t0 && e.p < t1).map(e => ({ p: e.p - t0, L: e.L, m: e.ps[0] })), { chEn, ladoDe: p => rs.lados[sS.inicio + Math.floor(p / 16)] }, 'descarga');
+  const reales = J.tramos.map(x => TM.juzgarSolo(x.r, J.ref).nota), media = reales.reduce((a, b) => a + b, 0) / reales.length;
+  ok(j.nota >= 7.5 && !j.faltas.length, `el jurado: ${j.nota.toFixed(2)} (los trompetistas reales, ${media.toFixed(2)})${j.faltas.length ? ' · ' + j.faltas.join(', ') : ''}`);
+  let x = 12345; const azar = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648, tonto = [];
+  for (let p = 0, m = 70; p < 250; p += 2) { m = Math.max(58, Math.min(82, m + Math.floor(azar() * 9) - 4)); tonto.push({ p, L: 2, m }); }
+  ok(J.juzgar(tonto, { chEn, ladoDe: p => rs.lados[sS.inicio + Math.floor(p / 16)] }, 'descarga').nota < media - 1.5, 'el jurado castiga un solo de notas al azar');
+  // la salida: un pentagrama «Solo» en la partitura y una pista en el MIDI
+  lySolo = TM.aLilyPond(rs, { clave: 'son 2-3', bpm: 190 });
+  ok(/instrumentName = "Solo"/.test(lySolo) && /trompetaSolo = \{/.test(lySolo), 'la partitura tiene el pentagrama del solo');
+  const mid = TM.leerMidi(TM.aMidi(rs, 190));
+  ok(mid.pistas.some(p => p.nombre === 'trompeta solista' && p.notas.length === rs.solo.length), 'el MIDI tiene la pista de la trompeta solista');
+}
+
+if (process.argv[2]) { fs.writeFileSync(process.argv[2], ly); console.log('LilyPond → ' + process.argv[2]); if (lySolo) { const f2 = process.argv[2].replace(/\.ly$/, '') + '_solo.ly'; fs.writeFileSync(f2, lySolo); console.log('LilyPond con solo → ' + f2); } }
 console.log(`\n${pruebas - fallas}/${pruebas} bien`);
 process.exit(fallas ? 1 : 0);

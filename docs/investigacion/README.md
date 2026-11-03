@@ -1,6 +1,6 @@
 # Investigaciones
 
-Notas de trabajo del 31 de octubre de 2026: qué dicen los músicos, los libros y los métodos sobre cada instrumento, buscado para decidir cómo genera el motor. Cada afirmación lleva su fuente; lo que es deducción propia dice **inferido** y lo que se buscó y no apareció, **no encontrado**. Las citas en español de fuentes en inglés son traducciones. Casi todas terminan con reglas numeradas «para un generador» (R01, R02…), que es como las cita el código.
+Notas de trabajo del 31 de octubre y el 3 de noviembre de 2026: qué dicen los músicos, los libros y los métodos sobre cada instrumento, buscado para decidir cómo genera el motor. Cada afirmación lleva su fuente; lo que es deducción propia dice **inferido** y lo que se buscó y no apareció, **no encontrado**. Las citas en español de fuentes en inglés son traducciones. Casi todas terminan con reglas numeradas «para un generador» (R01, R02…), que es como las cita el código.
 
 El código las nombra (por ejemplo, `docs/investigacion/campana.md` en `motor/07_percusion.js`). Son notas, no documentación de la app: algunas nombran archivos de trabajo de ese día que no están en el repositorio.
 
@@ -13,4 +13,7 @@ El código las nombra (por ejemplo, `docs/investigacion/campana.md` en `motor/07
 | [vientos_timba.md](vientos_timba.md) | Los metales en la timba y en qué se diferencian de la salsa de Nueva York | vientos |
 | [vientos_generos.md](vientos_generos.md) | Los vientos en los géneros vecinos (bolero, chachachá, mambo de los 40-50, cumbia) y la salsa país por país | vientos y finales de sección |
 | [willie_colon.md](willie_colon.md) | Willie Colón y la trombanga: los dos trombones, el registro, los mambos y las moñas | la armonía trombanga |
+| [solo_trompeta_salsa.md](solo_trompeta_salsa.md) | El solo de trompeta en el son, la salsa y la timba: dónde va, la trompeta de septeto (Ferguson), Chocolate Armenteros (Ortega), la clave y el solista, el registro | la trompeta solista |
+| [solo_trompeta_jazz.md](solo_trompeta_jazz.md) | Los solos de jazz medidos (Weimar Jazz Database, *Inside the Jazzomat*), cómo se generan líneas sobre acordes (Impro-Visor, bebop) y cómo se evalúan los solos generados | la trompeta solista y su jurado |
+| [latin_jazz.md](latin_jazz.md) | El latin jazz y los solos de vientos en él: la forma, lo que hace la banda detrás, la clave, en qué se diferencia de la salsa | la trompeta solista |
 | [bigband_contrapunto.md](bigband_contrapunto.md) | El oficio de big band y de las big bands latinas: voicings, notas de paso, conducción de voces, contrapunto entre secciones, registros | vientos (orquesta grande, registros) |

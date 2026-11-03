@@ -10,7 +10,8 @@
   const pc = m => ((m % 12) + 12) % 12;
   const PERC = ['clave', 'congas', 'bongo', 'campanas', 'timbales', 'guiro', 'bateria'];
   const VIENTOS = ['trompetas', 'trombones', 'saxos'];
-  const PISTAS = ['piano', 'bajo', ...PERC, ...VIENTOS];
+  // la trompeta solista: una pista aparte (motor/10_solo.js); de entrada toca solo en las secciones de tipo «solo»
+  const PISTAS = ['piano', 'bajo', ...PERC, ...VIENTOS, 'solo'];
   function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   // estilo de la percusión clásica (la arma la página) para los compases sin juego aprendido
   const ESTILO = { cuerpo: 'verso', marcha: 'marcha', mambo: 'mambo', presion: 'presion', bomba: 'bomba', despelote: 'despelote', muela: 'muela' };
@@ -43,7 +44,8 @@
   const GOLPE = [['congaS', 0.9], ['timbalH', 0.95], ['kick', 0.9]];
   const CORTE = [['congaS', 0.95], ['timbalH', 1], ['bongoH', 0.8], ['kick', 0.9], ['crash', 0.8]];
 
-  const pistasDe = s => Object.fromEntries(PISTAS.map(x => [x, !s.pistas || s.pistas[x] !== false]));
+  const soloEn = s => s.pistas && s.pistas.solo != null ? s.pistas.solo !== false : s.tipo === 'solo';
+  const pistasDe = s => Object.fromEntries(PISTAS.map(x => [x, x === 'solo' ? soloEn(s) : !s.pistas || s.pistas[x] !== false]));
   const suena = (on, d) => on[TM.familiaPerc(d)] !== false;
   // termina todo lo que suena en t (sin ligaduras ni colas hacia afuera)
   function cortar(evs, t, hasta) {
@@ -69,7 +71,7 @@
     if (!secs.length) throw new Error('La canción no tiene secciones');
     const progs = secs.map(s => Array.isArray(s.prog) ? s.prog : TM.leerProgresion(s.prog || ''));
     const ons = secs.map(pistasDe);
-    const res = { der: [], izq: [], bajo: [], vientos: { trompetas: [], trombones: [], saxos: [] }, perc: [], extra: [], acordes: [], lados: [], marchas: [], mixes: [], estilos: [], secciones: [] };
+    const res = { der: [], izq: [], bajo: [], vientos: { trompetas: [], trombones: [], saxos: [] }, solo: [], perc: [], extra: [], acordes: [], lados: [], marchas: [], mixes: [], estilos: [], secciones: [] };
     const ganchos = {}, ganchosV = {};
     // los vientos: el formato es de toda la canción (de entrada, el del estilo de la primera sección); qué tocan, de cada sección
     const V = M.vientos || null;
@@ -99,7 +101,11 @@
       ganchos[s.id != null ? s.id : i] = r.gancho;
       // ---------- vientos de la sección: lo que pide la sección, o lo del tipo (intro, final, moña, bloque), o lo de la marcha en su estilo
       const EVi = E.vientos || {}, sv = s.vientos || {}, cambioS = s.cambio || E.cambio;
-      const tocaV = sv.toca || { intro: EVi.intro, final: 'bloques', mona: 'moña', bloque: 'bloques' }[s.tipo] || (EVi.toca || {})[marcha] || 'nada';
+      // con la trompeta solista, los demás vientos: lo que diga la perilla «Detrás del solo» (de entrada, según el modo: en el son
+      // callan, en los demás una moña que entra en la segunda mitad); en una sección de tipo solo sin trompeta, lo de la marcha
+      const modoS = on.solo ? (TM.MODOS_SOLO && TM.MODOS_SOLO[perillas.s_modo] ? perillas.s_modo : (TM.MODO_SOLO_DE_ESTILO || {})[s.estilo] || 'descarga') : null;
+      const detras = on.solo && !sv.toca ? (perillas.s_detras && perillas.s_detras !== 'auto' ? perillas.s_detras : modoS === 'son' ? 'nada' : 'moña') : null;
+      const tocaV = sv.toca || (detras ? (detras === 'moña' ? 'moña' : detras) : null) || { intro: EVi.intro, final: 'bloques', mona: 'moña', bloque: 'bloques' }[s.tipo] || (EVi.toca || {})[marcha] || 'nada';
       const vientos = { trompetas: [], trombones: [], saxos: [] };
       let infoV = { toca: 'nada' };
       if (formatoV) {
@@ -109,7 +115,18 @@
           largo: prog.length, estilo: EP.estilo, campana: ['marcha', 'mambo'].includes(marcha), R: rng((s.semillaVientos || (s.semilla || (i + 1) * 7919) * 31 + 5) >>> 0),
           gancho: s.ganchoDe != null ? ganchosV[s.ganchoDe] : null, forma: EVi.forma, k: perillas }, V);
         for (const f of VIENTOS) if (on[f]) vientos[f] = vs[f];
+        // detrás del solo: la moña entra en la segunda mitad (en el comienzo de una clave) y todo va más suave que la trompeta
+        if (detras && detras !== 'nada') { const mitad = Math.floor(r.compases / 4) * 32; for (const f of VIENTOS) vientos[f] = vientos[f].filter(e => detras !== 'moña' || e.p >= mitad).map(e => ({ ...e, v: Math.round((e.v || 90) * 0.78) })); }
         ganchosV[s.id != null ? s.id : i] = vs.info.gancho; infoV = vs.info;
+      }
+      // ---------- la trompeta solista (motor/10_solo.js): su semilla, los acordes con el anticipo de la sección y la clave
+      let solo = [], infoS = null;
+      if (on.solo && M.solos && TM.solear) {
+        const acDe = b => b < r.compases ? r.acordes[b] : sig || [r.acordes[r.compases - 1].at(-1)];
+        const so = TM.solear({ nb: r.compases, lado: b => r.lados[((b % r.compases) + r.compases) % r.compases], acordesDe: acDe, acordeEn: (b, p) => { const c = acDe(b); return c.length > 1 && p >= 8 ? c[1] : c[0]; },
+          anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, estilo: s.estilo, final: (s.transicion || 'ninguna') !== 'ninguna' || !(despues(i) != null && ons[despues(i)].solo),
+          R: rng((s.semillaSolo || (s.semilla || (i + 1) * 7919) * 53 + 11) >>> 0), k: perillas }, M.solos);
+        solo = so.notas; infoS = so.info;
       }
       const nb = r.compases, S = (nb - 1) * 16, fin = { ...r.fin, entraSolo: false };
       if (!on.piano) { r.der.length = 0; r.izq.length = 0; }
@@ -180,6 +197,7 @@
         }
         // los vientos de la de antes que no siguen en esta, callados desde la llegada (con golpes al final, el de la llegada queda)
         if (libre) for (const f of VIENTOS) if (!vientos[f].length) callar(res.vientos[f], tL);
+        if (!solo.length) callar(res.solo, tL);
       }
       // ---------- transición al final de la sección
       const lado = r.lados[nb - 1], chs = r.acordes[nb - 1], chEn = q => chs.length > 1 && q >= 8 ? chs[1] : chs[0];
@@ -197,6 +215,7 @@
         if (on.piano && !tapa(r.der)) { const g = golpePiano(chs[0], refTop); r.der.push({ p: S, L: 4, ps: g.der, v: 104, art: '->', antic: false, ch: chs[0] }); r.izq.push({ p: S, L: 4, ps: g.izq, v: 94, art: '->', ch: chs[0] }); }
         if (on.bajo && !tapa(r.bajo)) r.bajo.push({ p: S, L: 4, ps: [raizCerca(chs[0], refBajo)], v: 104, art: '->', ch: chs[0] });
         perc[nb - 1] = CORTE.filter(([d]) => suena(on, d)).map(([d, v]) => ({ p: 0, d, v })); extra[nb - 1] = [];
+        cortar(solo, S);
         if (formatoV) { const g = TM.golpeVientos(formatoV, S, 4, chs[0], 108); for (const f of VIENTOS) { cortar(vientos[f], S, S + 4); if (on[f] && !vientos[f].some(e => e.p <= S && e.p + e.L > S)) vientos[f].push(...g[f]); } }
         Object.assign(fin, { ligaAl1: false, entraSolo: true }); pend = [];
       } else if (GOLPES_FIN[tr]) {
@@ -205,6 +224,7 @@
         const pos = GOLPES_FIN[tr](lado, /rumba/.test(cancion.clave || '') ? 'rumba' : 'son', L), desde = tr === 'golpe' ? Math.min(L, 14) : 0, golpes = (perc[nb - 1] || []).filter(e => e.p < desde);
         cortar(r.der, S + desde); cortar(r.izq, S + desde); cortar(r.bajo, S + desde);
         for (const f of VIENTOS) cortar(vientos[f], S + desde);
+        cortar(solo, S + desde);
         const anticipaFin = !!sig && L < 16 && pos[pos.length - 1] === L;
         pos.forEach((q, n) => {
           const ultimo = n === pos.length - 1, antic = ultimo && anticipaFin, ch = antic ? sig[0] : chEn(q), L = ultimo ? 16 - q : pos[n + 1] - q;
@@ -240,6 +260,7 @@
       const mover = (evs, dst) => { const nuevos = evs.map(e => ({ ...e, p: e.p + off })); dst.push(...nuevos); return nuevos; };
       const nd = mover(r.der, res.der), ni = mover(r.izq, res.izq), nB = mover(r.bajo, res.bajo);
       for (const f of VIENTOS) mover(vientos[f], res.vientos[f]);
+      mover(solo, res.solo);
       const pasa = i + 1 < secs.length;
       const liga = pasa && fin.ligaAl1 && on.piano && ons[i + 1].piano;
       const fd = nd.filter(e => e.liga && e.p >= off + S), ligDer = liga ? fd.concat(ni.filter(e => fd.some(x => x.p === e.p))) : [];
@@ -252,13 +273,14 @@
       }
       const nombre = String(s.nombre || '').replace(/["\\]/g, '').trim(), palabra = PALABRA[marcha];
       const texto = !nombre ? r.marca : nombre.toLowerCase().includes(palabra) ? nombre : `${nombre} · ${palabra}`;
-      res.secciones.push({ id: s.id != null ? s.id : i, nombre, inicio, largo: prog.length, vueltas: s.vueltas || 1, compases: nb, marcha, marca: r.marca, texto, semilla: s.semilla || (i + 1) * 7919, transicion: tr, entra: entraDe(i), llegaSig, info: { ...r.info, vientos: infoV } });
+      res.secciones.push({ id: s.id != null ? s.id : i, nombre, inicio, largo: prog.length, vueltas: s.vueltas || 1, compases: nb, marcha, marca: r.marca, texto, semilla: s.semilla || (i + 1) * 7919, transicion: tr, entra: entraDe(i), llegaSig, info: { ...r.info, vientos: infoV, ...(infoS ? { solo: infoS } : {}) } });
       previo = { linea: on.piano ? fin.linea : null, bajo: on.bajo ? fin.bajo : null, ligaAl1: liga, entraSolo: fin.entraSolo || !on.bajo || llegaSig === '1' };
       inicio += nb;
     });
     for (const k of ['der', 'izq', 'bajo']) res[k].sort((a, b) => a.p - b.p);
     // vientos: cada familia sin pisarse de una sección a la otra, y hasta el final de la canción
     for (const f of VIENTOS) { const a = res.vientos[f].sort((x, y) => x.p - y.p).filter((e, i, x) => !i || e.p > x[i - 1].p); a.forEach((e, i) => { e.L = Math.max(1, Math.min(e.L, (a[i + 1] ? a[i + 1].p : inicio * 16) - e.p)); }); res.vientos[f] = a; }
+    { const a = res.solo.sort((x, y) => x.p - y.p).filter((e, i, x) => !i || e.p > x[i - 1].p); a.forEach((e, i) => { e.L = Math.max(1, Math.min(e.L, (a[i + 1] ? a[i + 1].p : inicio * 16) - e.p)); }); res.solo = a; }
     // ---------- la costura del loop, para el reproductor: la primera vez que se toca el principio suena su 1 (entrada); al
     // volver por el loop, lo ligado desde el final sigue sonando (colas) y en el 1 caen los golpes que dejó el final (vuelta)
     if (loop && costura) {
@@ -290,5 +312,5 @@
     return { compases: inicio, prog: res.acordes, ...res, mix: res.mixes[0], info: s0.info, marcha: s0.marcha, marca: s0.marca, clave: cancion.clave, titulo: cancion.titulo || '' };
   }
 
-  Object.assign(TM, { generarCancion, PISTAS, PISTAS_PERC: PERC, PISTAS_VIENTOS: VIENTOS, GOLPES_FIN, LLEGA });
+  Object.assign(TM, { generarCancion, soloEn, PISTAS, PISTAS_PERC: PERC, PISTAS_VIENTOS: VIENTOS, GOLPES_FIN, LLEGA });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

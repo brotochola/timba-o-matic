@@ -3,6 +3,8 @@
 *.mid
 *.midi
 *.kar
+# La Weimar Jazz Database (midis/jazz/wjazzd.db, 42 MB): se baja de su página; al repositorio va base/base_solos.json
+*.db
 
 # Lo que se analiza de las colecciones compradas (Toontrack): solo en esta compu
 base/base_local.js

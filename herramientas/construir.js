@@ -117,7 +117,13 @@ function meterEnHtml(json) {
   // los vientos, así que de esas va nada más eso (el resto queda en base_tumbaos.json, para los análisis)
   const B = JSON.parse(json), encendida = c => !c || !!((B.colecciones || {})[c] || {}).encendida;
   const pagina = JSON.stringify({ ...B, fuentes: B.fuentes.map(f => encendida(f.coleccion) ? f : f.vientos && f.vientos.length ? { id: f.id, archivo: f.archivo, titulo: f.titulo, estilo: f.estilo, ...(f.genero ? { genero: f.genero } : {}), coleccion: f.coleccion, vientos: f.vientos } : null).filter(Boolean) });
-  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera herramientas/construir.js a partir de motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(pagina)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${Z}`;
+  // los solos de la Weimar Jazz Database para la trompeta solista (base/base_solos.json, de herramientas/solos_jazz.js), con el
+  // encaje de la clave y la referencia de la clave del jurado ya medidos en los vientos de la base (la página no trae el análisis
+  // de las colecciones)
+  const SOL = RUTAS.leerSolos();
+  if (SOL) { SOL.clave = TM.aprenderClave(B.fuentes); const rc = TM.referenciaClave(B.fuentes); SOL.refClave = { clave: rc.clave, cruzadas: rc.cruzadas, temas: rc.temas }; }
+  const solosHtml = SOL ? '<script type="application/json" id="base-solos">' + seguro(JSON.stringify(SOL)) + '</script>\n' : '';
+  const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera herramientas/construir.js a partir de motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(pagina)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${solosHtml}${Z}`;
   const nuevo = html.slice(0, i0) + bloque + html.slice(i1 + Z.length);
   if (nuevo !== html) { fs.writeFileSync(HTML_F, nuevo); console.log(`index.html actualizado (motor ${(codigo.length / 1024).toFixed(0)} kB + base)`); }
   else console.log('index.html ya estaba al día');
