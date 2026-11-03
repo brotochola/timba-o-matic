@@ -129,7 +129,8 @@ ${vientosStaff}    \\new PianoStaff <<
   // (por ejemplo, los que tocó la página). Las secciones de una canción van como marcadores.
   function aMidi(res, bpm, o = {}) {
     const T = 120;   // ticks por semicorchea (480 por negra)
-    const notas = evs => evs.flatMap(e => e.ps.map(m => ({ t: e.p * T, d: e.L * T - 6, m, v: e.v || 90 })));
+    // la nota picada («-.», de una corchea o más) suena la mitad, como en el reproductor de la página
+    const notas = evs => evs.flatMap(e => e.ps.map(m => ({ t: e.p * T, d: e.art === '-.' && e.L >= 2 ? Math.round(e.L * T / 2) : e.L * T - 6, m, v: e.v || 90 })));
     const pistas = [
       { nombre: 'piano', canal: 0, programa: 0, notas: [...notas(res.der), ...notas(res.izq)] },
       { nombre: 'bajo', canal: 1, programa: 32, notas: notas(res.bajo) },

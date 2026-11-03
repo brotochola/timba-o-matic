@@ -3,8 +3,9 @@
    uso: node herramientas/solos_jazz.js            lee midis/jazz/wjazzd.db y escribe base/base_solos.json
    La base se baja de https://jazzomat.hfm-weimar.de/download/downloads/wjazzd.db (42 MB) a midis/jazz/ (no va al repositorio).
    Entran los solos de trompeta y corneta, y los de cualquier instrumento con toque latino o funk (en corcheas derechas, como la
-   salsa), todos en 4/4. Cada nota va a la semicorchea más cercana: las corcheas de swing quedan derechas (la base ya las anota
-   como corcheas) y los tresillos caen en la semicorchea más cercana; dos notas en la misma semicorchea, queda la primera.
+   salsa), todos en 4/4. Cada nota va a la grilla de semicorcheas en corcheas derechas: las corcheas de swing (anotadas como
+   corcheas o como 1a y 3a de tresillo) quedan en el tiempo y el &, y los tresillos pasan a corchea y dos semicorcheas (abajo);
+   dos notas en la misma semicorchea, queda la primera.
    Lo que sale (base/base_solos.json) es un derivado de la Weimar Jazz Database: va con su licencia (ODbL) y su cita.
    ===================================================================== */
 const fs = require('fs'), path = require('path');
@@ -55,9 +56,24 @@ for (const s of solos) {
   const frases = q("select start, end from sections where melid = ? and type = 'PHRASE' order by start", s.melid);
   const ideas = q("select start, value from sections where melid = ? and type = 'IDEA' order by start", s.melid);
   const fraseDe = new Int32Array(ms.length).fill(-1); frases.forEach((f, i) => { for (let k = f.start; k <= f.end && k < ms.length; k++) fraseDe[k] = i; });
+  // la semicorchea de cada nota, tiempo por tiempo, en corcheas derechas (la salsa no swinguea). Las divisiones binarias (corcheas,
+  // semicorcheas) van a la más cercana. Las ternarias no: redondear manda la corchea de swing anotada como tresillo (1a y 3a) a la
+  // última semicorchea del tiempo (un puntillo que nadie tocó) y la 2a y 3a del tresillo a la «e» y la «a». Así: la 1a y la 3a, a
+  // corcheas; la 2a y la 3a, al & y la «a» (lleva al tiempo que sigue); la 2a o la 3a solas, al &; el tresillo entero, corchea y
+  // dos semicorcheas; cuatro o más (seisillos), semicorcheas seguidas, las que entren
+  const sub16 = new Array(ms.length).fill(0), porTiempo = new Map();
+  ms.forEach((m, k) => { const key = m.bar + ':' + m.beat; (porTiempo.get(key) || porTiempo.set(key, []).get(key)).push(k); });
+  for (const ks of porTiempo.values()) {
+    const fr = ks.map(k => (ms[k].tatum - 1) / Math.max(1, ms[k].division));
+    if (!ks.every(k => ms[k].division % 3 === 0)) { ks.forEach((k, i) => { sub16[k] = Math.round(4 * fr[i]); }); continue; }
+    const n = ks.length, en0 = fr[0] < 0.17;
+    const lug = n === 1 ? [en0 ? 0 : 2] : n === 2 ? (en0 ? [0, 2] : [2, 3]) : n === 3 ? (en0 ? [0, 2, 3] : [1, 2, 3]) : [0, 1, 2, 3];
+    ks.forEach((k, i) => { sub16[k] = i < lug.length ? lug[i] : -1; });   // -1: no entra
+  }
   const notas = [], usada = new Set(), idx = new Map();
   ms.forEach((m, k) => {
-    let sub = Math.round(4 * (m.tatum - 1) / Math.max(1, m.division)), beat = m.beat, bar = m.bar;
+    if (sub16[k] < 0) { notasTot++; chocan++; return; }
+    let sub = sub16[k], beat = m.beat, bar = m.bar;
     if (sub >= 4) { sub -= 4; beat++; if (beat > 4) { beat = 1; bar++; } }
     const p = (bar - b0) * 16 + (beat - 1) * 4 + sub;
     notasTot++;

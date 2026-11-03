@@ -115,7 +115,7 @@
         const ms = ev.map(e => e.m), xr = ev.filter(e => e.crom).length / ev.length;
         let pasos = 0; for (let i = 1; i < ms.length; i++) { const d = Math.abs(ms[i] - ms[i - 1]); if (d >= 1 && d <= 2) pasos++; }
         MS.frases.push({ s: si, p0: b0, interprete: s.interprete, inst: s.inst, feel: s.feel || '', idea: idea[gr.i[0]], ev, off: ev[0].q, len, n: ev.length, dens: ev.length / Math.max(1, len / 4),
-          xr, paso: pasos / (ms.length - 1), baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
+          xr, paso: pasos / (ms.length - 1), raras: (r => r.sueltas + r.corridas * 0.5)(rarezas(ev.map(e => ({ p: e.q, L: e.d })))), baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
           fit: [encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'A'), encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'B')] });
       }
     });
@@ -178,6 +178,66 @@
     return out;
   }
 
+  // ---------- las rarezas rítmicas de una lista de notas [{p, L}] (para elegir frases y para el jurado). En los vientos de salsa
+  // de la base, el 92% de las notas cae en el tiempo o en el &; una semicorchea suelta (en la «e» o la «a», sin otra semicorchea
+  // pegada) es el 2,8% de las notas y una nota larga que arranca en semicorchea, el 6%. En el jazz pasado a corcheas derechas son
+  // el 8% y el 19%: el swing corre las notas (la corchea de swing escrita con puntillo, el anticipo de semicorchea)
+  const suelta = (ns, i) => { const n = ns[i], a = ns[i - 1], b = ns[i + 1]; return ((n.p % 2) + 2) % 2 === 1 && !(a && n.p - a.p === 1) && !(b && b.p - n.p === 1); };
+  const rarezas = ns => { let sueltas = 0, largas = 0, corridas = 0; ns.forEach((n, i) => { if (suelta(ns, i)) sueltas++; if (n.L >= 3) { largas++; if (n.p % 2) corridas++; } }); return { sueltas: ns.length ? sueltas / ns.length : 0, corridas: largas ? corridas / largas : 0 }; };
+
+  // ---------- el supervisor rítmico: cada nota del solo en un lugar que tenga sentido en la salsa (en corcheas derechas, con la clave)
+  // - una semicorchea suelta va a la corchea de antes (en el swing es la corchea que llegó tarde: la «a» es el & corrido, la «e» el
+  //   tiempo); si no hay lugar, a la de después
+  // - una nota larga no arranca en semicorchea: al final de una corrida de semicorcheas, la de antes se estira y la larga cae en la
+  //   corchea; sola, va a la corchea de antes o de después
+  // - adentro de la frase no quedan silencios de semicorchea: la nota dura hasta la siguiente (si sonaba la mitad o menos, picada:
+  //   la negra que el trompetista toca corta se escribe negra con punto, no semicorchea y tres silencios)
+  // - la última nota de la frase no queda cortada: dura por lo menos una corchea, y si hay lugar una negra; la que entra en el 4&
+  //   (o en su «a») se liga al 1 del compás que sigue, como el anticipo de la salsa
+  // fin(p): hasta dónde puede sonar una nota que empieza en p (el final de la sección o del hueco que deja el coro)
+  function supervisar(out, fin) {
+    out.sort((a, b) => a.p - b.p);
+    const libre = (p, i) => p >= 0 && !out.some((x, j) => j !== i && x.p === p) && p < fin(out[i].p);
+    for (let pasada = 0; pasada < 2; pasada++) for (let i = 0; i < out.length; i++) {
+      const n = out[i], a = out[i - 1], b = out[i + 1];
+      if (!(n.p % 2)) continue;
+      const tras = a && n.p - a.p === 1, ultima = !b || b.p > n.p + 1;
+      if (tras) {
+        // al final de una corrida de semicorcheas: si termina en la «a» (y después hay lugar) o es larga, cae en la corchea que
+        // sigue y la de antes se estira (el anticipo de la salsa es de corchea, no de semicorchea); si no, queda (la semicorchea
+        // que lleva a la nota siguiente, o el par de semicorcheas en el tiempo)
+        if (ultima && (n.p % 4 === 3 || n.L >= 3) && libre(n.p + 1, i)) { a.L = n.p + 1 - a.p; n.p += 1; n.L = Math.max(1, n.L - 1); }
+        continue;
+      }
+      if (b && b.p - n.p === 1) continue;   // una semicorchea que lleva a la nota siguiente
+      // suelta (o larga sola): a la corchea de antes, si no pisa a la anterior; si no, a la de después
+      const antes = n.p - 1, despues = n.p + 1;
+      if ((!a || a.p < antes) && libre(antes, i)) { if (a && a.p + a.L > antes) a.L = Math.max(1, antes - a.p); n.p = antes; n.L += 1; }
+      else if ((!b || b.p > despues) && libre(despues, i)) { n.p = despues; n.L = Math.max(1, n.L - 1); }
+    }
+    out.sort((a, b) => a.p - b.p);
+    for (let i = 0; i < out.length; i++) {
+      const n = out[i], a = out[i - 1], b = out[i + 1], fn = fin(n.p), hasta = Math.min(b ? b.p : Infinity, fn), hueco = hasta - (n.p + n.L);
+      // la última de la frase: la que sigue está a más de un tiempo de silencio, o entra el coro antes
+      const ultima = !b || b.p - (n.p + n.L) >= 4 || fn < b.p;
+      if (!ultima && hueco >= 1 && (hueco === 1 ? b.p - n.p <= 16 : b.p - n.p <= 4 && (hueco % 2 === 1 || n.L === 1)) && !(n.p % 2 && b.p - n.p >= 3)) {
+        // un silencio de semicorchea (o una semicorchea y su silencio) adentro de la frase: hasta la siguiente; si sonaba la mitad o
+        // menos, picada
+        if (n.L * 2 <= b.p - n.p) n.art = n.art || '-.';
+        n.L = b.p - n.p;
+      } else if (ultima) {
+        // la última de la frase no termina en semicorchea: va a la corchea que sigue (la de antes se estira); dura una corchea por lo
+        // menos, una negra si hay lugar, y la del 4& (o su «a») se liga al 1 que sigue. Antes de la frase que sigue queda una corchea
+        // de aire; antes del coro, hasta que entra
+        if (n.p % 2 && n.p + 2 <= hasta) { if (a && a.p + a.L === n.p) a.L++; n.p++; n.L = Math.max(1, n.L - 1); }
+        const q = n.p % 16, lugar = hasta - n.p - (b && fn >= b.p ? 2 : 0), quiere = q >= 14 ? 16 - q + 4 : n.L < 4 && lugar >= 6 ? 4 : 2;
+        n.L = Math.max(n.L, Math.min(quiere, lugar));
+      }
+      n.L = Math.max(1, Math.min(n.L, hasta - n.p));
+    }
+    return out;
+  }
+
   // ---------- el solo de una sección
   // opc: { nb, lado(b) ('A' lado 3 | 'B' lado 2), acordesDe(b), acordeEn(b, pos), anticipa, posAnt, R, estilo (de la sección),
   //        final (la sección que sigue entra con la banda: el solo cierra), k: las perillas (s_*) }
@@ -212,7 +272,9 @@
     const pesoBase = f => parejo(f) * (quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
       * (f.ancho > 19 ? Math.exp(-(f.ancho - 19) / 4) : 1) * Math.exp(-Math.max(0, f.xr - Mo.cromMeta * +kv('s_crom', 1)) * 8) * (f.baja < -2 ? Mo.baja : 1)
       // la línea como la de sus trompetistas: las frases mucho más saltonas que eso, menos
-      * Math.exp(-Math.max(0, Mo.pasoMeta - 0.08 - f.paso) * 6);
+      * Math.exp(-Math.max(0, Mo.pasoMeta - 0.08 - f.paso) * 6)
+      // el ritmo de la salsa: las frases con semicorcheas sueltas o notas largas corridas, menos (el supervisor las acomoda igual)
+      * Math.exp(-Math.max(0, f.raras - 0.05) * 8);
     const pool = MS.frases.filter(f => f.len <= Mo.maxFrase + 8 && pesoBase(f) > 0.01);
     const usadas = new Set();
     let prev = null, ultima = null, pedales = 0, pedalEn = -99, grito = false, seguidas = 0;
@@ -232,7 +294,7 @@
       if (extra.cierra) ns.at(-1).d = Math.max(ns.at(-1).d, Math.min(8, extra.hasta - ns.at(-1).p));
       if (extra.grito) {
         // la nota larga del grito: una corchea después de la frase, arriba de lo más agudo de la frase, del acorde
-        const u = ns.at(-1), p = u.p + Math.max(2, Math.min(u.d, 4)), T = acordeDe(p);
+        const u = ns.at(-1), p0 = u.p + Math.max(2, Math.min(u.d, 4)), p = p0 + (p0 % 2), T = acordeDe(p);
         if (T && p + 8 <= extra.hasta) { u.d = Math.min(u.d, p - u.p); u.fin = false; ns.push({ p, d: Math.min(10, extra.hasta - p), m: Math.max(...ns.map(n => n.m)) + 3, cat: 'C', T, esc: escalaDe(T, sigDe(p)), fuerte: p % 4 === 0, fin: true, grito: true }); }
       }
       const centro = centroDe(I) + (extra.sube || 0), hi = extra.grito ? techo : Math.min(techo, Math.max(centro + 9, Mo.techo - 4 + Math.round(4 * I))), lo = Math.max(PISO, Math.min(centro - 11, hi - 14));
@@ -333,7 +395,8 @@
         t = r.fin + Math.max(2, Math.round(aire));
       }
     }
-    out.sort((a, b) => a.p - b.p);
+    const finDe = p => { for (const [a, b] of info.huecos) if (p >= a && p < b) return Math.min(total, b); return total; };
+    supervisar(out, finDe);
     for (let i = 0; i < out.length; i++) out[i].L = Math.max(1, Math.min(out[i].L, (out[i + 1] ? out[i + 1].p : total) - out[i].p));
     info.fuentes = [...new Set(info.fuentes)];
     return { notas: out.filter(e => e.p >= 0 && e.p < total), info };
@@ -393,6 +456,8 @@
     if (ctx.modelo) { const M = ctx.modelo, a = [], b = [];
       for (const fr of frases) for (let i = 2; i < fr.length; i++) { a.push(M.iv(fr[i - 1].m - fr[i - 2].m, fr[i].m - fr[i - 1].m)); b.push(M.io(fr[i - 1].p - fr[i - 2].p, fr[i].p - fr[i - 1].p, fr[i - 1].p % 4)); }
       r.linea = a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; r.ritmo = b.length ? b.reduce((x, y) => x + y, 0) / b.length : null; }
+    // el ritmo de la salsa (solo con la clave: el jazz no se juzga por esto)
+    if (ctx.ladoDe) { const rz = rarezas(ns); r.sueltas = rz.sueltas; r.corridas = rz.corridas; }
     r.frases = frases.length; r.notas = N;
     return r;
   }
@@ -415,7 +480,7 @@
     repite: 'notas repetidas', paso: 'pasos de grado', salto: 'saltos de cuarta o más', saltoGrande: 'saltos de más de una sexta', rellena: 'después de un salto, vuelve',
     notasFrase: 'notas por frase', largoFrase: 'largo de frase (tiempos)', maxFrase: 'la frase más larga (tiempos)', aire: 'silencio', densidad: 'notas por tiempo', semicorcheas: 'semicorcheas seguidas',
     contratiempo: 'ataques fuera del tiempo', registro: 'nota media', ambito: 'ámbito (semitonos)', agudas: 'notas desde el Do6', sube: 'cuánto sube del primer tercio al último', climax: 'dónde está la nota más aguda',
-    motivos: 'motivos que vuelven', cierre: 'frases que cierran en nota del acorde', entropia: 'variedad de notas (bits)', linea: 'naturalidad de la línea', ritmo: 'naturalidad del ritmo', clave: 'encaje con la clave', cruzadas: 'frases cruzadas'
+    motivos: 'motivos que vuelven', cierre: 'frases que cierran en nota del acorde', entropia: 'variedad de notas (bits)', linea: 'naturalidad de la línea', ritmo: 'naturalidad del ritmo', sueltas: 'semicorcheas sueltas', corridas: 'notas largas que arrancan en semicorchea', clave: 'encaje con la clave', cruzadas: 'frases cruzadas'
   };
   // la referencia: el percentil 10, 50 y 90 de cada rasgo en un grupo de solos (rasgos ya medidos)
   function referenciaSolos(lista) {
@@ -434,8 +499,9 @@
   // los rubros: la nota es la media geométrica de los cinco (si uno falla, la nota cae); cada rasgo vale por su distancia a lo
   // normal. Los de un solo lado: estar más en clave, cerrar más en nota del acorde o resolver más no es malo
   const RUBROS = { armonia: ['acordeFuerte', 'tension', 'escala', 'fueraLarga', 'resuelve', 'cierre'], linea: ['repite', 'paso', 'salto', 'saltoGrande', 'rellena', 'linea', 'entropia'],
-    fraseo: ['notasFrase', 'largoFrase', 'maxFrase', 'aire', 'densidad', 'ritmo', 'semicorcheas', 'contratiempo'], arco: ['registro', 'ambito', 'agudas', 'sube', 'climax', 'motivos'], clave: ['clave', 'cruzadas'] };
-  const UN_LADO = { clave: 'bajo', cierre: 'bajo', resuelve: 'bajo', sube: 'bajo', fueraLarga: 'alto', cruzadas: 'alto', saltoGrande: 'alto', agudas: 'alto' };
+    fraseo: ['notasFrase', 'largoFrase', 'maxFrase', 'aire', 'densidad', 'ritmo', 'semicorcheas', 'contratiempo'], arco: ['registro', 'ambito', 'agudas', 'sube', 'climax', 'motivos'], clave: ['clave', 'cruzadas', 'sueltas', 'corridas'] };
+  // la naturalidad del ritmo se mide contra el jazz: tocar más derecho (más corcheas) que el jazz es lo de la salsa, no un defecto
+  const UN_LADO = { ritmo: 'bajo', sueltas: 'alto', corridas: 'alto', clave: 'bajo', cierre: 'bajo', resuelve: 'bajo', sube: 'bajo', fueraLarga: 'alto', cruzadas: 'alto', saltoGrande: 'alto', agudas: 'alto' };
   function juzgarSolo(r, ref, o = {}) {
     if (!r) return { nota: 0, detalle: [], faltas: ['menos de 8 notas'], rubros: {} };
     const det = [];
@@ -454,6 +520,7 @@
     if (r.maxFrase > (o.maxFrase || 32)) faltas.push('una frase de más de ' + (o.maxFrase || 32) + ' tiempos sin respirar');
     if (o.techo && r.agudas > 0 && o.techo < 84) faltas.push('pasa el techo');
     if (r.cruzadas != null && r.cruzadas > 0.34) faltas.push('muchas frases cruzadas');
+    if (ref.sueltas && r.sueltas > ref.sueltas.p90 + 0.03) faltas.push('semicorcheas sueltas (notas corridas de lugar)');
     const vs = Object.values(rubros), geo = vs.length ? Math.exp(vs.reduce((a, v) => a + Math.log(Math.max(1e-3, v)), 0) / vs.length) : 0;
     return { nota: +(10 * geo * Math.pow(0.85, faltas.length)).toFixed(2), detalle: det, faltas, rubros };
   }
@@ -468,7 +535,9 @@
       for (const f of m) {
         const ciclos = (f.vientos || []).map(c => { const porP = new Map(); for (const [p, d, mm] of c.e) if (!porP.has(p) || porP.get(p).m < mm) porP.set(p, { p, d, m: mm }); return [...porP.values()].sort((a, b) => a.p - b.p); }).filter(ev => ev.length >= 3);
         if (ciclos.length < 4) continue;
-        filas.push({ clave: encaje(ciclos.flat(), L[1 - i], 'A'), cruzadas: ciclos.filter(ev => encaje(ev, L[1 - i], 'A') < -0.25).length / ciclos.length });
+        const rz = ciclos.map(ev => rarezas(ev.map(e => ({ p: e.p, L: e.d })))), nn = ciclos.reduce((a, ev) => a + ev.length, 0);
+        filas.push({ clave: encaje(ciclos.flat(), L[1 - i], 'A'), cruzadas: ciclos.filter(ev => encaje(ev, L[1 - i], 'A') < -0.25).length / ciclos.length,
+          sueltas: rz.reduce((a, x, k) => a + x.sueltas * ciclos[k].length, 0) / nn, corridas: rz.reduce((a, x) => a + x.corridas, 0) / rz.length });
       }
     });
     return { ...referenciaSolos(filas), temas: filas.length };
@@ -492,9 +561,9 @@
       }
     });
     const ref = referenciaSolos(tramos.map(x => x.r)), refE = referenciaSolos(enteros), rc = MS.refClave || referenciaClave(fuentesBase);
-    Object.assign(ref, { sube: refE.sube, climax: refE.climax, clave: rc.clave, cruzadas: rc.cruzadas });
+    Object.assign(ref, { sube: refE.sube, climax: refE.climax, clave: rc.clave, cruzadas: rc.cruzadas, sueltas: rc.sueltas, corridas: rc.corridas });
     const refModo = {};
-    for (const [m, Mo] of Object.entries(MODOS)) { const q = new Set(Mo.quien), l = tramos.filter(x => q.has(x.s.interprete)); refModo[m] = l.length >= 30 ? { ...referenciaSolos(l.map(x => x.r)), sube: ref.sube, climax: ref.climax, clave: ref.clave, cruzadas: ref.cruzadas } : ref; }
+    for (const [m, Mo] of Object.entries(MODOS)) { const q = new Set(Mo.quien), l = tramos.filter(x => q.has(x.s.interprete)); refModo[m] = l.length >= 30 ? { ...referenciaSolos(l.map(x => x.r)), sube: ref.sube, climax: ref.climax, clave: ref.clave, cruzadas: ref.cruzadas, sueltas: ref.sueltas, corridas: ref.corridas } : ref; }
     // ctx: { chEn, sigEn, ladoDe }; notas: [{p, L, m}]
     const juzgar = (notas, ctx, modo) => { const r = rasgosSolo(notas, { ...ctx, clave: MS.clave, modelo: modelos[0] }); return { r, ...juzgarSolo(r, refModo[modo] || ref, { techo: (MODOS[modo] || {}).techo, ajuste: (MODOS[modo] || {}).jurado }) }; };
     return { ref, refModo, modelos, tramos, juzgar, temasClave: rc.temas || null };
@@ -517,5 +586,5 @@
   ];
   if (TM.PERILLAS_UI && TM.PERILLAS) for (const p of PERILLAS_SOLO) if (!TM.PERILLAS_UI.some(x => x.id === p.id)) { TM.PERILLAS_UI.push(p); TM.PERILLAS[p.id] = p.def; }
 
-  Object.assign(TM, { referenciaClave, prepararJurado, PERILLAS_SOLO, modeloLinea, escalaSolo: escalaDe, MODOS_SOLO: MODOS, MODO_SOLO_DE_ESTILO: MODO_DE_ESTILO, construirSolos, solear, acomodarSolo: acomodar, rasgosSolo, referenciaSolos, juzgarSolo, RASGOS_SOLO: RASGOS, RUBROS_SOLO: RUBROS, encajeClave: encaje, aprenderClave });
+  Object.assign(TM, { supervisarSolo: supervisar, rarezasRitmo: rarezas, referenciaClave, prepararJurado, PERILLAS_SOLO, modeloLinea, escalaSolo: escalaDe, MODOS_SOLO: MODOS, MODO_SOLO_DE_ESTILO: MODO_DE_ESTILO, construirSolos, solear, acomodarSolo: acomodar, rasgosSolo, referenciaSolos, juzgarSolo, RASGOS_SOLO: RASGOS, RUBROS_SOLO: RUBROS, encajeClave: encaje, aprenderClave });
 })(globalThis.TumbaoMotor = globalThis.TumbaoMotor || {});

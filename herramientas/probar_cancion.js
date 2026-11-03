@@ -301,6 +301,26 @@ else {
   let x = 12345; const azar = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648, tonto = [];
   for (let p = 0, m = 70; p < 250; p += 2) { m = Math.max(58, Math.min(82, m + Math.floor(azar() * 9) - 4)); tonto.push({ p, L: 2, m }); }
   ok(J.juzgar(tonto, { chEn, ladoDe: p => rs.lados[sS.inicio + Math.floor(p / 16)] }, 'descarga').nota < media - 1.5, 'el jurado castiga un solo de notas al azar');
+  // el ritmo (pedido del dueño): cada nota en un lugar que tenga sentido, en todos los modos y las dos formas
+  const R_ = { sueltas: 0, corridas: 0, hueco: 0, cortas: 0, antic: 0, n: 0, pares: 0, finales: 0, anticipos: 0, enCorchea: 0 };
+  for (const modo of Object.keys(TM.MODOS_SOLO)) for (const forma of ['corrido', 'coro']) for (const prog of ['Am D7 G E7', 'Cm7 F7 Bbmaj7 Ebmaj7', 'C F G7 F']) for (let sem = 1; sem <= 2; sem++) {
+    const rx = TM.generarCancion({ titulo: '', clave: sem % 2 ? 'son 2-3' : 'son 3-2', perillas: {}, secciones: [{ id: 's', tipo: 'solo', prog, marcha: 'marcha', estilo: 'salsa', vueltas: 4, semilla: 100 + sem, perillas: { s_modo: modo, s_forma: forma } }] }, Ms), x = rx.solo;
+    const entraCoro = p => rx.secciones[0].info.solo.huecos.some(([, b]) => b === p);   // ahí entra el coro: la trompeta no se liga encima
+    x.forEach((n, i) => {
+      const a = x[i - 1], b = x[i + 1], q = n.p % 16, hueco = b ? b.p - (n.p + n.L) : 99;
+      R_.n++; if (q % 4 === 0 || q % 4 === 2) R_.enCorchea++;
+      if (n.p % 2 && !(a && n.p - a.p === 1) && !(b && b.p - n.p === 1)) R_.sueltas++;
+      if (n.L >= 3 && n.p % 2) R_.corridas++;
+      if (b && hueco < 4) { R_.pares++; if (hueco === 1 && !(n.p % 2)) R_.hueco++; }
+      if (hueco >= 4) { R_.finales++; if (n.L < 2) R_.cortas++; if (q >= 14 && !entraCoro(n.p - q + 16)) { R_.anticipos++; if (q + n.L <= 16) R_.antic++; } }
+    });
+  }
+  ok(R_.sueltas === 0, `ninguna semicorchea suelta (en la «e» o la «a» sin otra semicorchea pegada): ${R_.sueltas} de ${R_.n}`);
+  ok(R_.corridas === 0, `ninguna nota larga arranca en semicorchea: ${R_.corridas}`);
+  ok(R_.hueco === 0, `sin silencios de semicorchea entre notas de la frase: ${R_.hueco} de ${R_.pares}`);
+  ok(R_.cortas === 0, `la última nota de cada frase dura por lo menos una corchea: ${R_.cortas} de ${R_.finales} cortas`);
+  ok(R_.antic === 0, `la frase que termina en el 4& se liga al 1 que sigue: ${R_.antic} de ${R_.anticipos} sin ligar`);
+  ok(R_.enCorchea / R_.n >= 0.82, `en el tiempo o en el & (los vientos de salsa: 92%): ${(100 * R_.enCorchea / R_.n).toFixed(1)}%`);
   // la salida: un pentagrama «Solo» en la partitura y una pista en el MIDI
   lySolo = TM.aLilyPond(rs, { clave: 'son 2-3', bpm: 190 });
   ok(/instrumentName = "Solo"/.test(lySolo) && /trompetaSolo = \{/.test(lySolo), 'la partitura tiene el pentagrama del solo');

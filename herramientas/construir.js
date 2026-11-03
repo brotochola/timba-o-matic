@@ -121,7 +121,7 @@ function meterEnHtml(json) {
   // encaje de la clave y la referencia de la clave del jurado ya medidos en los vientos de la base (la página no trae el análisis
   // de las colecciones)
   const SOL = RUTAS.leerSolos();
-  if (SOL) { SOL.clave = TM.aprenderClave(B.fuentes); const rc = TM.referenciaClave(B.fuentes); SOL.refClave = { clave: rc.clave, cruzadas: rc.cruzadas, temas: rc.temas }; }
+  if (SOL) { SOL.clave = TM.aprenderClave(B.fuentes); const rc = TM.referenciaClave(B.fuentes); SOL.refClave = { clave: rc.clave, cruzadas: rc.cruzadas, sueltas: rc.sueltas, corridas: rc.corridas, temas: rc.temas }; }
   const solosHtml = SOL ? '<script type="application/json" id="base-solos">' + seguro(JSON.stringify(SOL)) + '</script>\n' : '';
   const bloque = `${A}\n<script>\n/* Motor de tumbaos: lo genera herramientas/construir.js a partir de motor/. No editar acá. */\n${seguro(codigo)}\n</script>\n<script type="application/json" id="base-tumbaos">${seguro(pagina)}</script>\n<script type="application/json" id="demos">${seguro(JSON.stringify(demos))}</script>\n${solosHtml}${Z}`;
   const nuevo = html.slice(0, i0) + bloque + html.slice(i1 + Z.length);
