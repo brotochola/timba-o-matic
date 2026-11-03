@@ -1,6 +1,8 @@
 # timba-o-matic
 
-Para armar maquetas de canciones de timba y salsa: ponés las secciones y sus acordes, y la página arma piano, bajo, vientos y percusión, los muestra como un multipista, los escribe en partitura (LilyPond) y los toca con GeneralUser GS. Es una sola página: se abre `index.html` en el navegador y listo.
+Para armar maquetas de canciones de timba y salsa: ponés las secciones y sus acordes, y la página arma piano, bajo, vientos y percusión, los muestra como un multipista, los escribe en partitura (LilyPond) y los toca con GeneralUser GS. Es una sola página: se abre `index.html` en el navegador y listo, o en línea en [brotochola.github.io/timba-o-matic](https://brotochola.github.io/timba-o-matic/).
+
+Cómo está armado el repositorio y cómo se trabaja en el código: [más abajo](#qué-hay-en-el-repo).
 
 ## Cómo se usa
 
@@ -51,7 +53,7 @@ En las marchas fuertes (presión, bomba, despelote, muela) el bajo toca lo de la
 ### Canción y sonido
 
 - El sonido de entrada es **GeneralUser GS**: se carga solo la primera vez que tocás. También están la banda de samples (3 MB), el sintetizador y un dispositivo MIDI externo.
-- **Demos:** canciones armadas con la app (timba con presión y despelote, salsa brava, son montuno…), para escuchar y tocar sus perillas. Son las de [canciones/](canciones/) que tienen `orden`: `construir.js` las mete en la página en ese orden. La primera vez que alguien abre la app (sin canción guardada) se abre la marcada `portada`.
+- **Demos:** canciones armadas con la app (timba con presión y despelote, salsa brava, son montuno…), para escuchar y tocar sus perillas. Son las de [canciones/](canciones/) que tienen `orden`: `herramientas/construir.js` las mete en la página en ese orden. La primera vez que alguien abre la app (sin canción guardada) se abre la marcada `portada`.
 - «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` (el mismo formato de las demos) y «Importar canción…» la abre.
 - **Bajar como** tema (con principio y final) o loop (el final anticipa el principio y el primer 1 no se repite, para pegarlo en el DAW sin costura):
   - **Bajar MIDI** (también el botón `.mid` de arriba): piano, bajo, trompetas, trombones, saxos, una pista por instrumento de percusión y un marcador por sección.
@@ -60,9 +62,9 @@ En las marchas fuertes (presión, bomba, despelote, muela) el bajo toca lo de la
 
 ## Cómo genera
 
-- **Piano:** de entrada, **Opus** ([motor/09_piano.js](analisis_tumbaos/motor/09_piano.js)): elige un tema y uno de sus montunos de 2 o 4 compases, por el estilo, el tipo de sección y el ritmo armónico de tus acordes; lo repite como gancho con las perillas y la marcha, y lo lleva a tus acordes conduciendo las voces (la 3a a la 3a, el contorno y el registro; nada fuera del acorde queda largo ni en el 2& o el 4&). Aprende de la base, de Toontrack y de una biblioteca de montunos (`b:opus`, 1013 ciclos de 93 temas). Las células (el piano de antes) aprenden de una base de MIDIs analizados. Toman células reales (ritmo y textura, lado 3 | lado 2 de la clave) de los temas del estilo y del tipo de sección; busca la línea de arriba nota por nota (función armónica, zigzag, enlace entre acordes, un gancho que se repite) y la viste según el estilo. En la frase real toca la frase entera de un tema y le acomoda las notas a los acordes (la raíz a la raíz, la tercera a la tercera).
+- **Piano:** de entrada, **Opus** ([motor/09_piano.js](motor/09_piano.js)): elige un tema y uno de sus montunos de 2 o 4 compases, por el estilo, el tipo de sección y el ritmo armónico de tus acordes; lo repite como gancho con las perillas y la marcha, y lo lleva a tus acordes conduciendo las voces (la 3a a la 3a, el contorno y el registro; nada fuera del acorde queda largo ni en el 2& o el 4&). Aprende de la base, de Toontrack y de una biblioteca de montunos (`b:opus`, 1013 ciclos de 93 temas). Las células (el piano de antes) aprenden de una base de MIDIs analizados. Toman células reales (ritmo y textura, lado 3 | lado 2 de la clave) de los temas del estilo y del tipo de sección; busca la línea de arriba nota por nota (función armónica, zigzag, enlace entre acordes, un gancho que se repite) y la viste según el estilo. En la frase real toca la frase entera de un tema y le acomoda las notas a los acordes (la raíz a la raíz, la tercera a la tercera).
 - **Bajo:** tumbaos escritos por rol (raíz, quinta, tercera, la raíz que viene) y medidos en el corpus: el de salsa (la quinta en el 2&, la raíz que viene en el 4), el de timba («Ya empezó la fiesta»: la misma nota en el 2& y el 3, la raíz o la tercera en el 4, la raíz que viene en el 4&), songo, timbero, motivo, pedal, notas largas, deslizamientos, muela.
-- **Vientos:** [motor/08_vientos.js](analisis_tumbaos/motor/08_vientos.js) aprende de los ciclos de vientos de todos los temas de la base (los propios, mididb y la colección de mambos) y los clasifica: moña (un riff que se repite), mambo (una línea que cambia), respuesta (corta, en los huecos del cantante) y fondo (notas largas). La sección toca los riffs de un tema acomodados a tus acordes, con cada golpe en unísono o armonizado como en el original; los bloques son golpes con la banda en los anticipos y al final (siempre con la nota de arriba del acorde). La línea es la del instrumento que lleva el riff en el tema; las notas del acorde van a la misma función del acorde nuevo y las de paso, como aproximación a la nota del acorde a la que van. La octava se elige por frase, no nota por nota, así la línea no se rompe; en el contrapunto la trompeta queda arriba. Con crescendo, en el último tercio el mambo trae material nuevo y sube. Las notas de paso van como aproximación a la nota del acorde y se armonizan en paralelo con ella; las de paso rápidas (semicorcheas) van al unísono, y ninguna voz baja de donde su intervalo embarra (reglas de big band: Absil, Rogers, Hoffmann). Con la trompeta arriba del Fa5, una voz la dobla una octava abajo. La armonía **trombanga** (la de la salsa brava) es la de Willie Colón: el riff de los dos trombones al unísono, en registro grave, y una frase de cada dos se abre en terceras y termina raspando en una segunda. Con la orquesta grande, el contrapunto es de metales contra saxos, y la moña en capas entra como las capas de Machito: el guajeo de los trombones, las respuestas de los saxos y la contramelodía de las trompetas. En la timba los metales callan en los coros y tocan el mambo después. Los temas de otros géneros de la base (merengue, cumbia, pop) casi no entran en la salsa y la timba, y los boleros, poco. La investigación (entrevistas y textos de arregladores y vientistas de salsa y timba) está resumida en los comentarios del módulo.
+- **Vientos:** [motor/08_vientos.js](motor/08_vientos.js) aprende de los ciclos de vientos de todos los temas de la base (los propios, mididb y la colección de mambos) y los clasifica: moña (un riff que se repite), mambo (una línea que cambia), respuesta (corta, en los huecos del cantante) y fondo (notas largas). La sección toca los riffs de un tema acomodados a tus acordes, con cada golpe en unísono o armonizado como en el original; los bloques son golpes con la banda en los anticipos y al final (siempre con la nota de arriba del acorde). La línea es la del instrumento que lleva el riff en el tema; las notas del acorde van a la misma función del acorde nuevo y las de paso, como aproximación a la nota del acorde a la que van. La octava se elige por frase, no nota por nota, así la línea no se rompe; en el contrapunto la trompeta queda arriba. Con crescendo, en el último tercio el mambo trae material nuevo y sube. Las notas de paso van como aproximación a la nota del acorde y se armonizan en paralelo con ella; las de paso rápidas (semicorcheas) van al unísono, y ninguna voz baja de donde su intervalo embarra (reglas de big band: Absil, Rogers, Hoffmann). Con la trompeta arriba del Fa5, una voz la dobla una octava abajo. La armonía **trombanga** (la de la salsa brava) es la de Willie Colón: el riff de los dos trombones al unísono, en registro grave, y una frase de cada dos se abre en terceras y termina raspando en una segunda. Con la orquesta grande, el contrapunto es de metales contra saxos, y la moña en capas entra como las capas de Machito: el guajeo de los trombones, las respuestas de los saxos y la contramelodía de las trompetas. En la timba los metales callan en los coros y tocan el mambo después. Los temas de otros géneros de la base (merengue, cumbia, pop) casi no entran en la salsa y la timba, y los boleros, poco. La investigación (entrevistas y textos de arregladores y vientistas de salsa y timba) está resumida en los comentarios del módulo y completa en [docs/investigacion/](docs/investigacion/).
 
   Medido en el corpus (`vientos_corpus.js`, 90 temas con la clave tocada) y en lo que sale (`jurado.js`, con el mismo modelo de vientos que la página):
 
@@ -75,60 +77,92 @@ En las marchas fuertes (presión, bomba, despelote, muela) el bajo toca lo de la
   | la de arriba de la trompeta en el mambo, mediana | Si4 | Do#5 |
   | trompetas y trombones en el mismo ritmo / alternando por compás | 33% / 2% | forma «bloque» por defecto |
 
-- **Percusión:** patrones por instrumento con la fuerza de cada golpe ([motor/07_percusion.js](analisis_tumbaos/motor/07_percusion.js), cada uno dice de dónde sale): la cáscara, el campaneo, el contracampaneo y las patadas de timba del cuadro de Kevin Moore (Beyond Salsa Percussion vol. 3); el tumbao de conga con manoteo de Mauleón; el songo de Changuito (timba.com); el güiro, el martillo y la tumba del corpus. No hay maracas: el raspado es el güiro. Las dos campanas suenan distinto (investigación sobre la campana: Moore anota dos timbres por campana): la del bongó es la más grave y la del timbal más aguda, y cada una tiene su boca abierta y su talón seco y brillante; el contracampaneo va abierto en los tiempos y en talón en los contratiempos.
+- **Percusión:** patrones por instrumento con la fuerza de cada golpe ([motor/07_percusion.js](motor/07_percusion.js), cada uno dice de dónde sale): la cáscara, el campaneo, el contracampaneo y las patadas de timba del cuadro de Kevin Moore (Beyond Salsa Percussion vol. 3); el tumbao de conga con manoteo de Mauleón; el songo de Changuito (timba.com); el güiro, el martillo y la tumba del corpus. No hay maracas: el raspado es el güiro. Las dos campanas suenan distinto ([investigación sobre la campana](docs/investigacion/campana.md): Moore anota dos timbres por campana): la del bongó es la más grave y la del timbal más aguda, y cada una tiene su boca abierta y su talón seco y brillante; el contracampaneo va abierto en los tiempos y en talón en los contratiempos.
 
 La canción se genera sección por sección, cada una con su semilla, y cada sección recibe la costura de la anterior: el lado de la clave, el acorde que viene, la última nota de la línea y del bajo, y la ligadura al 1. Los finales de sección: los golpes (cierre, parada, contratiempos, tres contra cuatro, un golpe) los tocan piano, bajo, vientos y percusión juntos y caen donde entra la sección que sigue: en el 4& o el 4, el golpe de la llegada ya trae el acorde que viene, ligado al 1; si la que sigue entra en el 1, el último golpe es del acorde de ahora y la banda cae junta en el 1. El tres contra cuatro cuenta de a tres semicorcheas hacia atrás desde la llegada. La parada en clave no anticipa: calla. El corte es golpe en el 1 y silencio. Si la banda sigue derecho, la percusión puede hacer un relleno en el último compás: abanico (redoble de timbal en el 4 y golpe de borde y plato en el 1 que viene), redoble, floreo del quinto o toms.
 
-Cómo se analizó la base y qué hace el piano de verdad: [Tumbaos_analisis_midis.md](Tumbaos_analisis_midis.md). Teoría y contexto: [Tumbaos_de_timba_guia.md](Tumbaos_de_timba_guia.md).
+**Toontrack.** En el bloque Piano, «Qué toca el piano: patrón de Toontrack» elige el estilo (son montuno, salsa media y rápida, songo, funk cubano), la parte (según el tipo de sección, o una fija: intro, A, B, coro, montuno, soneo, mambo, solo, break, final) y la variación, del paquete *Latin Cuban EZkeys MIDI*. Es material comprado: está solo en la compu donde se armó la base; sin él (por ejemplo, en GitHub Pages), toca Opus en el estilo más parecido. Opus también aprende de esos patrones.
+
+Más para leer, en [docs/](docs/):
+- [analisis_de_los_midis.md](docs/analisis_de_los_midis.md): cómo se analizó la base y qué hace el piano de verdad, medido en los MIDI.
+- [guia_de_tumbaos.md](docs/guia_de_tumbaos.md): teoría y contexto (la clave, el tumbao, el bajo, la percusión, las marchas, la timba en la Cuba de los 90).
+- [investigacion/](docs/investigacion/): lo que dicen músicos, libros y métodos sobre cada instrumento, con fuentes; de ahí salen las reglas del motor.
 
 ### Cómo se prueba que suena como los temas
 
-[comparar.js](analisis_tumbaos/comparar.js) recrea un pedazo de un tema con el motor (los mismos acordes, la misma clave y el mismo largo) y lo compara con el original, instrumento por instrumento y lado por lado de la clave: en qué semicorcheas ataca, densidad, fuerza de los golpes, textura y registro del piano, anticipos. Por ejemplo:
+[comparar.js](herramientas/comparar.js) recrea un pedazo de un tema con el motor (los mismos acordes, la misma clave y el mismo largo) y lo compara con el original, instrumento por instrumento y lado por lado de la clave: en qué semicorcheas ataca, densidad, fuerza de los golpes, textura y registro del piano, anticipos. Por ejemplo:
 
 ```
-node analisis_tumbaos/comparar.js 1165.mid 160 16 '{"marcha":"marcha","estilo":"salsa","semilla":3}'
+node herramientas/comparar.js 1165.mid 160 16 '{"marcha":"marcha","estilo":"salsa","semilla":3}'
 ```
 
-## La base de MIDIs
+[jurado.js](herramientas/jurado.js) hace lo mismo con varios temas de referencia («1165», «Pare cochero», «Ya empezó la fiesta») y revisa las reglas en todos los estilos y marchas. Los cambios musicales se juzgan así, contra los temas, no a gusto.
 
-La base no se arma desde la página: los MIDIs (`.mid` y `.kar`) van a la carpeta del proyecto o a `midis/`, y `node analisis_tumbaos/construir.js` los analiza y mete la base en `index.html`. Los datos de cada archivo (título, estilo, clave, acordes…) van en `analisis_tumbaos/fuentes.json`. Los `.mid` no se suben al repositorio (ver `.gitignore`); sube la base ya analizada.
+## Qué hay en el repo
 
-**Para grabar MIDIs que sirvan:** con click, en 4/4, que el compás 1 sea el comienzo de la clave; alcanza con un instrumento; la percusión en el canal 10 con el mapa General MIDI (conga 62/63/64, bongó 60/61, campana 56, timbal 65/66, güiro 73/74).
+```
+index.html      la app entera, en un archivo
+motor/          el motor: lee y analiza MIDI y genera piano, bajo, vientos y percusión (Node y navegador)
+herramientas/   scripts de Node: armar la base, comparar con los temas, el jurado, exportar, visores
+base/           la base de MIDIs ya analizada
+midis/          los MIDI de referencia (no se suben) y los datos de cada uno
+canciones/      las demos
+sonidos/        GeneralUser GS, el .sf2 que toca la app
+docs/           análisis de la base, teoría y las investigaciones detrás del motor
+salidas/        lo que escriben las herramientas (no se sube)
+```
 
-### Colecciones
+**`index.html`** tiene la interfaz, el intérprete de LilyPond, el reproductor y la banda de samples, escritos ahí mismo. Entre las marcas `<!--motor-tumbaos-->` y `<!--/motor-tumbaos-->` lleva una copia del motor, de la base y de las demos, que mete `herramientas/construir.js`: eso no se edita a mano.
 
-Cada carpeta dentro de `midis/` es una colección; por ejemplo, `midis/mididb/`.
-- Lleva su propio `fuentes.json` con los datos de cada archivo; `_titulo` es su nombre.
-- Entra a la base pero el generador no aprende de ella, salvo que diga `_encendida`.
-- El perfil de la clave (con qué se adivina el lado en los temas sin clave) se aprende solo de los originales.
-- `_local`: material comprado. Su base va a `analisis_tumbaos/base_local.js`, que no se sube al repositorio; `index.html` la carga si está.
-- `_carpeta`: los `.mid` están en otra carpeta, con subcarpetas. `_grupos` dice el estilo de cada subcarpeta y `_secciones` el tipo de sección según cómo empieza el nombre del archivo.
+**`motor/`** corre igual en Node y en el navegador (todo cuelga de `globalThis.TumbaoMotor`; en Node se carga con `require('./motor')`). Va en orden:
 
-**Toontrack.** `midis/toontrack/fuentes.json` apunta a `mg_tt-latcu/` (el paquete *Latin Cuban EZkeys MIDI*, convertido a MIDI): son montuno, salsa media y rápida, songo y funk cubano, 109 archivos (la carpeta del mambo de los 50 queda afuera). La clave está medida por carpeta en el piano: 2-3 el son montuno, la salsa rápida y el songo; 3-2 la salsa media y el funk cubano. En el bloque Piano, «Qué toca el piano: patrón de Toontrack» elige el estilo, la parte (según el tipo de sección, o una fija: intro, A, B, coro, montuno, soneo, mambo, solo, break, final) y la variación; sin la colección local, toca Opus en el estilo más parecido. Opus también aprende de ellos.
+| Archivo | Qué hace |
+|---|---|
+| `01_midi.js` | Lee y escribe MIDI |
+| `02_analisis.js` | De un MIDI a una «fuente»: pulso, deriva, compás, lado de la clave, acordes y los ciclos de piano, bajo, percusión y vientos |
+| `03_modelo.js` | Junta las fuentes elegidas en las tablas del generador |
+| `04_generador.js` | Piano (las células), bajo y percusión de una sección, con sus perillas |
+| `05_salida.js` | LilyPond (con la ortografía de cada acorde) y MIDI |
+| `06_cancion.js` | La canción, sección por sección, con la costura entre secciones y los finales |
+| `07_percusion.js` | Los patrones con nombre de cada instrumento de percusión |
+| `08_vientos.js` | Los vientos: el modelo del corpus, los formatos de orquesta, la armonía y las formas del mambo |
+| `09_piano.js` | Opus, Toontrack y la frase real |
+
+**`base/`**: `base_tumbaos.json` es lo que sale de analizar `midis/` (se sube: sin los MIDI no se puede volver a armar). `base_local.js` es lo de Toontrack: solo en esta compu; `index.html` lo carga si está.
+
+**`midis/`**: `originales/` (de donde aprende el generador) y una carpeta por colección (`mididb/`, `mambos/`, `vientos2/`, `toontrack/`), cada una con su `fuentes.json`. Cómo sumar un MIDI y qué va en `fuentes.json`: [midis/README.md](midis/README.md).
+
+**`canciones/`**: las demos, en el formato de «Exportar canción». Entran a la página las que tienen `orden`; la marcada `portada` es la que se abre la primera vez.
 
 ## Para tocar el código
 
-Hace falta Node 18 o más nuevo, sin dependencias.
+Hace falta Node 18 o más nuevo, sin dependencias. Todo se corre desde la carpeta del proyecto.
+
+- **Un cambio en el motor o en una demo:** se edita `motor/` o `canciones/` y se corre `node herramientas/construir.js --solo-html`, que copia el motor, la base y las demos en `index.html`.
+- **Un MIDI nuevo, o un cambio en el análisis** (`motor/02_analisis.js`): `node herramientas/construir.js` vuelve a analizar todo (unos 20 segundos) y actualiza `base/` e `index.html`.
+- **Un cambio musical:** se juzga con `comparar.js` y `jurado.js` contra los temas de referencia, antes y después.
+- **Abierta como archivo**, la página no puede leer `sonidos/GeneralUser-GS.sf2`: carga `sonidos/GeneralUser-GS.sf2.js`, que escribe `construir.js` (no va al repositorio). En un servidor, o en GitHub Pages, lee el `.sf2` directo.
+
+Las herramientas (los temas se nombran por su archivo: `1165.mid` se busca en `midis/originales/` y después en las colecciones):
 
 ```
-node analisis_tumbaos/construir.js               analiza los MIDI y actualiza la base y index.html (y escribe GeneralUser-GS.sf2.js)
-node analisis_tumbaos/construir.js --solo-html   mete en index.html el motor y la base que ya está, sin volver a analizar
-node analisis_tumbaos/comparar.js "tema.mid" desde cantidad [sección JSON]   recrea un pedazo de un tema y lo compara
-node analisis_tumbaos/patrones_corpus.js         los patrones de percusión y bajo del corpus, por lado de la clave
-node analisis_tumbaos/vientos_corpus.js          los vientos del corpus: dónde tocan, ritmo por lado, repetición, duración, armonía, anticipos, registro, las familias entre sí, los saltos de la línea y cómo crecen los mambos largos
-node analisis_tumbaos/ver_vientos.js "tema.mid"  visor de los vientos compás por compás
-node analisis_tumbaos/jurado.js --solo piano     el piano de cada modo (Opus, Toontrack, frase real, células) en todos los estilos, al lado de los pianistas reales
-node analisis_tumbaos/jurado.js                  los temas recreados y las reglas (clave, anticipos, costura, cromáticas, registros, vientos, final) en todos los estilos y marchas, y los vientos medidos contra el corpus
-node analisis_tumbaos/exportar.js cancion.json salida.mid [--loop] [--muestrario]   la canción en .mid como «Bajar MIDI» (--muestrario: un coro por estilo)
-node analisis_tumbaos/informe.js                 estadísticas del corpus (informe.txt)
-node analisis_tumbaos/ver.js "tema.mid"          visor compás por compás
-node analisis_tumbaos/probar_cancion.js          prueba las canciones: costuras, transiciones, estabilidad (x.ly guarda la partitura)
-node analisis_tumbaos/probar_pagina.js           canción → intérprete de la página → lo que sonaría, el .mid y la costura del loop
+node herramientas/construir.js                analiza los MIDI, actualiza base/ e index.html (y escribe sonidos/GeneralUser-GS.sf2.js)
+node herramientas/construir.js --solo-html    mete en index.html el motor, la base que ya está y las demos, sin volver a analizar
+node herramientas/comparar.js "tema.mid" desde cantidad [sección JSON]   recrea un pedazo de un tema y lo compara
+node herramientas/jurado.js --solo piano      el piano de cada modo (Opus, Toontrack, frase real, células) en todos los estilos, al lado de los pianistas reales
+node herramientas/jurado.js                   los temas recreados y las reglas (clave, anticipos, costura, cromáticas, registros, vientos, final) en todos los estilos y marchas, y los vientos medidos contra el corpus
+node herramientas/patrones_corpus.js          los patrones de percusión y bajo del corpus, por lado de la clave
+node herramientas/vientos_corpus.js           los vientos del corpus: dónde tocan, ritmo por lado, repetición, duración, armonía, anticipos, registro, las familias entre sí, los saltos de la línea y cómo crecen los mambos largos
+node herramientas/exportar.js canciones/esto_recien_empieza.json salidas/portada.mid [--loop] [--muestrario]   la canción en .mid como «Bajar MIDI» (--muestrario: un coro por estilo)
+node herramientas/probar_cancion.js [salidas/x.ly]   prueba las canciones: costuras, transiciones, estabilidad (y guarda la partitura)
+node herramientas/probar_pagina.js            canción → intérprete de la página → lo que sonaría, el .mid y la costura del loop
+node herramientas/probar_motor.js salidas/prueba    genera 36 tumbaos de prueba como MIDI, para pasarlos por el informe
+node herramientas/informe.js [carpeta] [salida]     estadísticas del piano en el corpus (de entrada, midis/originales → salidas/informe.txt)
+node herramientas/ver.js "tema.mid" [desde] [cantidad]          visor del piano compás por compás
+node herramientas/ver_vientos.js "tema.mid" [desde] [cantidad]  visor de los vientos compás por compás
 ```
 
-El motor vive en `analisis_tumbaos/motor/`: MIDI, análisis, modelo, generador, salida, canción y percusión. Corre igual en Node y en el navegador. `construir.js` lo copia dentro de `index.html` entre las marcas `<!--motor-tumbaos-->`, así que los cambios se hacen en `motor/` y no en la página.
-
-Abierta como archivo, la página no puede leer `GeneralUser-GS.sf2`: carga `GeneralUser-GS.sf2.js`, que escribe `construir.js` (no va al repositorio). En un servidor lee el `.sf2` directo.
+`herramientas/rutas.js` dice dónde está cada carpeta: si alguna se mueve, se cambia ahí.
 
 ## Sonidos
 

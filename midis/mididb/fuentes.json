@@ -1,15 +1,10 @@
 {
  "_titulo": "mididb.com",
- "_ayuda": "Colección bajada de https://www.mididb.com/genres/latino-salsa-midi/ (ver Tumbaos_analisis_midis.md §11). Mismos campos que analisis_tumbaos/fuentes.json; fuente = página de origen.",
+ "_ayuda": "Colección bajada de https://www.mididb.com/genres/latino-salsa-midi/ (ver docs/analisis_de_los_midis.md §11). Mismos campos que midis/originales/fuentes.json; fuente = página de origen.",
  "Celia Cruz - Quimbara.mid": {
   "titulo": "Celia Cruz · Quimbara",
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/celia-cruz/quimbara-midi/"
- },
- "Buena Vista Social Club - El Cuarto De Tula.mid": {
-  "titulo": "Buena Vista Social Club · El Cuarto De Tula",
-  "estilo": "cubano",
-  "fuente": "https://www.mididb.com/buena-vista-social-club/el-cuarto-de-tula-midi/"
  },
  "El Gran Combo De Puerto Rico - Me Libere.mid": {
   "titulo": "El Gran Combo De Puerto Rico · Me Libere",
@@ -201,11 +196,6 @@
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/kako-senante/popurri-de-salsa-midi/"
  },
- "Jennifer Lopez - No Me Ames.mid": {
-  "titulo": "Jennifer Lopez · No Me Ames",
-  "estilo": "otro",
-  "fuente": "https://www.mididb.com/jennifer-lopez-and-mark-anthony/no-me-ames-midi/"
- },
  "Simón Díaz - Caballo Viejo (Approx 6 Min. Vers).mid": {
   "titulo": "Simón Díaz · Caballo Viejo (Approx 6 Min. Vers)",
   "estilo": "otro",
@@ -271,11 +261,6 @@
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/el-gran-combo-de-puerto-rico/no-hay-cama-pa-tanta-gente-midi/"
  },
- "Maná - Se Me Olvidó Otra Vez.mid": {
-  "titulo": "Maná · Se Me Olvidó Otra Vez",
-  "estilo": "salsa",
-  "fuente": "https://www.mididb.com/man/se-me-olvid-otra-vez-midi/"
- },
  "Albita - Que Manera De Quererte.mid": {
   "titulo": "Albita · Que Manera De Quererte",
   "estilo": "salsa",
@@ -336,11 +321,6 @@
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/alfredo-de-la-fe/salsa-computarizada-midi/"
  },
- "El Grupo Niche - Caliaji.mid": {
-  "titulo": "El Grupo Niche · Caliaji",
-  "estilo": "salsa",
-  "fuente": "https://www.mididb.com/el-grupo-niche/caliaji-midi/"
- },
  "Salsaloco De Cuba - Azucar.mid": {
   "titulo": "Salsaloco De Cuba · Azucar",
   "estilo": "salsa",
@@ -380,16 +360,6 @@
   "titulo": "Tito Gomez · Viernes Social",
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/tito-gomez/viernes-social-midi/"
- },
- "El Chato - Te Gusta La Vida.mid": {
-  "titulo": "El Chato · Te Gusta La Vida",
-  "estilo": "salsa",
-  "fuente": "https://www.mididb.com/el-chato/te-gusta-la-vida-midi/"
- },
- "Chayanne Y Vanessa Willams - Refugio De Amor.mid": {
-  "titulo": "Chayanne Y Vanessa Willams · Refugio De Amor",
-  "estilo": "otro",
-  "fuente": "https://www.mididb.com/chayanne-y-vanessa-willams/refugio-de-amor-midi/"
  },
  "Manzanita - Hueso Na' Mas.mid": {
   "titulo": "Manzanita · Hueso Na' Mas",
@@ -495,16 +465,6 @@
   "titulo": "Galy Galiano · La Cita",
   "estilo": "salsa",
   "fuente": "https://www.mididb.com/galy-galiano/la-cita-midi/"
- },
- "Grant Geissman - El Cabon Rides Again.mid": {
-  "titulo": "Grant Geissman · El Cabon Rides Again",
-  "estilo": "salsa",
-  "fuente": "https://www.mididb.com/grant-geissman/el-cabon-rides-again-midi/"
- },
- "C Aguilera Becky G N Nicole Y N Peluso - Pa Mis Muchachas.mid": {
-  "titulo": "C Aguilera Becky G N Nicole Y N Peluso · Pa Mis Muchachas",
-  "estilo": "salsa",
-  "fuente": "https://www.mididb.com/c-aguilera-becky-g-n-nicole-y-n-peluso/pa-mis-muchachas-midi/"
  },
  "Ritmo Caliente - La Vamo A Tumba.mid": {
   "titulo": "Ritmo Caliente · La Vamo A Tumba",

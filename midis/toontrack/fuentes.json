@@ -1,14 +1,12 @@
 {
  "_titulo": "Toontrack · Latin Cuban (EZkeys)",
- "_ayuda": "Paquete comprado (Manuel Valera, piano): los MIDI y lo que se analiza de ellos no se suben al repositorio. _local: la base de esta colección va a analisis_tumbaos/base_local.js (ignorado por git). _carpeta: dónde están los .mid, una subcarpeta por estilo. _grupos: estilo de cada subcarpeta y la clave en la que está tocada (el compás 1 del MIDI empieza en ese lado: medido en el piano, el lado 3 liga el 1 y el 3); excluir deja afuera la carpeta entera. _secciones: comienzo del nombre del archivo → tipo de sección de la app («Mambo» es la sección donde tocan los vientos). _frases: guarda la frase entera de cada archivo (todos los compases, en orden) para tocar el patrón tal cual. Un archivo puede decir su propia clave.",
+ "_ayuda": "Paquete comprado (Manuel Valera, piano; Latin Cuban EZkeys MIDI, la parte Straight_4-4 convertida a MIDI): los MIDI y lo que se analiza de ellos no se suben al repositorio. Una subcarpeta por estilo; la del mambo de los años 50 (el género) se sacó: la app no lo usa. _local: la base de esta colección va a base/base_local.js (ignorado por git). _grupos: estilo de cada subcarpeta y la clave en la que está tocada (el compás 1 del MIDI empieza en ese lado: medido en el piano, el lado 3 liga el 1 y el 3); excluir deja afuera la carpeta entera. _secciones: comienzo del nombre del archivo → tipo de sección de la app («Mambo» es la sección donde tocan los vientos). _frases: guarda la frase entera de cada archivo (todos los compases, en orden) para tocar el patrón tal cual. Un archivo puede decir su propia clave.",
  "_local": true,
  "_encendida": true,
  "_frases": true,
- "_carpeta": "../../mg_tt-latcu/Toontrack.Latin.Cuban.EZkeys.MIDI/Straight_4-4",
  "_grupos": {
   "EARLY_CUBAN_FUNK_114_BPM": { "grupo": "funk_cubano", "titulo": "Funk cubano", "estilo": "cubano", "clave": "son 3-2" },
   "FAST_SALSA_170_BPM": { "grupo": "salsa_rapida", "titulo": "Salsa rápida", "estilo": "salsa", "clave": "son 2-3" },
-  "MAMBO_95_BPM": { "excluir": true, "nota": "el mambo de los años 50 (el género): la app no lo usa; mambo es solo la sección de los vientos" },
   "MID_SALSA_90_BPM": { "grupo": "salsa_media", "titulo": "Salsa media", "estilo": "salsa", "clave": "son 3-2" },
   "SON_MONTUNO_91_BPM": { "grupo": "son_montuno", "titulo": "Son montuno", "estilo": "cubano", "clave": "son 2-3" },
   "VAN_SONGO_105_BPM": { "grupo": "songo", "titulo": "Songo Van Van", "estilo": "timba", "clave": "son 2-3" }
