@@ -122,7 +122,7 @@
         // de un solo de salsa: el lado de la clave de su primer compás (el solo dice el de su compás 1; después alternan)
         const ladoF = s.salsa && s.lado ? ((b0 / 16) % 2 === 0 ? s.lado : s.lado === 'A' ? 'B' : 'A') : null;
         MS.frases.push({ s: si, p0: b0, interprete: s.interprete, inst: s.inst, feel: s.feel || '', idea: idea[gr.i[0]], ev, off: ev[0].q, len, n: ev.length, dens: ev.length / Math.max(1, len / 4),
-          ...(s.salsa ? { salsa: true, lado: ladoF, estiloS: s.estilo } : {}),
+          ...(s.salsa ? { salsa: true, lado: ladoF, estiloS: s.estilo, ...(s.transcripcion ? { curado: true } : {}) } : {}),
           xr, paso: pasos / (ms.length - 1), raras: (r => r.sueltas + r.corridas * 0.5)(rarezas(ev.map(e => ({ p: e.q, L: e.d })))), baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
           fit: [encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'A'), encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'B')] });
       }
@@ -339,7 +339,8 @@
     const cuantas = {}; for (const f of MS.frases) cuantas[f.interprete] = (cuantas[f.interprete] || 0) + 1;
     const parejo = f => 1 / Math.sqrt(Math.max(1, (cuantas[f.interprete] || 1) / 25));
     const tradS = { son: 'cubano', timba: 'cubano', descarga: 'salsa', brava: 'salsa' }[modo];
-    const pesoBase = f => parejo(f) * (f.salsa ? (modo === 'latinjazz' ? 1.5 : !tradS || (f.estiloS === 'salsa') === (tradS === 'salsa') ? 3 : 2) : quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
+    // las transcripciones (Chappottín, Interián: midis/transcripciones) pesan el doble que lo que el detector encontró en los MIDI
+    const pesoBase = f => parejo(f) * (f.curado ? 2 : 1) * (f.salsa ? (modo === 'latinjazz' ? 1.5 : !tradS || (f.estiloS === 'salsa') === (tradS === 'salsa') ? 3 : 2) : quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
       * (f.ancho > 19 ? Math.exp(-(f.ancho - 19) / 4) : 1) * Math.exp(-Math.max(0, f.xr - Mo.cromMeta * +kv('s_crom', 1)) * 8) * (f.baja < -2 ? Mo.baja : 1)
       // la línea como la de sus trompetistas: las frases mucho más saltonas que eso, menos
       * Math.exp(-Math.max(0, Mo.pasoMeta - 0.08 - f.paso) * 6)

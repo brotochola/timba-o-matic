@@ -1,0 +1,212 @@
+{
+ "_titulo": "Solos de trompeta (y vientos) de son, salsa y timba",
+ "_ayuda": "MIDIs de archive.org (karaokes de Song Galaxy y la colección Karaokes 7959) donde un canal de trompeta, trombón o sax toca un tramo monofónico de 4 compases o más que no se repite en otro lado del tema. Los compases cuentan desde el compás 1 del MIDI. Detección automática (herramientas del scratchpad), falta confirmarla de oído: puede ser una línea de la orquestación y no un solo. fuente = URL de descarga.",
+ "Buena Vista Social Club - Chan Chan.mid": {
+  "titulo": "Buena Vista Social Club · Chan Chan",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20Chan%20Chan%20%5BIT05228%5D.mid",
+  "solo": "posible trompeta, canal 3, compases 55-63 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Buena Vista Social Club - De Camino a La Vereda.mid": {
+  "titulo": "Buena Vista Social Club · De Camino a La Vereda",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20De%20Camino%20a%20La%20Vereda%20%5BIT05229%5D.mid",
+  "solo": "sin solo (las líneas de viento que parecen solo se repiten en el tema: melodía o riff)"
+ },
+ "Buena Vista Social Club - Dos gardenias.mid": {
+  "titulo": "Buena Vista Social Club · Dos gardenias",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20Dos%20gardenias%20%5BIT05230%5D.mid",
+  "solo": "posible trompeta con sordina, canal 3, compases 40-47 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Buena Vista Social Club - El carretero.mid": {
+  "titulo": "Buena Vista Social Club · El carretero",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20El%20carretero%20%5BIT05231%5D.mid",
+  "solo": "sin solo (las líneas de viento que parecen solo se repiten en el tema: melodía o riff)"
+ },
+ "Buena Vista Social Club - El cuarto de Tula.mid": {
+  "titulo": "Buena Vista Social Club · El cuarto de Tula",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20El%20cuarto%20de%20Tula%20%5BIT05232%5D.mid",
+  "solo": "posible frases cortas, trompeta, canal 3, compases 45-48, 53-56, 165-168, 173-176 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Buena Vista Social Club - Orgullecida.mid": {
+  "titulo": "Buena Vista Social Club · Orgullecida",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20Orgullecida%20%5BIT05235%5D.mid",
+  "solo": "posible frases cortas, trompeta, canal 3, compases 59-65 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Buena Vista Social Club - Pueblo Nuevo.mid": {
+  "titulo": "Buena Vista Social Club · Pueblo Nuevo",
+  "estilo": "cubano",
+  "genero": "son cubano",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FBuena%20Vista%20Social%20Club%20-%20Pueblo%20Nuevo%20%5BIT05236%5D.mid",
+  "solo": "posible trompeta, canal 4, compases 104-118 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Cal Tjader - Soul Sauce (latin).mid": {
+  "titulo": "Cal Tjader · Soul Sauce (latin)",
+  "estilo": "salsa",
+  "genero": "latin jazz",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FCal%20Tjader%20-%20Soul%20Sauce%20_latin_%20%5BHM100900%5D.mid",
+  "solo": "posible frases cortas, trompeta, canal 5, compases 73-78, 94-98 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Eddie Palmieri - Puerto Rico.mid": {
+  "titulo": "Eddie Palmieri · Puerto Rico",
+  "estilo": "salsa",
+  "genero": "salsa (latin jazz)",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FEddie%20Palmieri%20-%20Puerto%20Rico%20%5BHM100812%5D.mid",
+  "solo": "posible frases cortas, trompeta, canal 4, compases 53-56, 61-64, 69-72 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Gilberto Santa Rosa - Que mmanera de quererte.mid": {
+  "titulo": "Gilberto Santa Rosa · Que mmanera de quererte",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FGilberto%20Santa%20Rosa%20-%20Que%20mmanera%20de%20quererte%20%5BIT13765%5D.mid",
+  "solo": "posible frases cortas, sax alto, canal 4, compases 84-89 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Havana Mambo - Rico Cha cha cha.mid": {
+  "titulo": "Havana Mambo · Rico Cha cha cha",
+  "estilo": "cubano",
+  "genero": "cha-cha-chá",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FHavana%20Mambo%20-%20Rico%20Cha%20cha%20cha%20%5BIT13313%5D.mid",
+  "solo": "sin solo (las líneas de viento que parecen solo se repiten en el tema: melodía o riff)"
+ },
+ "La India - Dejate amar.mid": {
+  "titulo": "La India · Dejate amar",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FLa%20India%20-%20Dejate%20amar%20%5BIT13526%5D.mid",
+  "solo": "sin solo (las líneas de viento que parecen solo se repiten en el tema: melodía o riff)"
+ },
+ "Marc Anthony - Vivir mi vida Salsa-Tanzschulen erprobt.mid": {
+  "titulo": "Marc Anthony · Vivir mi vida Salsa-Tanzschulen erprobt",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FMarc%20Anthony%20-%20Vivir%20mi%20vida%20_Salsa-Tanzschulen%20erprobt_%20%5BML_10025%5D.mid",
+  "solo": "sin solo (las líneas de viento que parecen solo se repiten en el tema: melodía o riff)"
+ },
+ "Mink DeVille - Demasiado corazon Salsa.mid": {
+  "titulo": "Mink DeVille · Demasiado corazon Salsa",
+  "estilo": "salsa",
+  "genero": "salsa (rock latino)",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FMink%20DeVille%20-%20Demasiado%20corazon%20_Salsa_%20%5BML_8612%5D.mid",
+  "solo": "posible frases cortas, trompeta, canal 7, compases 47-52 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Santana - Guajira.mid": {
+  "titulo": "Santana · Guajira",
+  "estilo": "salsa",
+  "genero": "latin rock",
+  "pais": "Estados Unidos",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FSantana%20-%20Guajira%20%5BHM101304%5D.mid",
+  "solo": "posible frases cortas, trombón, canal 7, compases 103-108 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Willie Colon - Idilio.mid": {
+  "titulo": "Willie Colon · Idilio",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/song-galaxy-midi-collection/SongGalaxyMIDIArchive.zip/download%2FWillie%20Colon%20-%20Idilio%20%5BIT13460%5D.mid",
+  "solo": "posible sax soprano, canal 4, compases 11-33, 70-73, 118-121, 126-129; trombón, canal 7, compases 4-8, 37-44 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Bella Maria de mi corazon - BSO Los reyes del mambo.kar": {
+  "titulo": "Bella María de mi corazón · BSO Los reyes del mambo",
+  "estilo": "cubano",
+  "genero": "mambo (banda sonora)",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FBella%20Mar%C3%ADa%20de%20mi%20coraz%C3%B3n%20-%20BSO%20Los%20reyes%20del%20mambo.kar",
+  "solo": "posible frases cortas, trompeta, canal 5, compases 90-93 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Celia Cruz y Jarabe de palo - A lo loco.kar": {
+  "titulo": "Celia Cruz y Jarabe de palo · A lo loco",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FCelia%20Cruz%20y%20Jarabe%20de%20palo%20-%20A%20lo%20loco.kar",
+  "solo": "posible sax alto, canal 4, compases 63-78, 96-126, 183-187, 200-205 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Gloria Estefan - Always tomorrow.kar": {
+  "titulo": "Gloria Estefan · Always tomorrow",
+  "estilo": "cubano",
+  "genero": "pop latino",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FGloria%20Estefan%20-%20Always%20tomorrow.kar",
+  "solo": "posible frases cortas, sax alto, canal 4, compases 16-19, 40-43, 57-61, 70-73 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Gloria Estefan - Corazon prohibido.kar": {
+  "titulo": "Gloria Estefan · Corazón prohibido",
+  "estilo": "cubano",
+  "genero": "pop latino",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FGloria%20Estefan%20-%20Coraz%C3%B3n%20prohibido.kar",
+  "solo": "posible frases cortas, sax soprano, canal 4, compases 134-138 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Gloria Estefan - Get on your feet (4).kar": {
+  "titulo": "Gloria Estefan · Get on your feet (4)",
+  "estilo": "cubano",
+  "genero": "pop latino",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FGloria%20Estefan%20-%20Get%20on%20your%20feet%20(4).kar",
+  "solo": "posible frases cortas, sax alto, canal 11, compases 77-83 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Gloria Estefan - La parranda.kar": {
+  "titulo": "Gloria Estefan · La parranda",
+  "estilo": "cubano",
+  "genero": "pop latino",
+  "pais": "Cuba",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FGloria%20Estefan%20-%20La%20parranda.kar",
+  "solo": "posible frases cortas, trompeta, canal 4, compases 14-17, 70-73 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "La Orquesta Mondragon - Chocolate y ron.kar": {
+  "titulo": "La Orquesta Mondragón · Chocolate y ron",
+  "estilo": "salsa",
+  "genero": "salsa (orquesta española)",
+  "pais": "España",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FLa%20Orquesta%20Mondrag%C3%B3n%20-%20Chocolate%20y%20ron.kar",
+  "solo": "posible frases cortas, sax alto, canal 6, compases 7-10, 77-80, 84-87 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Las Chicas del Can - Juana la cubana.kar": {
+  "titulo": "Las Chicas del Can · Juana la cubana",
+  "estilo": "salsa",
+  "genero": "pop latino",
+  "pais": "España",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FLas%20Chicas%20del%20Can%20-%20Juana%20la%20cubana.kar",
+  "solo": "posible sax soprano, canal 1, compases 22-30, 53-61 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Marc Anthony - Celos.kar": {
+  "titulo": "Marc Anthony · Celos",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FMarc%20Anthony%20-%20Celos.kar",
+  "solo": "posible frases cortas, sax soprano, canal 7, compases 39-43, 55-59, 151-156 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ },
+ "Willie Colon - El Gran Varon.kar": {
+  "titulo": "Willie Colon · El Gran Varon",
+  "estilo": "salsa",
+  "genero": "salsa",
+  "pais": "Puerto Rico",
+  "fuente": "https://archive.org/download/karaokes-7959-midi-kar-collection/Karaokes_7959_MIDI_KAR_Collection.zip/Karaokes_7959_MIDI_KAR_Collection%2FWillie%20Colon%20-%20El%20Gran%20Varon.kar",
+  "solo": "posible frases cortas, trompeta, canal 13, compases 110-113, 208-211 (tramo que no se repite en otro lado del tema); automático, falta confirmar de oído"
+ }
+}

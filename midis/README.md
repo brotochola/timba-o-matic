@@ -10,6 +10,8 @@ Los MIDI de los que aprende la app. **No se suben al repositorio** (el `.gitigno
 | `mididb/` | El género «latino-salsa» de [mididb.com](https://www.mididb.com/genres/latino-salsa-midi/) (ver [docs/analisis_de_los_midis.md](../docs/analisis_de_los_midis.md) §11) | 102 | Los vientos y los montunos de Opus. |
 | `mambos/` | Temas con vientos, para estudiar los mambos | 74 | Los vientos y los montunos de Opus. |
 | `vientos2/` | Más temas con vientos (karaokes de archive.org) | 116 | Los vientos y los montunos de Opus. |
+| `solos_salsa/` | Temas de son, salsa y latin jazz bajados para buscar solos de vientos (karaokes de archive.org; ver [docs/investigacion/fuentes_de_solos.md](../docs/investigacion/fuentes_de_solos.md)) | 27 | La trompeta solista: `herramientas/solos_salsa.js` busca los solos en todas las carpetas. |
+| `transcripciones/` | Solos de trompeta de son pasados a mano de partituras, en LilyPond, con el lado de la clave y los acordes de cada compás: «Coralia» (Félix Chappottín, 1928) y «Criollo haragán» (José Interián, 1931), de la tesis de Eric Ferguson (2009). Estos sí se suben: no se pueden volver a bajar | 2 | La trompeta solista: pesan el doble que lo que encuentra el detector. |
 | `toontrack/` | *Latin Cuban EZkeys MIDI* de Toontrack (comprado; piano de Manuel Valera), una subcarpeta por estilo | 109 | El piano: «patrón de Toontrack» y Opus. Solo en esta compu (ver abajo). |
 
 Cada tema entra a la base con un id: `b:<archivo>` los originales (`b:1165.mid`) y `b:<colección>/<archivo>` los demás (`b:toontrack/SON_MONTUNO_91_BPM/Intro_Variation_01.mid`). Si se renombra un archivo o una carpeta, cambia su id.
