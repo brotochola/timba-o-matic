@@ -93,13 +93,15 @@
   function construirSolos(B, fuentesBase) {
     const MS = { frases: [], solos: [], clave: (B && B.clave) || aprenderClave(fuentesBase), refClave: (B && B.refClave) || null };
     if (!B || !B.solos) return MS;
-    B.solos.forEach((s, si) => {
+    // los solos de salsa (de los MIDI de la base: solos_salsa.js) van con los de jazz, marcados, con el lado de la clave de su 1er compás
+    const todos = [...B.solos, ...(B.salsa || []).map(x => ({ ...x, salsa: true }))];
+    todos.forEach((s, si) => {
       const acs = s.acordes.map(([p, n]) => [p, n ? TM.acorde(n) : null]);
       const chEn = p => { let lo = 0, hi = acs.length - 1, r = null; while (lo <= hi) { const m = (lo + hi) >> 1; if (acs[m][0] <= p) { r = acs[m][1]; lo = m + 1; } else hi = m - 1; } return r; };
       const notas = s.notas.map(([p, d, m, f]) => ({ p, d, m, f, ch: chEn(p) }));
       const sigEn = p => { const ch = chEn(p); for (const [q, c] of acs) if (q > p && c && ch && c.nombre !== ch.nombre) return c; return null; };
       const escEn = p => escalaDe(chEn(p), sigEn(p));
-      MS.solos.push({ id: s.id, interprete: s.interprete, tema: s.tema, inst: s.inst, feel: s.feel, tempo: s.tempo, notas, chEn, sigEn });
+      MS.solos.push({ id: s.id, interprete: s.interprete, tema: s.tema, inst: s.inst, feel: s.feel, tempo: s.tempo, notas, chEn, sigEn, ...(s.salsa ? { salsa: true, estilo: s.estilo } : {}) });
       // las ideas (unidad de nivel medio que empieza en cada nota)
       const idea = new Array(notas.length).fill(null); let cur = 'lick', k = 0; const ideas = (s.ideas || []).slice().sort((a, b) => a[0] - b[0]);
       for (let i = 0; i < notas.length; i++) { while (k < ideas.length && ideas[k][0] <= i) cur = IDEA(ideas[k++][1]); idea[i] = cur; }
@@ -117,7 +119,10 @@
         });
         const ms = ev.map(e => e.m), xr = ev.filter(e => e.crom).length / ev.length;
         let pasos = 0; for (let i = 1; i < ms.length; i++) { const d = Math.abs(ms[i] - ms[i - 1]); if (d >= 1 && d <= 2) pasos++; }
+        // de un solo de salsa: el lado de la clave de su primer compás (el solo dice el de su compás 1; después alternan)
+        const ladoF = s.salsa && s.lado ? ((b0 / 16) % 2 === 0 ? s.lado : s.lado === 'A' ? 'B' : 'A') : null;
         MS.frases.push({ s: si, p0: b0, interprete: s.interprete, inst: s.inst, feel: s.feel || '', idea: idea[gr.i[0]], ev, off: ev[0].q, len, n: ev.length, dens: ev.length / Math.max(1, len / 4),
+          ...(s.salsa ? { salsa: true, lado: ladoF, estiloS: s.estilo } : {}),
           xr, paso: pasos / (ms.length - 1), raras: (r => r.sueltas + r.corridas * 0.5)(rarezas(ev.map(e => ({ p: e.q, L: e.d })))), baja: ms.at(-1) - ms[0], ancho: Math.max(...ms) - Math.min(...ms), fin: ev.at(-1).d,
           fit: [encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'A'), encaje(ev.map(e => ({ p: e.q, d: e.d })), MS.clave, 'B')] });
       }
@@ -227,7 +232,7 @@
       const n = out[i], a = out[i - 1], b = out[i + 1], fn = fin(n.p), hasta = Math.min(b ? b.p : Infinity, fn), hueco = hasta - (n.p + n.L);
       // la última de la frase: la que sigue está a más de un tiempo de silencio, o entra el coro antes
       const ultima = !b || b.p - (n.p + n.L) >= 4 || fn < b.p;
-      if (!ultima && hueco >= 1 && (hueco === 1 ? b.p - n.p <= 16 : b.p - n.p <= 4 && (hueco % 2 === 1 || n.L === 1)) && !(n.p % 2 && b.p - n.p >= 3)) {
+      if (!ultima && hueco >= 1 && (hueco === 1 || b.p - n.p <= 4 && (hueco % 2 === 1 || n.L === 1)) && !(n.p % 2 && b.p - n.p >= 3)) {
         // un silencio de semicorchea (o una semicorchea y su silencio) adentro de la frase: hasta la siguiente; si sonaba la mitad o
         // menos, picada
         if (n.L * 2 <= b.p - n.p) n.art = n.art || '-.';
@@ -333,7 +338,8 @@
     // del swing, y es el que más salta)
     const cuantas = {}; for (const f of MS.frases) cuantas[f.interprete] = (cuantas[f.interprete] || 0) + 1;
     const parejo = f => 1 / Math.sqrt(Math.max(1, (cuantas[f.interprete] || 1) / 25));
-    const pesoBase = f => parejo(f) * (quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
+    const tradS = { son: 'cubano', timba: 'cubano', descarga: 'salsa', brava: 'salsa' }[modo];
+    const pesoBase = f => parejo(f) * (f.salsa ? (modo === 'latinjazz' ? 1.5 : !tradS || (f.estiloS === 'salsa') === (tradS === 'salsa') ? 3 : 2) : quien.has(f.interprete) ? 1 : f.inst === 'tp' || f.inst === 'cor' ? 0.25 : 0.12) * (Mo.ideas[f.idea] ?? 0.5) * (/LATIN|FUNK/.test(f.feel) ? 2 : 1)
       * (f.ancho > 19 ? Math.exp(-(f.ancho - 19) / 4) : 1) * Math.exp(-Math.max(0, f.xr - Mo.cromMeta * +kv('s_crom', 1)) * 8) * (f.baja < -2 ? Mo.baja : 1)
       // la línea como la de sus trompetistas: las frases mucho más saltonas que eso, menos
       * Math.exp(-Math.max(0, Mo.pasoMeta - 0.08 - f.paso) * 6)
@@ -393,7 +399,7 @@
         for (let b = b0 - 1; b <= b0 + 1; b++) for (const sh of [0, 8]) {
           const ini = b * 16 + sh, p0 = ini + f.off; if (p0 < t || p0 - t > 20 || ini + f.ev.at(-1).q >= hasta) continue;
           const fit = sh ? encaje(f.ev.map(e => ({ p: e.q + sh, d: e.d })), MS.clave, ladoDe(b)) : f.fit[ladoDe(b) === 'A' ? 0 : 1], espera = p0 - t;
-          cand.push({ f, ini, w: w0 * (sh ? 0.7 : 1) * Math.exp(4 * fit * Math.min(1, f.n / 10)) * Math.exp(-espera / 6) * Math.exp(3 * (parece(ini) - 1)) });
+          cand.push({ f, ini, w: w0 * (sh ? 0.7 : 1) * (f.lado ? (ladoDe(b) === f.lado && !sh ? 1.5 : 0.3) : 1) * Math.exp(4 * fit * Math.min(1, f.n / 10)) * Math.exp(-espera / 6) * Math.exp(3 * (parece(ini) - 1)) });
         }
       }
       if (!cand.length) return null;
@@ -695,7 +701,7 @@
   // la clave (referenciaClave) y la naturalidad (un modelo de la mitad de los solos; cada solo real, medido con el de la otra mitad)
   function prepararJurado(MS, fuentesBase) {
     const notasDe = s => s.notas.map(n => ({ p: n.p, L: n.d, m: n.m }));
-    const tps = MS.solos.filter(s => s.inst === 'tp' || s.inst === 'cor');
+    const tps = MS.solos.filter(s => (s.inst === 'tp' || s.inst === 'cor') && !s.salsa);
     const modelos = [0, 1].map(par => modeloLinea(tps.filter((_, i) => i % 2 === par).map(notasDe)));
     const tramos = [], enteros = [];
     tps.forEach((s, i) => {

@@ -30,7 +30,9 @@ R.colecciones = () => fs.existsSync(MIDIS) ? fs.readdirSync(MIDIS, { withFileTyp
 // los datos de cada archivo de una carpeta de midis/ (su fuentes.json)
 R.leerFuentes = d => { const f = path.join(d, 'fuentes.json'); return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {}; };
 R.leerBase = () => JSON.parse(fs.readFileSync(R.BASE, 'utf8'));
-R.leerSolos = () => fs.existsSync(R.SOLOS) ? JSON.parse(fs.readFileSync(R.SOLOS, 'utf8')) : null;
+// los solos para la trompeta solista: los de la Weimar Jazz Database (solos_jazz.js) y, en «salsa», los de los MIDI de salsa (solos_salsa.js)
+R.SOLOS_SALSA = path.join(RAIZ, 'base', 'base_solos_salsa.json');
+R.leerSolos = () => { if (!fs.existsSync(R.SOLOS)) return null; const B = JSON.parse(fs.readFileSync(R.SOLOS, 'utf8')); if (fs.existsSync(R.SOLOS_SALSA)) B.salsa = JSON.parse(fs.readFileSync(R.SOLOS_SALSA, 'utf8')).solos; return B; };
 // un tema por su ruta o por su nombre solo: «1165.mid» se busca en los originales y después en las colecciones
 R.midi = nombre => {
   if (fs.existsSync(nombre)) return nombre;

@@ -20,7 +20,7 @@ const TM = require(RUTAS.MOTOR);
 const args = process.argv.slice(2), arg = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const SEMILLAS = +arg('--semillas', 4), NB = +arg('--compases', 16), VER = arg('--ver', null), CANCION = arg('--cancion', null);
 
-const BS = require(path.join(RUTAS.RAIZ, 'base', 'base_solos.json')), BT = RUTAS.leerBase();
+const BS = RUTAS.leerSolos(), BT = RUTAS.leerBase();
 const MS = TM.construirSolos(BS, BT.fuentes);
 const pc = m => ((m % 12) + 12) % 12;
 
