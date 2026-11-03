@@ -73,6 +73,7 @@
     const ons = secs.map(pistasDe);
     const res = { der: [], izq: [], bajo: [], vientos: { trompetas: [], trombones: [], saxos: [] }, solo: [], perc: [], extra: [], acordes: [], lados: [], marchas: [], mixes: [], estilos: [], secciones: [] };
     const ganchos = {}, ganchosV = {};
+    let temaCancion = null;   // para la trompeta solista: la línea de arriba del último mambo o moña de los vientos
     // los vientos: el formato es de toda la canción (de entrada, el del estilo de la primera sección); qué tocan, de cada sección
     const V = M.vientos || null;
     const formatoV = cancion.vientos && 'formato' in cancion.vientos ? cancion.vientos.formato : ((TM.ESTILOS[secs[0].estilo] || TM.ESTILOS.pupy).vientos || {}).formato || null;
@@ -118,14 +119,20 @@
         // detrás del solo: la moña entra en la segunda mitad (en el comienzo de una clave) y todo va más suave que la trompeta
         if (detras && detras !== 'nada') { const mitad = Math.floor(r.compases / 4) * 32; for (const f of VIENTOS) vientos[f] = vientos[f].filter(e => detras !== 'moña' || e.p >= mitad).map(e => ({ ...e, v: Math.round((e.v || 90) * 0.78) })); }
         ganchosV[s.id != null ? s.id : i] = vs.info.gancho; infoV = vs.info;
+        if ((tocaV === 'mambo' || tocaV === 'moña') && !detras && TM.temaDeLinea) {
+          const fam = ['trompetas', 'saxos', 'trombones'].find(f => on[f] && vientos[f].length >= 4);
+          const acEn = p => { const b = Math.floor(p / 16), q = p % 16; return q >= 14 && b + 1 < r.compases ? r.acordes[b + 1][0] : (r.acordes[b] || [])[r.acordes[b] && r.acordes[b].length > 1 && q >= 8 ? 1 : 0]; };
+          const tm = fam && TM.temaDeLinea(vientos[fam], acEn, TM.tonicaDe(r.acordes.flat()));
+          if (tm && (!temaCancion || tm.canta >= temaCancion.canta)) temaCancion = { ...tm, seccion: s.nombre || s.tipo || '' };
+        }
       }
       // ---------- la trompeta solista (motor/10_solo.js): su semilla, los acordes con el anticipo de la sección y la clave
       let solo = [], infoS = null;
       if (on.solo && M.solos && TM.solear) {
         const acDe = b => b < r.compases ? r.acordes[b] : sig || [r.acordes[r.compases - 1].at(-1)];
         const so = TM.solear({ nb: r.compases, lado: b => r.lados[((b % r.compases) + r.compases) % r.compases], acordesDe: acDe, acordeEn: (b, p) => { const c = acDe(b); return c.length > 1 && p >= 8 ? c[1] : c[0]; },
-          anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, estilo: s.estilo, final: (s.transicion || 'ninguna') !== 'ninguna' || !(despues(i) != null && ons[despues(i)].solo),
-          R: rng((s.semillaSolo || (s.semilla || (i + 1) * 7919) * 53 + 11) >>> 0), k: perillas }, M.solos);
+          anticipa: cambioS !== '1', posAnt: cambioS === '4' ? 12 : 14, clave: /rumba/.test(cancion.clave || '') ? 'rumba' : 'son', estilo: s.estilo, final: (s.transicion || 'ninguna') !== 'ninguna' || !(despues(i) != null && ons[despues(i)].solo),
+          R: rng((s.semillaSolo || (s.semilla || (i + 1) * 7919) * 53 + 11) >>> 0), k: perillas, temaCancion }, M.solos);
         solo = so.notas; infoS = so.info;
       }
       const nb = r.compases, S = (nb - 1) * 16, fin = { ...r.fin, entraSolo: false };

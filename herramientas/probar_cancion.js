@@ -321,6 +321,30 @@ else {
   ok(R_.cortas === 0, `la última nota de cada frase dura por lo menos una corchea: ${R_.cortas} de ${R_.finales} cortas`);
   ok(R_.antic === 0, `la frase que termina en el 4& se liga al 1 que sigue: ${R_.antic} de ${R_.anticipos} sin ligar`);
   ok(R_.enCorchea / R_.n >= 0.82, `en el tiempo o en el & (los vientos de salsa: 92%): ${(100 * R_.enCorchea / R_.n).toFixed(1)}%`);
+  // los golpes de la clave (pedido del dueño): en cada golpe y en el 1, una nota del acorde que suena; en clave de son y de rumba
+  const G_ = { son: { A: [0, 6, 12], B: [4, 8] }, rumba: { A: [0, 6, 14], B: [4, 8] } };
+  let gN = 0, gMal = 0, gT = 0, gTMal = 0;
+  for (const modo of Object.keys(TM.MODOS_SOLO)) for (const clave of ['son 2-3', 'rumba 3-2']) for (const forma of ['corrido', 'coro']) for (const golpes of ['acorde', 'tension']) {
+    const rx = TM.generarCancion({ titulo: '', clave, perillas: {}, secciones: [{ id: 's', tipo: 'solo', prog: 'Cm7 F7 Bbmaj7 Ebmaj7 Am7b5 D7 Gm Gm', marcha: 'marcha', estilo: 'salsabrava', vueltas: 2, semilla: 7, perillas: { s_modo: modo, s_forma: forma, s_golpes: golpes } }] }, Ms);
+    const pa = rx.secciones[0].info.solo.posAnt, tipo = /rumba/.test(clave) ? 'rumba' : 'son';
+    for (const n of rx.solo) {
+      const b = Math.floor(n.p / 16), q = n.p % 16; if (!(q === 0 || G_[tipo][rx.lados[b]].includes(q))) continue;
+      const ch = q >= pa && rx.acordes[b + 1] ? rx.acordes[b + 1][0] : rx.acordes[b][rx.acordes[b].length > 1 && q >= 8 ? 1 : 0], m = n.ps[0];
+      if (golpes === 'acorde') { gN++; if (!ch.pcs.includes(((m % 12) + 12) % 12)) gMal++; } else { gT++; if (!ch.pcs.includes(((m % 12) + 12) % 12) && TM.funcion(m, ch) !== 'T') gTMal++; }
+    }
+  }
+  ok(gMal === 0, `en los golpes de la clave y en el 1, nota del acorde: ${gN - gMal} de ${gN}`);
+  ok(gTMal === 0, `con «del acorde o tensiones», nada de afuera en los golpes: ${gT - gTMal} de ${gT}`);
+  // el tema del solo: el de la canción (un mambo antes), una cita, o ninguno
+  const conMambo = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, vientos: { formato: 'fania' }, secciones: [
+    { id: 'm', tipo: 'mambo', prog: 'Gm Cm D7 Gm', marcha: 'mambo', estilo: 'salsabrava', vueltas: 2, semilla: 905, vientos: { toca: 'mambo', armonia: 'terceras', entrada: 'juntos' } },
+    { id: 's', tipo: 'solo', prog: 'Gm Cm D7 Gm', marcha: 'marcha', estilo: 'salsabrava', vueltas: 4, semilla: 9, perillas: { s_tema: 'cancion' } }] }, Ms);
+  const tmC = conMambo.secciones[1].info.solo.tema;
+  ok(tmC && tmC.de === 'cancion' && tmC.vueltas >= 2, `el tema sale del mambo de la canción y vuelve (${tmC ? tmC.de + ', ' + tmC.vueltas + ' veces' : 'sin tema'})`);
+  const conCita = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 's', tipo: 'solo', prog: 'C F G7 F', marcha: 'marcha', estilo: 'salsa', vueltas: 4, semilla: 9, perillas: { s_tema: 'cita' } }] }, Ms);
+  ok(conCita.secciones[0].info.solo.tema && conCita.secciones[0].info.solo.tema.de === 'cita', 'con «una cita conocida», el tema es una cita (' + ((conCita.secciones[0].info.solo.tema || {}).cita || '-') + ')');
+  const sinTema = TM.generarCancion({ titulo: '', clave: 'son 2-3', perillas: {}, secciones: [{ id: 's', tipo: 'solo', prog: 'C F G7 F', marcha: 'marcha', estilo: 'salsa', vueltas: 4, semilla: 9, perillas: { s_tema: 'ninguno', s_cita: 0 } }] }, Ms);
+  ok(!sinTema.secciones[0].info.solo.tema && !sinTema.secciones[0].info.solo.cita, 'sin tema y sin citas, frases sueltas');
   // la salida: un pentagrama «Solo» en la partitura y una pista en el MIDI
   lySolo = TM.aLilyPond(rs, { clave: 'son 2-3', bpm: 190 });
   ok(/instrumentName = "Solo"/.test(lySolo) && /trompetaSolo = \{/.test(lySolo), 'la partitura tiene el pentagrama del solo');

@@ -38,10 +38,12 @@ if (CANCION) {
   r.secciones.forEach((sc, i) => {
     if (!sc.info.solo) return;
     const t0 = sc.inicio * 16, ns = r.solo.filter(e => e.p >= t0 && e.p < t0 + sc.compases * 16).map(e => ({ p: e.p - t0, L: e.L, m: e.ps[0] }));
-    const chEn = p => { const b = sc.inicio + Math.floor(p / 16), q = p % 16; if (q >= 14 && r.acordes[b + 1]) return r.acordes[b + 1][0]; const cs = r.acordes[b] || []; return cs.length > 1 && q >= 8 ? cs[1] : cs[0]; };
+    const pa = sc.info.solo.posAnt ?? 14, chEn = p => { const b = sc.inicio + Math.floor(p / 16), q = p % 16; if (q >= pa && r.acordes[b + 1]) return r.acordes[b + 1][0]; const cs = r.acordes[b] || []; return cs.length > 1 && q >= 8 ? cs[1] : cs[0]; };
     const sigEn = p => { const ch = chEn(p), b = sc.inicio + Math.floor(p / 16); for (let x = b; x <= b + 2; x++) for (const cc of r.acordes[x] || []) if (cc && ch && cc.nombre !== ch.nombre) return cc; return null; };
-    const j = J.juzgar(ns, { chEn, sigEn, ladoDe: p => r.lados[sc.inicio + Math.floor(p / 16)], huecos: sc.info.solo.huecos, forma: sc.info.solo.forma }, sc.info.solo.modo);
+    const j = J.juzgar(ns, { chEn, sigEn, ladoDe: p => r.lados[sc.inicio + Math.floor(p / 16)], claveTipo: /rumba/.test(c.clave || '') ? 'rumba' : 'son', huecos: sc.info.solo.huecos, forma: sc.info.solo.forma, golpes: sc.info.solo.golpes }, sc.info.solo.modo);
     console.log(`\n${sc.texto} (${sc.compases} compases) · ${TM.MODOS_SOLO[sc.info.solo.modo].n}${sc.info.solo.forma === 'coro' ? ', con el coro' : ''} · aprende de ${sc.info.solo.fuentes.join(', ')}`);
+    const tm = sc.info.solo.tema, temaTxt = tm ? (tm.de === 'cancion' ? 'el de los vientos de «' + (tm.seccion || '') + '»' : tm.de === 'cita' ? 'la cita «' + tm.cita + '»' : 'propio' + (tm.de2 ? ' (de ' + tm.de2 + ')' : '')) + ', suena ' + tm.vueltas + ' veces' : 'sin tema';
+    console.log(`  tema: ${temaTxt}${sc.info.solo.cita ? ' · cita «' + sc.info.solo.cita + '»' : ''}`);
     console.log(`  nota ${j.nota.toFixed(2)} · ${Object.entries(j.rubros).map(([k, v]) => RU[k] + ' ' + v.toFixed(2)).join(' · ')}${j.faltas.length ? ' · faltas: ' + j.faltas.join(', ') : ''}`);
     const flojos = j.detalle.filter(d => d.s < 0.8).sort((a, b) => a.s - b.s);
     if (flojos.length) console.log('  lo raro: ' + flojos.map(d => `${TM.RASGOS_SOLO[d.k]} ${d.x.toFixed(2)} (lo normal ${d.p25.toFixed(2)} a ${d.p75.toFixed(2)})`).join(' · '));
