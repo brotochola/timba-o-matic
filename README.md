@@ -54,7 +54,7 @@ En las marchas fuertes (presión, bomba, despelote, muela) el bajo toca lo de la
 ### Canción y sonido
 
 - El sonido de entrada es **GeneralUser GS**: se carga solo la primera vez que tocás. También están la banda de samples (3 MB), el sintetizador y un dispositivo MIDI externo.
-- **Demos:** canciones armadas con la app (timba con presión y despelote, salsa brava, son montuno…), para escuchar y tocar sus perillas. Son las de [canciones/](canciones/) que tienen `orden`: `herramientas/construir.js` las mete en la página en ese orden. La primera vez que alguien abre la app (sin canción guardada) se abre la marcada `portada`.
+- **Demos:** canciones armadas con la app (timba con presión y despelote, salsa brava, son montuno, los acordes de «Lithium» de Nirvana en timba…), para escuchar y tocar sus perillas. Son las de [canciones/](canciones/) que tienen `orden`: `herramientas/construir.js` las mete en la página en ese orden. La primera vez que alguien abre la app (sin canción guardada) se abre la marcada `portada`.
 - «★ Guardar canción» la guarda en el navegador; «Exportar canción» la baja como `.json` (el mismo formato de las demos) y «Importar canción…» la abre.
 - **Bajar como** tema (con principio y final) o loop (el final anticipa el principio y el primer 1 no se repite, para pegarlo en el DAW sin costura):
   - **Bajar MIDI** (también el botón `.mid` de arriba): piano, bajo, trompetas, trombones, saxos, una pista por instrumento de percusión y un marcador por sección.
@@ -101,6 +101,7 @@ Más para leer, en [docs/](docs/):
 - [analisis_de_los_midis.md](docs/analisis_de_los_midis.md): cómo se analizó la base y qué hace el piano de verdad, medido en los MIDI.
 - [guia_de_tumbaos.md](docs/guia_de_tumbaos.md): teoría y contexto (la clave, el tumbao, el bajo, la percusión, las marchas, la timba en la Cuba de los 90).
 - [investigacion/](docs/investigacion/): lo que dicen músicos, libros y métodos sobre cada instrumento, con fuentes; de ahí salen las reglas del motor.
+- [investigacion/rock_en_timba.md](docs/investigacion/rock_en_timba.md): cómo se versiona un tema de rock en timba para que se reconozca y quede interesante; el criterio detrás de la demo «Litio» (Nirvana).
 
 ### Cómo se prueba que suena como los temas
 

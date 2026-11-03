@@ -1,0 +1,882 @@
+{
+ "tipo": "timba-o-matic · canción",
+ "version": 1,
+ "cancion": {
+  "version": 2,
+  "titulo": "Litio",
+  "orden": 10,
+  "descripcion": "los acordes de «Lithium» de Nirvana en timba: el verso y el estribillo tal cual, y el montuno sobre el puente",
+  "clave": "rumba 2-3",
+  "banda": "timba",
+  "bajoSonido": "bass",
+  "mezcla": {},
+  "bpm": 196,
+  "vientos": {
+   "formato": "timba"
+  },
+  "secciones": [
+   {
+    "id": "l1",
+    "pistas": {
+     "bajo": false,
+     "congas": false,
+     "bongo": false,
+     "campanas": false,
+     "guiro": false,
+     "bateria": false,
+     "trompetas": false,
+     "trombones": false,
+     "saxos": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {},
+    "nombre": "Intro: el piano solo",
+    "tipo": "intro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "vueltas": 1,
+    "semilla": 1001,
+    "percusion": {
+     "timbal": null
+    },
+    "relleno": "redoble",
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l2",
+    "pistas": {
+     "campanas": false,
+     "trompetas": false,
+     "trombones": false,
+     "saxos": false
+    },
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "timba",
+     "b_lado2": "siempre",
+     "b_lado2_notas": "raiz"
+    },
+    "nombre": "Verso",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "pupy",
+    "vueltas": 2,
+    "semilla": 1002,
+    "ganchoDe": "l1",
+    "entra": "1",
+    "relleno": "toms",
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l3",
+    "pistas": {},
+    "vol": {},
+    "transicion": "parada",
+    "perillas": {
+     "b_estilo": "timba"
+    },
+    "nombre": "Estribillo",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "vueltas": 2,
+    "semilla": 1003,
+    "ganchoDe": "l1",
+    "plato": "entra",
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l4",
+    "pistas": {
+     "campanas": false
+    },
+    "vol": {
+     "trompetas": 0.8,
+     "trombones": 0.8,
+     "saxos": 0.8
+    },
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "timba",
+     "b_lado2": "siempre",
+     "b_lado2_notas": "raiz",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Verso, segunda vez",
+    "tipo": "cuerpo",
+    "marcha": "cuerpo",
+    "estilo": "pupy",
+    "vueltas": 1,
+    "semilla": 1004,
+    "ganchoDe": "l1",
+    "entra": "1",
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    },
+    "relleno": "toms",
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l5",
+    "pistas": {},
+    "vol": {},
+    "transicion": "tresxcuatro",
+    "perillas": {
+     "b_estilo": "timba"
+    },
+    "nombre": "Estribillo, segunda vez",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "vueltas": 2,
+    "semilla": 1005,
+    "ganchoDe": "l1",
+    "plato": "entra",
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l6",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "v_fuente": "salsa"
+    },
+    "nombre": "Montuno sobre el puente",
+    "tipo": "coro",
+    "marcha": "marcha",
+    "estilo": "melon",
+    "vueltas": 8,
+    "semilla": 1006,
+    "plato": "entra",
+    "vientos": {
+     "toca": "respuesta",
+     "armonia": "terceras"
+    },
+    "relleno": "abanico",
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l7",
+    "pistas": {},
+    "vol": {},
+    "transicion": "contratiempos",
+    "perillas": {
+     "v_forma": "contrapunto",
+     "v_largo": "2",
+     "v_cresc": 0.8,
+     "v_remate": "pickups",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Mambo",
+    "tipo": "mambo",
+    "marcha": "mambo",
+    "estilo": "melon",
+    "pianoComo": "tirso",
+    "vueltas": 8,
+    "semilla": 1007,
+    "plato": "entra",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "terceras",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l8",
+    "pistas": {},
+    "vol": {
+     "bateria": 1.15
+    },
+    "transicion": "parada",
+    "perillas": {
+     "v_forma": "pregunta",
+     "v_largo": "1",
+     "v_dens": 0.7,
+     "v_fuente": "salsa"
+    },
+    "nombre": "Presión",
+    "tipo": "presion",
+    "marcha": "presion",
+    "estilo": "melon",
+    "vueltas": 4,
+    "semilla": 1008,
+    "entra": "1",
+    "plato": "1",
+    "ganchoDe": "l6",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "unisono",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l9",
+    "pistas": {
+     "piano": false
+    },
+    "vol": {
+     "congas": 1.15
+    },
+    "transicion": "tresxcuatro",
+    "perillas": {},
+    "nombre": "Bomba",
+    "tipo": "bomba",
+    "marcha": "bomba",
+    "estilo": "melon",
+    "vueltas": 4,
+    "semilla": 1009,
+    "entra": "1",
+    "plato": "1",
+    "vientos": {
+     "toca": "nada"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l10",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "v_forma": "champola",
+     "v_largo": "2",
+     "v_cresc": 1,
+     "v_agudo": 0.7,
+     "v_repite": 0.4,
+     "v_fuente": "salsa"
+    },
+    "nombre": "Despelote",
+    "tipo": "despelote",
+    "marcha": "despelote",
+    "estilo": "melon",
+    "vueltas": 8,
+    "semilla": 1010,
+    "plato": "entra",
+    "ganchoDe": "l6",
+    "vientos": {
+     "toca": "mambo",
+     "armonia": "cuartas",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 9,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l11",
+    "pistas": {},
+    "vol": {},
+    "transicion": "contratiempos",
+    "perillas": {},
+    "nombre": "Bloque: el final del puente",
+    "tipo": "bloque",
+    "marcha": "marcha",
+    "estilo": "melon",
+    "vueltas": 1,
+    "semilla": 1011,
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l12",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "timba",
+     "s_modo": "latinjazz"
+    },
+    "nombre": "Solo de trompeta",
+    "tipo": "solo",
+    "marcha": "marcha",
+    "estilo": "pupy",
+    "vueltas": 2,
+    "semilla": 1012,
+    "ganchoDe": "l1",
+    "plato": "entra",
+    "semillaSolo": 2,
+    "relleno": "redoble",
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l13",
+    "pistas": {},
+    "vol": {},
+    "transicion": "ninguna",
+    "perillas": {
+     "b_estilo": "timba",
+     "v_forma": "bloque",
+     "v_repite": 0.9,
+     "v_largo": "2",
+     "v_fuente": "salsa"
+    },
+    "nombre": "Estribillo final y moña",
+    "tipo": "mona",
+    "marcha": "mambo",
+    "estilo": "pupy",
+    "vueltas": 2,
+    "semilla": 1013,
+    "ganchoDe": "l1",
+    "plato": "entra",
+    "vientos": {
+     "toca": "moña",
+     "armonia": "terceras",
+     "entrada": "capas"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 8,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 1,
+       "q": "m7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 9,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 0,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 11,
+       "q": "7"
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 2,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   },
+   {
+    "id": "l14",
+    "pistas": {},
+    "vol": {},
+    "transicion": "corte",
+    "perillas": {},
+    "nombre": "Final",
+    "tipo": "final",
+    "marcha": "mambo",
+    "estilo": "pupy",
+    "vueltas": 1,
+    "semilla": 1014,
+    "ganchoDe": "l1",
+    "vientos": {
+     "toca": "bloques",
+     "entrada": "juntos"
+    },
+    "bars": [
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     },
+     {
+      "a": {
+       "r": 4,
+       "q": ""
+      },
+      "b": null
+     }
+    ]
+   }
+  ]
+ }
+}
